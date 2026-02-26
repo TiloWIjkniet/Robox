@@ -4,15 +4,15 @@
 
 
 //Debug options 
-#define DEBUG_DISPLAY 1
+#define DEBUG_DISPLAY 0
 #if DEBUG_DISPLAY
 #include <stdio.h>
 #endif
-#define DEBUG_USER_INPUT 1
+#define DEBUG_USER_INPUT 0
 #if DEBUG_USER_INPUT
 #include <stdio.h>
 #endif
-#define DEBUG_TIME 1
+#define DEBUG_TIME 0
 #if DEBUG_TIME
 #include <stdio.h>
 #endif
@@ -97,6 +97,7 @@ bool hasAnwertCorrect = false;
 void first_room_onEntry(void)
 {
     //Reset run data
+    
     roomIndex = 0;
     memset(&runData, 0, sizeof(runData));
 
@@ -106,13 +107,11 @@ void first_room_onEntry(void)
     runData.maxRooms   = ARRAY_SIZE(roomsSettings);
 
     uint16_t now = 0/*millis()*/;   // naar milis();
-    startRoomMillis = now; 
+    
     startGameMillis = now; 
-
-    timeRoomPanaltyMillis = 0;
     timeGamePenaltyMillis = 0;
 
-    hasAnwertCorrect = false;
+    commonRoom_onEntry();
 
     //setMapCoordinates(roomsSettings[roomIndex].coordinates) // moet nog
     displayLoadTemplate(NON,0 , true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
@@ -174,13 +173,13 @@ void first_room_onUpdate(void)
 }
 void first_room_onExit(void)
 {
-    uint32_t roomElapsedMillis = (0/*millis()*/ - startRoomMillis) + timeRoomPanaltyMillis   //millis() // moet nog
-    runData.roomTimes[roomIndex] = (uint32_t)(roomElapsedMillis / 1000);
+    commonRoom_onExit();
 }
 
 void room_loop_onEntry(void)
 {
-
+    roomIndex ++; 
+    commonRoom_onEntry();
 }
 void room_loop_onUpdate(void)
 {
@@ -188,12 +187,13 @@ void room_loop_onUpdate(void)
 }
 void room_loop_onExit(void)
 {
-
+    commonRoom_onExit();
 }
 
 void last_room_onEntry(void)
 {   
-
+    roomIndex ++; 
+    commonRoom_onEntry();
 }
 void last_room_onUpdate(void)
 {
@@ -202,8 +202,32 @@ void last_room_onUpdate(void)
 }
 void last_room_onExit(void)
 {
-
+    commonRoom_onExit();
 }
+
+
+/**
+ * @brief Common onEntry function for all room states.
+ */
+void commonRoom_onEntry()
+{
+    uint16_t now = 0/*millis()*/;   // naar milis();
+    startRoomMillis = now; 
+    timeRoomPanaltyMillis = 0;
+    hasAnwertCorrect = false;
+  
+}
+
+/**
+ * @brief Common onExit function for all room states.
+ */
+void commonRoom_onExit()
+{
+    uint32_t roomElapsedMillis = (0/*millis()*/ - startRoomMillis) + timeRoomPanaltyMillis   //millis() // moet nog
+    runData.roomTimes[roomIndex] = (uint32_t)(roomElapsedMillis / 1000);
+}
+
+
 
 void openCompartment(compartment_t compartment)
 {
