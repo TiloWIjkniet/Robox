@@ -1,0 +1,191 @@
+# Copyright 2024-2025 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+menu "Component Configuration"
+
+    menu "AWS IoT"
+        rsource "aws_iot/Kconfig"
+    endmenu
+
+    menu "CMSIS Drivers"
+        rsource "cmsis_drivers/cmsis_enet/Kconfig"
+        rsource "cmsis_drivers/cmsis_lpc_vusart/Kconfig"
+        rsource "cmsis_drivers/cmsis_uart/Kconfig"
+        rsource "cmsis_drivers/cmsis_lpuart/Kconfig"
+        rsource "cmsis_drivers/cmsis_lpc_i2c/Kconfig"
+        rsource "cmsis_drivers/cmsis_lpc_vspi/Kconfig"
+        rsource "cmsis_drivers/cmsis_spi/Kconfig"
+        rsource "cmsis_drivers/cmsis_ii2c/Kconfig"
+        rsource "cmsis_drivers/cmsis_i2c/Kconfig"
+        rsource "cmsis_drivers/cmsis_lpi2c/Kconfig"
+        rsource "cmsis_drivers/cmsis_lpspi/Kconfig"
+        rsource "cmsis_drivers/cmsis_ecspi/Kconfig"
+        rsource "cmsis_drivers/cmsis_lpc_gpio/Kconfig"
+        rsource "cmsis_drivers/cmsis_flexcomm/Kconfig"
+        rsource "cmsis_drivers/cmsis_iuart/Kconfig"
+        rsource "cmsis_drivers/cmsis_dspi/Kconfig"
+        rsource "cmsis_drivers/cmsis_lpsci/Kconfig"
+        rsource "cmsis_drivers/cmsis_gpio/Kconfig"
+    endmenu
+
+    menu "Utility"
+        rsource "assert/Kconfig"
+        rsource "misc_utilities/Kconfig"
+        rsource "lists/Kconfig"
+        rsource "str/Kconfig"
+        rsource "format/Kconfig"
+        rsource "silicon_id/Kconfig"
+        rsource "notifier/Kconfig"
+    endmenu
+
+    menu "Console and Shell"
+        rsource "debug_console/Kconfig"
+        rsource "debug_console_lite/Kconfig"
+        rsource "debug_console_rtt/Kconfig"
+        rsource "log/Kconfig"
+        rsource "shell/Kconfig"
+        rsource "serial_manager/Kconfig"
+        rsource "rtt/Kconfig"
+    endmenu
+
+    menu "Codec"
+        rsource "codec/Kconfig"
+    endmenu
+
+    menu "Coremark"
+        rsource "coremark/Kconfig"
+    endmenu
+
+    menu "Peripheral Adaptor"
+        rsource "button/Kconfig"
+        rsource "common_task/Kconfig"
+        rsource "crc/Kconfig"
+        rsource "gpio/Kconfig"
+        rsource "internal_flash/Kconfig"
+        rsource "timer/Kconfig"
+        rsource "timer_manager/Kconfig"
+        rsource "time_stamp/Kconfig"
+        rsource "rtc/Kconfig"
+        rsource "i2c/Kconfig"
+        rsource "i3c_bus/Kconfig"
+        rsource "led/Kconfig"
+        rsource "mem_manager/Kconfig"
+        rsource "messaging/Kconfig"
+        rsource "reset/Kconfig"
+        rsource "reset1/Kconfig"
+        rsource "rng/Kconfig"
+        rsource "rpmsg/Kconfig"
+        rsource "spi/Kconfig"
+        rsource "pwm/Kconfig"
+        rsource "uart/Kconfig"
+        rsource "lce/Kconfig"
+        rsource "imu_adapter/Kconfig"
+        rsource "systick_timer/Kconfig"
+        rsource "timer_lptmr/Kconfig"
+        rsource "audio/Kconfig"
+        rsource "adc_sensor/Kconfig"
+        rsource "clock/Kconfig"
+        rsource "pinctrl/Kconfig"
+    endmenu
+
+    menu "Operating System Abstraction (OSA)"
+        rsource "osa/Kconfig"
+    endmenu
+
+    menu "EdgeFast Wifi"
+        orsource "edgefast_wifi/Kconfig"
+    endmenu
+
+    rsource "wifi_bt_module/Kconfig"
+
+    # Security
+    menu "Security"
+        orsource "els_pkc/Kconfig"
+        orsource "ele_crypto/Kconfig"
+        orsource "ele_hseb/Kconfig"
+        orsource "ele_base_api/Kconfig"
+        orsource "psa_crypto_driver/Kconfig"
+        orsource "crypto_benchmark/Kconfig"
+        orsource "sgi_pkc/Kconfig"
+    endmenu
+
+    menu "Power"
+        rsource "pmic/Kconfig"
+        rsource "power_manager/Kconfig"
+        rsource "power/Kconfig"
+    endmenu
+
+    menu "I/O expander"
+        rsource "expander/Kconfig"
+        rsource "sx1502/Kconfig"
+    endmenu
+
+    rsource "sensor/Kconfig"
+
+    menu "Display and Touch"
+        rsource "video/Kconfig"
+        rsource "touch/Kconfig"
+        rsource "display/Kconfig"
+        rsource "slcd_engine/Kconfig"
+    endmenu
+
+    menu "ENET PHY"
+        rsource "phy/Kconfig"
+    endmenu
+
+    rsource "srtm/Kconfig"
+
+    menu "SDIO"
+        rsource "sdu/Kconfig"
+    endmenu
+
+    menu "SMBUS"
+        rsource "smbus/Kconfig"
+    endmenu
+
+    rsource "flash/Kconfig"
+
+    menu "SPI Flash"
+        rsource "mx25l_flash/Kconfig"
+        rsource "mx25r_flash/Kconfig"
+        rsource "mx25_flash/Kconfig"
+    endmenu
+
+    menu "External RAM"
+        rsource "mt48lc2m32b2/Kconfig"
+        rsource "mt48lc4m16a2/Kconfig"
+        rsource "IS42SM16800H/Kconfig"
+    endmenu
+
+    menu "System Manager"
+        rsource "sm/Kconfig"
+        rsource "imx_sm_crc/Kconfig"
+        rsource "scmi/Kconfig"
+        rsource "smt/Kconfig"
+    endmenu
+
+    menu "Image Loader"
+        rsource "mpi_loader/Kconfig"
+        rsource "conn_fwloader/Kconfig"
+    endmenu
+
+    menu "Storage"
+        rsource "storage/Kconfig"
+        rsource "eeprom_emulation/Kconfig"
+    endmenu
+
+    menu "Debug"
+        rsource "debug/Kconfig"
+        rsource "panic/Kconfig"
+        rsource "exception_handling/Kconfig"
+    endmenu
+
+    menu "Generic Hal"
+        rsource "gen_hal/Kconfig"
+    endmenu
+
+    menu "Unit Test"
+        rsource "unity/Kconfig"
+    endmenu
+
+endmenu

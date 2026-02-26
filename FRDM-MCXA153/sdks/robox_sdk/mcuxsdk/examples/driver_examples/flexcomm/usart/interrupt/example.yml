@@ -1,0 +1,17 @@
+usart_interrupt:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexcomm/usart/interrupt
+    project-root-path: boards/${board}/driver_examples/usart/interrupt/${multicore_foldername}
+    document:
+      name: usart_interrupt${core_id_suffix_name}
+      category: driver_examples/usart
+      brief: The uart_functioncal_interrupt example shows how to use uart driver functionalAPI
+        to receive data with interrupt method:In this example, one uart instance connect
+        to PC through uart, the board willsend back all characters that PC send to
+        the board.
+      example_readme:
+      - examples/driver_examples/flexcomm/usart/interrupt/readme.md
+      - ${board_root}/${board}/driver_examples/usart/interrupt/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

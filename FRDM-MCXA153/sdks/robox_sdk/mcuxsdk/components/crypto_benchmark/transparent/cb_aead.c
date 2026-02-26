@@ -1,0 +1,217 @@
+/*
+ * Copyright 2024-2025 NXP
+ * All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+/**
+ * @file  cb_aead.c
+ * @brief Contains definitions for AEAD benchmarking.
+ */
+
+/*******************************************************************************
+ * Includes
+ ******************************************************************************/
+#include "crypto_benchmark.h"
+#include "cb_aead.h"
+#include "cb_types.h"
+
+/*******************************************************************************
+ * Definitions
+ ******************************************************************************/
+#define CB_AEAD_ALGORITHM_STR "AEAD"
+#define CB_AEAD_PERF_DATA_CNT 2u
+
+/*******************************************************************************
+ * Prototypes
+ ******************************************************************************/
+static void aead_oneshot_benchmark(void);
+static void aead_multipart_benchmark(void);
+
+/*******************************************************************************
+ * Variables
+ ******************************************************************************/
+__weak const aead_benchmark_cases_t aead_benchmark_cases[0];
+__weak const size_t aead_benchmark_cases_nb = ARRAY_SIZE(aead_benchmark_cases);
+
+/*******************************************************************************
+ * Code
+ ******************************************************************************/
+__weak cb_status_t wrapper_aead_init(void **ctx_internal, cb_aead_type_t aead_type, const uint8_t *key, size_t key_size)
+{
+    (void)ctx_internal;
+    (void)aead_type;
+    (void)key;
+    (void)key_size;
+
+    return CB_STATUS_FAIL;
+}
+
+__weak cb_status_t wrapper_aead_deinit(void *ctx_internal)
+{
+    (void)ctx_internal;
+
+    return CB_STATUS_FAIL;
+}
+
+__weak cb_status_t wrapper_aead_compute(void *ctx_internal,
+                                 const uint8_t *message,
+                                 size_t message_size,
+                                 const uint8_t *iv,
+                                 size_t iv_size,
+                                 const uint8_t *aad,
+                                 size_t aad_size,
+                                 uint8_t *ciphertext,
+                                 uint8_t *tag,
+                                 size_t tag_size,
+                                 const uint8_t *key,
+                                 size_t key_size)
+{
+    (void)ctx_internal;
+    (void)message;
+    (void)message_size;
+    (void)iv;
+    (void)iv_size;
+    (void)aad;
+    (void)aad_size;
+    (void)ciphertext;
+    (void)tag;
+    (void)tag_size;
+    (void)key;
+    (void)key_size;
+
+    return CB_STATUS_FAIL;
+}
+
+cb_status_t aead_benchmark(void)
+{
+    aead_oneshot_benchmark();
+
+    aead_multipart_benchmark();
+
+    return CB_STATUS_SUCCESS;
+}
+
+static void aead_oneshot_benchmark(void)
+{
+    cb_status_t status  = CB_STATUS_FAIL;
+    double cb           = 0u;
+    uint8_t *tag        = g_CommonOutput;
+    uint8_t *ciphertext = tag + AEAD_TAG_SIZE;
+    uint8_t *key        = g_CommonPayload;
+    uint8_t *iv         = key + 32u; // Will be using at most 32B key size
+    uint8_t *aad        = iv + AEAD_IV_SIZE;
+    uint8_t *message    = aad + AEAD_AAD_SIZE;
+
+    void *ctx_internal                       = NULL;
+    cb_aead_type_t aead_type                 = 0;
+    size_t key_size                          = 0u;
+    size_t block_size                        = AEAD_BLOCK;
+    size_t payload_size                      = AEAD_PAYLOAD;
+    size_t message_size                      = payload_size;
+    size_t message_size_multi                = (block_size * (MULTIPLE_BLOCK - 1) + payload_size);
+    size_t message_size_perfcurve            = 0u;
+    double perf_value[CB_AEAD_PERF_DATA_CNT] = {0};
+    char *perf_unit[CB_AEAD_PERF_DATA_CNT]   = {CB_PERF_UNIT_CPB, CB_PERF_UNIT_KIBPS};
+
+    size_t i = 0u;
+    size_t k = 0u;
+
+#if !defined(CB_PRINT_CSV)
+    PRINTF("AEAD encryption:\r\n");
+#endif
+    for (; i < aead_benchmark_cases_nb; i++)
+    {
+        key_size = aead_benchmark_cases[i].key_size;
+        aead_type = aead_benchmark_cases[i].type;
+
+        /* Initialize the port context */
+        if (wrapper_aead_init(&ctx_internal, aead_type, key, key_size) != CB_STATUS_SUCCESS)
+        {
+            print_failure("wrapper_aead_init()");
+            continue;
+        }
+
+        /* == == Begin individual benchmarks == == */
+
+        cb = CYCLES_BYTE(
+            status == CB_STATUS_SUCCESS,
+            status = wrapper_aead_compute(ctx_internal, message, message_size, iv, AEAD_IV_SIZE, aad, AEAD_AAD_SIZE,
+                                          ciphertext, tag, AEAD_TAG_SIZE, key, key_size),
+            message_size);
+        if (status != CB_STATUS_SUCCESS)
+        {
+            print_failure(NULL);
+            goto fail;
+        }
+
+        perf_value[0] = cb;
+        perf_value[1] = CYCLES_BYTE_TO_KB_S(cb, message_size);
+
+        print_benchmark_case(message_size, CB_TRUE_STR, CB_AEAD_ALGORITHM_STR,
+                             aead_to_string(aead_type), CB_MODE_ENCRYPT_STR,
+                             CB_KEY_OPACITY_TRANSPARENT_STR, key_size, CB_FALSE_STR, perf_value, perf_unit,
+                             CB_AEAD_PERF_DATA_CNT);
+
+        cb = CYCLES_BYTE(
+            status == CB_STATUS_SUCCESS,
+            status = wrapper_aead_compute(ctx_internal, message, message_size_multi, iv, AEAD_IV_SIZE, aad,
+                                          AEAD_AAD_SIZE, ciphertext, tag, AEAD_TAG_SIZE, key, key_size),
+            message_size_multi);
+
+        if (status != CB_STATUS_SUCCESS)
+        {
+            print_failure(NULL);
+            goto fail;
+        }
+
+        perf_value[0] = cb;
+        perf_value[1] = CYCLES_BYTE_TO_KB_S(cb, message_size_multi);
+
+        print_benchmark_case(message_size_multi, CB_TRUE_STR, CB_AEAD_ALGORITHM_STR,
+                             aead_to_string(aead_type), CB_MODE_ENCRYPT_STR,
+                             CB_KEY_OPACITY_TRANSPARENT_STR, key_size, CB_FALSE_STR, perf_value, perf_unit,
+                             CB_AEAD_PERF_DATA_CNT);
+
+#if defined(CRYPTO_BENCHMARK_PERFCURVE) && (CRYPTO_BENCHMARK_PERFCURVE == 1u)
+        for (k = 0u; k < (sizeof(g_cb_perfcurve_block_counts) / sizeof(size_t)); k++)
+        {
+            message_size_perfcurve = (block_size * (g_cb_perfcurve_block_counts[k] - 1) + payload_size);
+
+            cb = CYCLES_BYTE(
+                status == CB_STATUS_SUCCESS,
+                status = wrapper_aead_compute(ctx_internal, message, message_size_perfcurve, iv, AEAD_IV_SIZE, aad,
+                                              AEAD_AAD_SIZE, ciphertext, tag, AEAD_TAG_SIZE, key, key_size),
+                                              message_size_perfcurve);
+
+            if (status != CB_STATUS_SUCCESS)
+            {
+                print_failure(NULL);
+                continue;
+            }
+
+            perf_value[0] = cb;
+            perf_value[1] = CYCLES_BYTE_TO_KB_S(cb, message_size_perfcurve);
+
+            print_benchmark_case(message_size_perfcurve, CB_TRUE_STR, CB_AEAD_ALGORITHM_STR,
+                                 aead_to_string(aead_type), CB_MODE_ENCRYPT_STR,
+                                 CB_KEY_OPACITY_TRANSPARENT_STR, key_size, CB_FALSE_STR, perf_value,
+                                 perf_unit, CB_AEAD_PERF_DATA_CNT);
+        }
+#endif /* CRYPTO_BENCHMARK_PERFCURVE */
+
+        /* == == == == == == == == == == == == == == == == == == == == == */
+
+fail:
+        /* Clean up the port context before the next iteration */
+        if (wrapper_aead_deinit(ctx_internal) != CB_STATUS_SUCCESS)
+        {
+            print_failure("wrapper_aead_deinit()");
+        }
+    }
+}
+
+static void aead_multipart_benchmark(void)
+{
+    // Placeholder
+}

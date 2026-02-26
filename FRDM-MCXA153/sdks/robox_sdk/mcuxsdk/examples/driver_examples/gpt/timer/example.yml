@@ -1,0 +1,17 @@
+gpt_timer:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/gpt/timer
+    project-root-path: boards/${board}/driver_examples/gpt/timer/${multicore_foldername}
+    document:
+      name: gpt_timer${core_id_suffix_name}
+      category: driver_examples/gpt
+      brief: The gpt_timer project is a simple demonstration program of the SDK GPT
+        driver. It sets up the GPThardware block to trigger a periodic interrupt after
+        every 1 second. When the GPT interrupt is triggereda message a printed on
+        the UART terminal.
+      example_readme:
+      - examples/driver_examples/gpt/timer/readme.md
+      - ${board_root}/${board}/driver_examples/gpt/timer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

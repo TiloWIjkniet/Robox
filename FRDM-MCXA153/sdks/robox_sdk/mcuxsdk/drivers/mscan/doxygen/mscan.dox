@@ -1,0 +1,34 @@
+
+
+/*!
+@defgroup mscan MSCAN: Scalable Controller Area Network
+@details The MCUXpresso SDK provides a peripheral driver for the Scalable Controller Area Network (MSCAN)
+         module of MCUXpresso SDK devices.
+*/
+
+/*!
+@defgroup mscan_driver MSCAN Driver
+@ingroup mscan
+@details This section describes the programming interface of the MSCAN driver.
+The MSCAN driver configures MSCAN module and provides functional and transactional
+interfaces to build the MSCAN application.
+
+# Typical use case {#MSCANTpyUC}
+
+## Message Buffer Send Operation {#MSCANMbSendOps}
+
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/mscan
+## Message Buffer Receive Operation {#MSCANMbReceiveOps}
+
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/mscan
+## Receive FIFO Operation {#MSCANFifoReceiveOps}
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/mscan
+
+## Calculate {#MSCANCalculate}
+Provides static functions to calculate improved timing configuration.
+
+The feature need to be enabled by user like that.
+@code
+#define FSL_FEATURE_FLEXCAN_HAS_IMPROVED_TIMING_CONFIG (1)
+@endcode
+*/

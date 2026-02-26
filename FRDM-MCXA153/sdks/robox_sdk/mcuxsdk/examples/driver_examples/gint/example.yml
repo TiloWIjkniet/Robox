@@ -1,0 +1,15 @@
+gint:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/gint
+    project-root-path: boards/${board}/driver_examples/gint/${multicore_foldername}
+    document:
+      name: gint${core_id_suffix_name}
+      category: driver_examples/gint
+      brief: This example shows how to use SDK drivers to use the Group GPIO input
+        interrupt peripheral.
+      example_readme:
+      - examples/driver_examples/gint/readme.md
+      - ${board_root}/${board}/driver_examples/gint/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

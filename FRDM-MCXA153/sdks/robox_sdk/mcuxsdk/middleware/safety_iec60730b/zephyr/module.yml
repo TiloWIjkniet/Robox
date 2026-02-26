@@ -1,0 +1,6 @@
+name: safety_iec60730b
+build:
+  cmake: ./zephyr/
+  kconfig: ./zephyr/Kconfig
+samples:
+  - ./zephyr/samples

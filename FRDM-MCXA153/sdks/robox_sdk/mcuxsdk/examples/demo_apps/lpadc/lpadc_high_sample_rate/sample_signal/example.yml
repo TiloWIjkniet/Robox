@@ -1,0 +1,19 @@
+lpadc_high_sample_rate_sample_signal:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/lpadc/lpadc_high_sample_rate/sample_signal
+    project-root-path: boards/${board}/demo_apps/lpadc_high_sample_rate/sample_signal/${multicore_foldername}
+    document:
+      name: lpadc_high_sample_rate_sample_signal${core_id_suffix_name}
+      category: demo_apps
+      brief: This demo application demonstrates the use of the LPADC to sample the
+        analog signal. In this demo, the ADC clock is set as the maximum frequency,
+        users should input analog signals to the ADC channel, press any keys to trigger
+        the ADC conversion. After sampling enough sample points, the ADC will be disabled
+        and the sample data will be print via UART. Users can use some tools such
+        as EXCEL to recover the input signal based on those printed data.
+      example_readme:
+      - examples/demo_apps/lpadc/lpadc_high_sample_rate/sample_signal/readme.md
+      - ${board_root}/${board}/demo_apps/lpadc_high_sample_rate/sample_signal/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

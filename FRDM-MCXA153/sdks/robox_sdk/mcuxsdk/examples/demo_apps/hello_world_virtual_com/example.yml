@@ -1,0 +1,19 @@
+hello_world_virtual_com:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/hello_world_virtual_com
+    project-root-path: boards/${board}/demo_apps/hello_world_virtual_com/${multicore_foldername}
+    document:
+      name: hello_world_virtual_com${core_id_suffix_name}
+      category: demo_apps
+      brief: Hello World Virtual Com demonstrates the use of virtual com to print
+        the "Hello World" string to the terminal. Different with Hello World demo
+        (a HW UART peripheral is used to transmit data), the demo transmits data based
+        on a serial port simulated by the USB device stack on target board side via
+        USB peripheral. The purpose of this demo is to demonstrate how to use virtual
+        com and provide a simple project for debugging and further development.
+      example_readme:
+      - examples/demo_apps/hello_world_virtual_com/readme.md
+      - ${board_root}/${board}/demo_apps/hello_world_virtual_com/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

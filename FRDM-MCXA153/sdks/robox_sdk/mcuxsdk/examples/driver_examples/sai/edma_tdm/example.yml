@@ -1,0 +1,16 @@
+sai_edma_tdm:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/sai/edma_tdm
+    project-root-path: boards/${board}/driver_examples/sai/edma_tdm/${multicore_foldername}
+    document:
+      name: sai_edma_tdm${core_id_suffix_name}
+      category: driver_examples/sai
+      brief: The sai_edma_tdm example shows how to use sai driver to generate TDM
+        format with EDMA:In this example, one sai instance playbacks the audio data
+        stored in sdcard.
+      example_readme:
+      - examples/driver_examples/sai/edma_tdm/readme.md
+      - ${board_root}/${board}/driver_examples/sai/edma_tdm/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

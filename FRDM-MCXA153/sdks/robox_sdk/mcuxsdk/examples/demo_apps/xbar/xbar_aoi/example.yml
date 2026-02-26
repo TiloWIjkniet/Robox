@@ -1,0 +1,16 @@
+xbar_aoi:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/xbar/xbar_aoi
+    project-root-path: boards/${board}/demo_apps/xbar_aoi/${multicore_foldername}
+    document:
+      name: xbar_aoi${core_id_suffix_name}
+      category: demo_apps
+      brief: The XBAR AOI demo application demonstrates the usage of the XBAR, AOI
+        peripheral to combine interruptfrom CMP and PIT. If the button is pressed(CMP
+        interrupt) and the PIT periodic interrupt occurs a message is printed.
+      example_readme:
+      - examples/demo_apps/xbar/xbar_aoi/readme.md
+      - ${board_root}/${board}/demo_apps/xbar_aoi/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

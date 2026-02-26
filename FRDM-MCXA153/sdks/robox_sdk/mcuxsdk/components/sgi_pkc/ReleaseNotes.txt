@@ -1,0 +1,41 @@
+DCI_SDK (3.0.0) Release Notes
+
+- Release: DCI_SDK PRC
+- Version: DCI_SDK_V3.0.0
+- Date:    2025-09-15
+- Compiler: IAR C/C++ Compiler V9.60.2.399 for ARM
+- Code size: 
+    -delivery/mcxa2xx_release/static_library/mcxa2xx/libclns.a
+        TEXT 	RO 	RW 	ZI 	TOTAL_CONSUMPTION
+        112438  23752   0       0       136190
+
+    -delivery/mcxl2xx_release/static_library/mcxl2xx/libclns.a
+        TEXT 	RO 	RW 	ZI 	TOTAL_CONSUMPTION
+        112232  23752   0       0       135984
+
+
+--- Test Targets: 
+   - MCX A276 sample
+   - MCX L20 sample
+   - CCCS FPGA v2 using A20 CoSim v2 bitfile r1785
+
+--- New Features 
+   - Removal of concatenation macro in mcuxClAnalysis.h to fix Coverity analysis warnings
+   - The code size optimizations
+   - The code coverage improvements
+   - The significant performance improvements of CPU driven hash operation on the first block
+   - Fix the FFDH doxygen documentation
+   - Fix the issue with unaligned key buffers in RSA KeyGen operation
+
+--- Features:
+   - Components included: mcuxClAead, mcuxClAeadModes, mcuxClAes, mcuxClBuffer, mcuxClCipher, mcuxClCipherModes, mcuxClCore, mcuxClCrc,
+                          mcuxClDma, mcuxClEcc, mcuxClExample, mcuxClFfdh, mcuxClGlikey, mcuxClHash, mcuxClHashModes, mcuxClHmac, mcuxClKey,
+                          mcuxClMac, mcuxClMacModes, mcuxClMath, mcuxClMemory, mcuxClPadding, mcuxClPkc, mcuxClPrng, mcuxClRandom,
+                          mcuxClRandomModes, mcuxClResource, mcuxClRsa, mcuxClSession, mcuxClSgi, mcuxClSignature, mcuxClTrng,
+                          mcuxCsslCPreProcessor, mcuxCsslDataIntegrity, mcuxCsslFlowProtection, mcuxCsslMemory, mcuxCsslParamIntegrity, 
+                          mcuxCsslPrng, mcuxCsslSecureCounter
+
+--- Known Issues/Limitations:
+   - To use any Asymmetric Cryptographic Operations the RAM_INTERLEAVE flag in SYSCON must be enabled before invoking any CLib Asymmetric Cryptographic Functionality.
+   - The platform header file is still using MCXA276.
+   - The key descriptors buffers must be 4-bytes aligned

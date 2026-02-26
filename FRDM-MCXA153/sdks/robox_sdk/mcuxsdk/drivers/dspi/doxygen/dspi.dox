@@ -1,0 +1,27 @@
+
+
+/*!
+@defgroup dspi DSPI: Serial Peripheral Interface Driver
+@details The MCUXpresso SDK provides a peripheral driver for the Serial Peripheral Interface (SPI) module of MCUXpresso SDK devices.
+*/
+
+/*!
+@defgroup dspi_driver DSPI Driver
+@ingroup dspi
+@details This section describes the programming interface of the DSPI peripheral driver.
+The DSPI driver configures the DSPI module and provides functional and transactional
+interfaces to build the DSPI application.
+
+# Typical use case {#DSPITpyUC}
+
+## Master Operation {#DSPIMasterOps}
+
+Refer to the driver examples codes located at <i>\<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/dspi.</i>
+## Slave Operation {#DSPISlaveOps}
+
+Refer to the driver examples codes located at <i>\<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/dspi.</i>
+*/
+
+
+
+

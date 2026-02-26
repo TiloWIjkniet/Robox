@@ -1,0 +1,17 @@
+flexio_uart_interrupt_transfer:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexio/uart/interrupt_transfer
+    project-root-path: boards/${board}/driver_examples/flexio/uart/interrupt_transfer/${multicore_foldername}
+    document:
+      name: flexio_uart_interrupt_transfer${core_id_suffix_name}
+      category: driver_examples/flexio
+      brief: 'The flexio_uart_interrupt example shows how to use flexio uart driver
+        in interrupt way:In this example, a flexio simulated uart connect to PC through
+        USB-Serial, the board will send back all charactersthat PC send to the board.
+        Note: two queued transfer in this example, so please input even number characters.'
+      example_readme:
+      - examples/driver_examples/flexio/uart/interrupt_transfer/readme.md
+      - ${board_root}/${board}/driver_examples/flexio/uart/interrupt_transfer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

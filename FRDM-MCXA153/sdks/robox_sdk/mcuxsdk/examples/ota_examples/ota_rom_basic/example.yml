@@ -1,0 +1,14 @@
+ota_rom_basic:
+  section-type: application
+  contents:
+    meta_path: examples/ota_examples/ota_rom_basic
+    project-root-path: boards/${board}/ota_examples/ota_rom_basic/${multicore_foldername}
+    document:
+      name: ota_rom_basic${core_id_suffix_name}
+      category: ota_examples
+      brief: This projects gives an example of a basic application bootable by MCUBoot
+      example_readme:
+      - examples/ota_examples/ota_rom_basic/readme.md
+      - ${board_root}/${board}/ota_examples/ota_rom_basic/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

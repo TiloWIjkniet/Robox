@@ -1,0 +1,16 @@
+sctimer_pwm_with_dutycyle_change:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/sctimer/pwm_with_dutycyle_change
+    project-root-path: boards/${board}/driver_examples/sctimer/pwm_with_dutycyle_change/${multicore_foldername}
+    document:
+      name: sctimer_pwm_with_dutycyle_change${core_id_suffix_name}
+      category: driver_examples/sctimer
+      brief: This SCTIMer project is a demonstration program of the SDK SCTimer driver's
+        PWM generation. It sets up a PWM signaland periodically updates the PWM signals
+        dutycycle.
+      example_readme:
+      - examples/driver_examples/sctimer/pwm_with_dutycyle_change/readme.md
+      - ${board_root}/${board}/driver_examples/sctimer/pwm_with_dutycyle_change/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

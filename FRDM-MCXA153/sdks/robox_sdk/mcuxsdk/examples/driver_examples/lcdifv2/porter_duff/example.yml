@@ -1,0 +1,16 @@
+lcdifv2_porter_duff:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lcdifv2/porter_duff
+    project-root-path: boards/${board}/driver_examples/lcdifv2/porter_duff/${multicore_foldername}
+    document:
+      name: lcdifv2_porter_duff${core_id_suffix_name}
+      category: driver_examples/lcdifv2
+      brief: This example demonstrates how to use the LCDIF v2 porter duff feature.
+        In this example, two layers are enabled and blended. The blend mode changes
+        and the panel shows the different blend result.
+      example_readme:
+      - examples/driver_examples/lcdifv2/porter_duff/readme.md
+      - ${board_root}/${board}/driver_examples/lcdifv2/lcdifv2_examples_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

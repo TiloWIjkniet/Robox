@@ -1,0 +1,22 @@
+freertos_queue:
+  section-type: application
+  contents:
+    meta_path: examples/freertos_examples/freertos_queue
+    project-root-path: boards/${board}/freertos_examples/freertos_queue/${multicore_foldername}
+    document:
+      name: freertos_queue${core_id_suffix_name}
+      category: freertos_examples
+      brief: This document explains the freertos_queue example. This example introduce
+        simple logging mechanismbased on message passing.Example could be devided
+        in two parts. First part is logger. It contain three tasks:log_add().....Add
+        new message into the log. Call xQueueSend function to pass new message into
+        message queue.log_init()....Initialize logger (create logging task and message
+        queue log_queue).log_task()....Task responsible for printing of log output.Second
+        part is application of this simple logging mechanism. Each of two tasks write_task_1
+        andwrite_task_2 print 5 messages into log.
+      example_readme:
+      - examples/freertos_examples/freertos_queue/readme.md
+      - ${board_root}/${board}/freertos_examples/freertos_queue/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

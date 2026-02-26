@@ -1,0 +1,17 @@
+syscon_clockout:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/syscon_clockout
+    project-root-path: boards/${board}/driver_examples/clockout/${multicore_foldername}
+    document:
+      name: syscon_clockout${core_id_suffix_name}
+      category: driver_examples/syscon
+      brief: The syscon_clockout driver example shows how to output the internal clock
+        signal. In this driver example, users can choose the clock signal to be outputted,
+        and the divider of the output clock signal. By probe the output pin, users
+        can observe the selected internal clock signal.
+      example_readme:
+      - examples/driver_examples/syscon_clockout/readme.md
+      - ${board_root}/${board}/driver_examples/clockout/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

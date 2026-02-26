@@ -1,0 +1,18 @@
+dma_hardware_trigger:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lpc_dma/hardware_trigger
+    project-root-path: boards/${board}/driver_examples/dma/hardware_trigger/${multicore_foldername}
+    document:
+      name: dma_hardware_trigger${core_id_suffix_name}
+      category: driver_examples/dma
+      brief: The DMA hardware trigger example is a simple demonstration program that
+        uses the SDK software.It executes one shot transfer from source buffer to
+        destination buffer using the SDK DMA drivers by hardware trigger.The purpose
+        of this example is to show how to use the DMA and to provide a simple example
+        fordebugging and further development.
+      example_readme:
+      - examples/driver_examples/lpc_dma/hardware_trigger/readme.md
+      - ${board_root}/${board}/driver_examples/dma/hardware_trigger/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

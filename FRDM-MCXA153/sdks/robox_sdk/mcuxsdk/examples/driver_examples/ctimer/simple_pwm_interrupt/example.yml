@@ -1,0 +1,19 @@
+ctimer_pwm_interrupt_example:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/ctimer/simple_pwm_interrupt
+    project-root-path: boards/${board}/driver_examples/ctimer/simple_pwm_interrupt/${multicore_foldername}
+    document:
+      name: ctimer_pwm_interrupt_example${core_id_suffix_name}
+      category: driver_examples/ctimer
+      brief: The Simple PWM Interrupt project is to demonstrate usage of the SDK CTimer
+        driver as a PWM with interrupt callback functionsIn this example an IO pin
+        connected to the LED is used as a PWM output line to generate a PWM signal.With
+        an interrupt callback the PWM duty cycle is changed frequently in such a way
+        that the LED brightness can be varied.
+      example_readme:
+      - examples/driver_examples/ctimer/simple_pwm_interrupt/readme.md
+      - ${board_root}/${board}/driver_examples/ctimer/simple_pwm_interrupt/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

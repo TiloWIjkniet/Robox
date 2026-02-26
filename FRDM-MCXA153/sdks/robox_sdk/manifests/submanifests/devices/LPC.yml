@@ -1,0 +1,22 @@
+manifest:
+  remotes:
+  - name: nxp
+    url-base: https://github.com/NXP
+  - name: nxp-zephyr
+    url-base: https://github.com/nxp-zephyr
+  - name: nxp-mcuxpresso
+    url-base: https://github.com/nxp-mcuxpresso
+  defaults:
+    remote: nxp-mcuxpresso
+  projects:
+  - name: mcux-devices-lpc
+    revision: 986fab8771f7686fce5e67cd0f499e184a86690e
+    path: mcuxsdk/devices/LPC
+    groups:
+    - core
+    userdata:
+      track_branch: release/25.12.00
+      branch_flow: true
+      display_name: LPC Series Device Files
+      description: Device system files, template files, IDE related startup and linker
+        files.

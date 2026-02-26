@@ -1,0 +1,20 @@
+cache:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/cache
+    project-root-path: boards/${board}/driver_examples/cache/${multicore_foldername}
+    document:
+      name: cache${core_id_suffix_name}
+      category: driver_examples/cache
+      brief: The cache example shows how to use memory cache driver.In this example,
+        many memory (such as SDRAM, etc) and DMA will be used to show the example.Those
+        memory is both accessible for cpu and DMA. For the memory data alignment,
+        cache driver should be used rightly. For cache enabled case, the cache invalidate
+        operation should be done before cpu access the memory. The cache clean opeartion
+        should be done after CPU verify the memorymemory and before DMA access the
+        memory.
+      example_readme:
+      - examples/driver_examples/cache/readme.md
+      - ${board_root}/${board}/driver_examples/cache/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

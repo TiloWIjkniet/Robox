@@ -1,0 +1,18 @@
+csi_ccir656:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/csi/ccir656
+    project-root-path: boards/${board}/driver_examples/csi/ccir656/${multicore_foldername}
+    document:
+      name: csi_ccir656${core_id_suffix_name}
+      category: driver_examples/csi
+      brief: The CSI CCIR656 project shows how to receive the camera data using CSI
+        driver,the camera interface is CCIR656. In this example, you will see the
+        camera inputimage shown in the LCD. Please note that the camera input image
+        resolutionmight be smaller than the LCD panel, so part of the LCD panel might
+        be blank.
+      example_readme:
+      - examples/driver_examples/csi/ccir656/readme.md
+      - ${board_root}/${board}/driver_examples/csi/ccir656/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

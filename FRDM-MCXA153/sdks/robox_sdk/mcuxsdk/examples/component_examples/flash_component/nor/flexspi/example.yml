@@ -1,0 +1,15 @@
+flash_component_nor_flexspi:
+  section-type: application
+  contents:
+    meta_path: examples/component_examples/flash_component/nor/flexspi/
+    project-root-path: boards/${board}/component_examples/flash_component/flexspi_nor/${multicore_foldername}
+    document:
+      name: flash_component_nor_flexspi${core_id_suffix_name}
+      category: component_examples/flash_component/flexspi_nor
+      brief: nor flash demo shows the use of nor flash component to erase, program,
+        and read an external nor flash device.
+      example_readme:
+      - examples/component_examples/flash_component/nor/flexspi/readme.md
+      - ${board_root}/${board}/component_examples/flash_component/flexspi_nor/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

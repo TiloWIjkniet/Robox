@@ -1,0 +1,17 @@
+csi_rgb565:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/csi/rgb565
+    project-root-path: boards/${board}/driver_examples/csi/rgb565/${multicore_foldername}
+    document:
+      name: csi_rgb565${core_id_suffix_name}
+      category: driver_examples/csi
+      brief: The CSI RGB565 project shows how to receive the camera data using CSI
+        driver.In this example, you will see the camera input image shown in the LCD.
+        Pleasenote that the camera input image resolution might be smaller than the
+        LCDpanel, so part of the LCD panel might be blank.
+      example_readme:
+      - examples/driver_examples/csi/rgb565/readme.md
+      - ${board_root}/${board}/driver_examples/csi/rgb565/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

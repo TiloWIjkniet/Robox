@@ -1,0 +1,15 @@
+touch_haptic:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/touch_haptic
+    project-root-path: boards/${board}/demo_apps/touch_haptic/${multicore_foldername}
+    document:
+      name: touch_haptic${core_id_suffix_name}
+      category: demo_apps
+      brief: This example demonstrates the haptic feedback of the NXP Touch sensing
+        library.
+      example_readme:
+      - examples/demo_apps/touch_haptic/readme.md
+      - ${board_root}/${board}/demo_apps/touch_haptic/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "fms",
+			"path": "../../../fsm"
+		},
+		{
+			"name": "robox",
+			"path": ".."
+		},
+		{
+			"name": "frdmmcxa153_serial2lpuart",
+			"path": "../../../frdmmcxa153_serial2lpuart"
+		}
+	],
+	"settings": {}
+}

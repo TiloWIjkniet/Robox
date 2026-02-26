@@ -1,0 +1,22 @@
+dev_msc_ramdisk_bm:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_device_msc_ramdisk/bm/.
+    project-root-path: boards/${board}/usb_examples/usb_device_msc_ramdisk/bm/${multicore_foldername}
+    document:
+      name: dev_msc_ramdisk_bm${core_id_suffix_name}
+      category: usb_examples
+      brief: The USB MSC RAM disk application is a simple demonstration program based
+        on the MCUXpresso SDK.It is enumerated as a U-disk and can be read and written
+        to as a normal U-disk .
+      example_readme:
+      - examples/usb_examples/usb_device_msc_ramdisk/readme.md
+      - ${board_root}/${board}/usb_examples/usb_device_msc_ramdisk/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_device_msc_ramdisk/10k.jpg
+      - examples/usb_examples/usb_device_msc_ramdisk/bm_timing.jpg
+      - examples/usb_examples/usb_device_msc_ramdisk/device_ram_disk_format.jpg
+      - examples/usb_examples/usb_device_msc_ramdisk/freertos_optimization_timing.jpg
+      - examples/usb_examples/usb_device_msc_ramdisk/freertos_timing.jpg
+      - examples/usb_examples/usb_device_msc_ramdisk/IAR_setting.jpg
+  boards: {}

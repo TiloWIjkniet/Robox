@@ -1,0 +1,56 @@
+manifest:
+  remotes:
+  - name: nxp
+    url-base: https://github.com/NXP
+  - name: nxp-zephyr
+    url-base: https://github.com/nxp-zephyr
+  - name: nxp-mcuxpresso
+    url-base: https://github.com/nxp-mcuxpresso
+  defaults:
+    remote: nxp-mcuxpresso
+  projects:
+  - name: fatfs
+    revision: 59413c3a18725f6fdcb7f1f8bc2aae468a4dc244
+    path: mcuxsdk/middleware/fatfs
+    groups:
+    - fatfs
+    - middleware
+    userdata:
+      track_branch: mcux_main
+      branch_flow: false
+      display_name: Fatfs
+      description: FAT File System stack
+  - name: mcux-sdk-middleware-sdmmc
+    userdata:
+      owner: yangbo.lu@nxp.com
+      track_branch: mcux_main
+      branch_flow: false
+      display_name: sdmmc stack
+      description: sd, mmc, sdio card stack
+    revision: fea648c50e9eeaba6d5e9b3a51b6adef3622db00
+    path: mcuxsdk/middleware/sdmmc
+    groups:
+    - sdmmc
+    - middleware
+  - name: dhara
+    userdata:
+      owner: null
+      track_branch: mcux_main
+      branch_flow: false
+      display_name: nand flash management stack
+      description: nand flash management stack
+    path: mcuxsdk/middleware/dhara
+    revision: 2bcc5ae40b9942475c8660af0d61688819f4279b
+    groups:
+    - dhara
+  - name: littlefs
+    userdata:
+      owner: david.jurajda@nxp.com
+      track_branch: mcux_main
+      branch_flow: false
+      display_name: littlefs
+      description: LittleFS filesystem stack
+    path: mcuxsdk/middleware/littlefs
+    revision: 6d539af7a370eed17febdf679a0ec2c0245154f2
+    groups:
+    - littlefs

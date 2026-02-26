@@ -1,0 +1,20 @@
+flexcan_loopback_edma_transfer:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexcan/loopback_edma_transfer
+    project-root-path: boards/${board}/driver_examples/flexcan/loopback_edma_transfer/${multicore_foldername}
+    document:
+      name: flexcan_loopback_edma_transfer${core_id_suffix_name}
+      category: driver_examples/flexcan
+      brief: The flexcan_loopback_edma example shows how to use the EDMA version transactional
+        driver to receiveCAN Message from Rx FIFO:To demonstrates this example, only
+        one board is needed. The example will config one FlexCAN MessageBuffer to
+        Tx Message Buffer and also setup Rx FIFO. After that, the example will send
+        4 CAN Messagesfrom Tx Message Buffer to Rx FIFO through internal loopback
+        interconnect and read them out usingEDMA version FlexCAN transactional driver.
+        The Sent and received message will be print out to terminalat last.
+      example_readme:
+      - examples/driver_examples/flexcan/loopback_edma_transfer/readme.md
+      - ${board_root}/${board}/driver_examples/flexcan/loopback_edma_transfer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

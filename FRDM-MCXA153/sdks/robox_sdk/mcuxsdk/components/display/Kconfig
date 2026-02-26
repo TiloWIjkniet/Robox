@@ -1,0 +1,32 @@
+# Copyright 2024 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+menu "Display panel driver"
+
+config MCUX_COMPONENT_driver.ili9341
+    bool "ili9341"
+    select MCUX_COMPONENT_driver.common
+
+    if MCUX_COMPONENT_driver.ili9341
+
+    config ILI9341_USE_DBI_IFACE
+        bool "ILI9341 driver use unified DBI API"
+        help
+            No prefix in generated macro
+
+    endif
+
+
+config MCUX_COMPONENT_driver.st7796s
+    bool "st7796s"
+    select MCUX_COMPONENT_driver.dbi
+
+config MCUX_COMPONENT_driver.ssd1963
+    bool "ssd1963"
+    select MCUX_COMPONENT_driver.dbi
+
+config MCUX_COMPONENT_driver.psp27801
+    bool "psp27801"
+    select MCUX_COMPONENT_driver.common
+
+endmenu

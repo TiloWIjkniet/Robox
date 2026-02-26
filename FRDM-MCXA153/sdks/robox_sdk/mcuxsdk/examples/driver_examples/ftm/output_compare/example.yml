@@ -1,0 +1,17 @@
+ftm_output_compare:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/ftm/output_compare
+    project-root-path: boards/${board}/driver_examples/ftm/output_compare/${multicore_foldername}
+    document:
+      name: ftm_output_compare${core_id_suffix_name}
+      category: driver_examples/ftm
+      brief: The FTM project is a demonstration program of the SDK FTM driver's output
+        compare feature.It sets up one FTM channel to toggle the output when a match
+        occurs with the channel value. The usershould probe the FTM output with a
+        oscilloscope to see the signal toggling.
+      example_readme:
+      - examples/driver_examples/ftm/output_compare/readme.md
+      - ${board_root}/${board}/driver_examples/ftm/output_compare/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

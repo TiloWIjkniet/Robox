@@ -1,0 +1,19 @@
+lpspi_edma_b2b_transfer_slave:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lpspi/edma_b2b_transfer/slave
+    project-root-path: boards/${board}/driver_examples/lpspi/edma_b2b_transfer/slave/${multicore_foldername}
+    document:
+      name: lpspi_edma_b2b_transfer_slave${core_id_suffix_name}
+      category: driver_examples/lpspi
+      brief: The lpspi_edma_b2b_transfer example shows how to use LPSPI driver in
+        edma way:In this example , we need two boards, one board used as LPSPI master
+        and another board used as LPSPI slave.The file 'lpspi_edma_b2b_transfer_slave.c'
+        includes the LPSPI slave code.1. LPSPI master send/received data to/from LPSPI
+        slave in edma . (LPSPI Slave using edma to receive/send the data)
+      example_readme:
+      - examples/driver_examples/lpspi/edma_b2b_transfer/slave/readme.md
+      - ${board_root}/${board}/driver_examples/lpspi/edma_b2b_transfer/slave/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

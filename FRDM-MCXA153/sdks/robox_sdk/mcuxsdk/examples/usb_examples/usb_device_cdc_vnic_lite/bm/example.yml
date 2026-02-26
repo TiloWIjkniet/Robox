@@ -1,0 +1,29 @@
+dev_cdc_vnic_lite_bm:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_device_cdc_vnic_lite/bm/.
+    project-root-path: boards/${board}/usb_examples/usb_device_cdc_vnic_lite/bm/${multicore_foldername}
+    document:
+      name: dev_cdc_vnic_lite_bm${core_id_suffix_name}
+      category: usb_examples
+      brief: The Virtual NIC project is a simple demonstration program based on the
+        MCUXpresso SDK.  It is enumerated as a network adapter. Users can access the
+        network by properly configuring this network adapter.
+      example_readme:
+      - examples/usb_examples/usb_device_cdc_vnic_lite/readme.md
+      - ${board_root}/${board}/usb_examples/usb_device_cdc_vnic_lite/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_device_cdc_vnic_lite/rndis_driver_install_00.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/rndis_driver_install_01.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/rndis_driver_install_02.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/rndis_driver_install_03.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/rndis_driver_install_04.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/rndis_driver_install_05.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/rndis_driver_install_06.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/test_pc_ip_config.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/vnic_config.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/vnic_device_manager.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/vnic_device_manager_win10.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/vnic_network_connection.jpg
+      - examples/usb_examples/usb_device_cdc_vnic_lite/vnic_ping_windows.jpg
+  boards: {}

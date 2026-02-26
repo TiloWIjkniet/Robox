@@ -1,0 +1,17 @@
+lcdifv2_csc:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lcdifv2/csc
+    project-root-path: boards/${board}/driver_examples/lcdifv2/csc/${multicore_foldername}
+    document:
+      name: lcdifv2_csc${core_id_suffix_name}
+      category: driver_examples/lcdifv2
+      brief: This example demonstrates how to use the LCDIF v2 driver to do the YUV
+        to RGB conversion. In this example, the frame buffer pixel format is YUV,
+        the byte order in frame buffer is Y U Y V Y U Y V ... The LCDIV v2 converts
+        the color internally and sends out RGB color to the panel.
+      example_readme:
+      - examples/driver_examples/lcdifv2/csc/readme.md
+      - ${board_root}/${board}/driver_examples/lcdifv2/lcdifv2_examples_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

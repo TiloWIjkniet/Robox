@@ -1,0 +1,18 @@
+dac12_basic:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/dac12/basic
+    project-root-path: boards/${board}/driver_examples/dac12/basic/${multicore_foldername}
+    document:
+      name: dac12_basic${core_id_suffix_name}
+      category: driver_examples/dac12
+      brief: The dac12_basic example shows how to use DAC12 module simply as the general
+        DAC12 converter.When the DAC12's fifo feature is not enabled, Any write to
+        the DATA register will replace thedata in the buffer and push data to analog
+        conversion without trigger support.In this example, it gets the value from
+        terminal,outputs the DAC12 output voltage through DAC12 output pin.
+      example_readme:
+      - examples/driver_examples/dac12/basic/readme.md
+      - ${board_root}/${board}/driver_examples/dac12/basic/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

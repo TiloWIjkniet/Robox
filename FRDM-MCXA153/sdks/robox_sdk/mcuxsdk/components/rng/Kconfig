@@ -1,0 +1,54 @@
+# Copyright 2024-2025 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+menuconfig  MCUX_COMPONENT_component.rng_adapter_interface
+    bool "rng"
+    help
+        Enable component rng_adapter
+
+if MCUX_COMPONENT_component.rng_adapter_interface
+    choice MCUX_COMPONENT_component.rng_adapter_selection
+        prompt "rng adapter implementation"
+
+        config MCUX_COMPONENT_component.rng_adapter
+            bool "rng"
+            help
+                Enable component.rng_adapter component
+            select MCUX_COMPONENT_driver.rng
+            depends on MCUX_HAS_COMPONENT_driver.rng
+
+        config CONFIG_MCUX_COMPONENT_component.rnga_adapter
+            bool "rnga"
+            help
+                Enable component.rnga_adapter component
+            select MCUX_COMPONENT_driver.rnga
+            depends on MCUX_HAS_COMPONENT_driver.rnga
+
+        config MCUX_COMPONENT_component.trng_adapter
+            bool "trng"
+            help
+                Enable component.trng_adapter component
+            select MCUX_COMPONENT_driver.trng
+            depends on MCUX_HAS_COMPONENT_driver.trng
+
+        config MCUX_COMPONENT_component.JNrng_adapter
+            bool "JNrng"
+            help
+                Enable component.JNrng_adapter component
+            select MCUX_COMPONENT_driver.jn_rng
+            depends on MCUX_HAS_COMPONENT_driver.jn_rng
+
+        config MCUX_COMPONENT_component.ele_trng_adapter
+            bool "ele trng"
+            help
+                Enable component.ele_trng_adapter component
+            select MCUX_COMPONENT_middleware.secure-subsystem
+            select MCUX_COMPONENT_middleware.secure-subsystem.elemu.port_kw45_k4w1
+            depends on MCUX_HAS_COMPONENT_driver.elemu
+            
+        config MCUX_COMPONENT_component.software_rng_adapter
+            bool "software_rng"
+            help
+                Enable component.software_rng_adapter component
+    endchoice
+endif

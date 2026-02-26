@@ -1,0 +1,35 @@
+# Clock controller driver configuration options
+
+# Copyright (c) 2015 Intel Corporation
+# Copyright 2025 NXP
+# SPDX-License-Identifier: Apache-2.0
+
+#
+# Clock controller drivers
+#
+
+rsource "Kconfig.gen_hal"
+
+menuconfig CLOCK_CONTROL
+	bool "Clock controller drivers"
+	select MCUX_COMPONENT_component.gen_hal.clock_control
+	help
+	  Enable support for hardware clock controller. Such hardware can
+	  provide clock for other subsystem, and thus can be also used for
+	  power efficiency by controlling their clock. Note that this has
+	  nothing to do with RTC.
+
+if CLOCK_CONTROL
+
+config CLOCK_CONTROL_INIT_PRIORITY
+	int "Clock control init priority"
+	default 50
+	help
+	  Clock control driver device initialization priority.
+
+module = CLOCK_CONTROL
+module-str = clock control
+
+rsource "Kconfig.mcux_syscon"
+
+endif  # CLOCK_CONTROL

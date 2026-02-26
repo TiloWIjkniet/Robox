@@ -1,0 +1,18 @@
+hardfault_handling:
+  section-type: application
+  contents:
+    meta_path: examples/component_examples/hardfault_handling/.
+    project-root-path: boards/${board}/component_examples/hardfault_handling/${multicore_foldername}
+    document:
+      name: hardfault_handling${core_id_suffix_name}
+      category: component_examples
+      brief: The Hardfault Handling demo is used to get excaption handling log. By
+        default, exception handling module will overwrite the following ISR as the
+        reference. "NMI_Handler, HardFault_Handler, MemManage_Handler, BusFault_Handler,
+        UsageFault_Handler". The users can refer to these ISRs to have their owner
+        ISRs to output the stack frame information.
+      example_readme:
+      - examples/component_examples/hardfault_handling/readme.md
+      - ${board_root}/${board}/component_examples/hardfault_handling/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

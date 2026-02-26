@@ -1,0 +1,19 @@
+vref_example:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/vref
+    project-root-path: boards/${board}/driver_examples/vref/${multicore_foldername}
+    document:
+      name: vref_example${core_id_suffix_name}
+      category: driver_examples/vref
+      brief: In this example, the adc16 module is initiealized and used to measure
+        the VREF output voltage. So, it cannot use interal VREF as the reference voltage.
+        Then, user should configure the VREF output pin as the ADC16's sample input.
+        When running the project, it will firstly measure the VREF output voltage
+        within the default (factory) trim value. Then, it will measure the VREF output
+        voltage under different trim value.
+      example_readme:
+      - examples/driver_examples/vref/readme.md
+      - ${board_root}/${board}/driver_examples/vref/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

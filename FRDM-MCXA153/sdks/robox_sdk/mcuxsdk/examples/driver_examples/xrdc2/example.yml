@@ -1,0 +1,16 @@
+xrdc2:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/xrdc2
+    project-root-path: boards/${board}/driver_examples/xrdc2/${multicore_foldername}
+    document:
+      name: xrdc2${core_id_suffix_name}
+      category: driver_examples/xrdc2
+      brief: The xrdc2 example shows how to control the memory and peripheral accesspolicy
+        using XRDC.In this example, one peripheral and a memory region are set to
+        unaccessible, thenthe hardfault occurs.
+      example_readme:
+      - examples/driver_examples/xrdc2/readme.md
+      - ${board_root}/${board}/driver_examples/xrdc2/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

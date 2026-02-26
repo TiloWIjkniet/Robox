@@ -1,0 +1,16 @@
+easrc_m2m_polling:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/easrc/asrc_m2m_polling
+    project-root-path: boards/${board}/driver_examples/asrc/asrc_m2m_polling/${multicore_foldername}
+    document:
+      name: easrc_m2m_polling${core_id_suffix_name}
+      category: driver_examples/asrc
+      brief: The asrc_m2m_polling example shows how to use ASRC driver with polling:In
+        this example, one ASRC instance convert audio data and store it in ram using
+        polling.
+      example_readme:
+      - examples/driver_examples/easrc/asrc_m2m_polling/readme.md
+      - ${board_root}/${board}/driver_examples/asrc/asrc_m2m_polling/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,108 @@
+manifest:
+  remotes:
+  - name: nxp
+    url-base: https://github.com/NXP
+  - name: nxp-zephyr
+    url-base: https://github.com/nxp-zephyr
+  - name: nxp-mcuxpresso
+    url-base: https://github.com/nxp-mcuxpresso
+  defaults:
+    remote: nxp-mcuxpresso
+  projects:
+  - name: bifrost
+    path: bifrost
+    remote: nxp-zephyr
+    revision: 93bb4940b6b4d156189ce7291f487229652e7880
+    west-commands: scripts/west_commands.yml
+    groups:
+    - bifrost
+    userdata:
+      track_branch: main
+      branch_flow: false
+  - name: core
+    path: mcuxsdk/
+    repo-path: mcuxsdk-core
+    revision: 4e24c99227fc2b6995ada9ea2ebcbfd4857b9f6c
+    west-commands: scripts/west_commands.yml
+    groups:
+    - core
+    - ble_nxp
+    userdata:
+      track_branch: release/25.12.00
+      branch_flow: true
+      display_name: Peripheral Driver
+      description: Drivers for common use cases of hardware peripherals, simplifying
+        access and integration.
+  - name: CMSIS
+    repo-path: mcu-sdk-cmsis
+    path: mcuxsdk/arch/arm/CMSIS
+    revision: dc8b75b360fce9c864a12f1ccc54172e0c733805
+    groups:
+    - core
+    - ble_nxp
+    userdata:
+      track_branch: mcux_main
+      branch_flow: false
+      display_name: CMSIS
+      description: Vendor-independent hardware abstraction layer for microcontrollers
+        that are based on Arm Cortex processors, distributed by ARM.
+  - name: mcux-soc-svd
+    path: mcuxsdk/svd
+    revision: 84f6085811d78f85414b8ccdb6af3b76473da440
+    groups:
+    - optional
+    userdata:
+      track_branch: main
+      branch_flow: false
+      display_name: Device SVD
+      description: System View Description (SVD) files for NXP MCU devices, providing
+        detailed peripheral register definitions
+  - name: mcu-sdk-examples
+    revision: 8bbe2c59cf419ea0222fd5309756a07483267c80
+    repo-path: mcuxsdk-examples
+    path: mcuxsdk/examples
+    groups:
+    - examples
+    - ble_nxp
+    userdata:
+      track_branch: release/25.12.00
+      branch_flow: true
+      display_name: Out-of-box Examples
+      description: Out-of-box examples demonstrating peripheral driver usage and middleware
+        integration.
+  - name: mcu-sdk-components
+    repo-path: mcux-component
+    revision: 32db83a295aeed927c0914575d99f64dced771cc
+    path: mcuxsdk/components
+    groups:
+    - components
+    - ble_nxp
+    userdata:
+      track_branch: release/25.12.00
+      branch_flow: true
+      display_name: Components and Board Peripheral Drivers
+      description: NXP MCU SDK components and board-specific peripheral driver libraries
+  - name: mcu-sdk-doc
+    repo-path: mcuxsdk-doc
+    revision: e3d810a0f8e522c99a4cbe08ca5b03a5da0d0762
+    path: mcuxsdk/docs
+    west-commands: scripts/west_commands.yml
+    groups:
+    - doc
+    userdata:
+      track_branch: main
+      branch_flow: false
+      display_name: Documentation
+      description: Documentation for NXP MCUXpresso SDK, providing comprehensive reference
+        materials
+  - name: mcuxsdk-tool-data
+    revision: db0156045af52fb6935d204618568d6cf975f72a
+    path: mcuxsdk/tool_data
+    groups:
+    - core
+    userdata:
+      track_branch: main
+      branch_flow: false
+      display_name: SDK Tool Data
+      description: Additional tooling and configuration data for NXP MCU SDK development
+        environment

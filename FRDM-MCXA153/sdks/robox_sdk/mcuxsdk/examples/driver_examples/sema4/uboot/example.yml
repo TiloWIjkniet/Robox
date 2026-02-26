@@ -1,0 +1,17 @@
+sema4_uboot:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/sema4/uboot
+    project-root-path: boards/${board}/driver_examples/sema4/uboot/${multicore_foldername}
+    document:
+      name: sema4_uboot${core_id_suffix_name}
+      category: driver_examples/sema4
+      brief: The sema4 uboot example shows how to use SEMA4 driver to lock and unlock
+        a sema gate,the notification IRQ is also demonstrated in this example.This
+        example should work together with uboot. This example runs on Cortex-M core,the
+        uboot runs on the Cortex-A core.
+      example_readme:
+      - examples/driver_examples/sema4/uboot/readme.md
+      - ${board_root}/${board}/driver_examples/sema4/uboot/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

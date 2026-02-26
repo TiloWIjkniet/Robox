@@ -1,0 +1,16 @@
+irq:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/irq
+    project-root-path: boards/${board}/driver_examples/irq/${multicore_foldername}
+    document:
+      name: irq${core_id_suffix_name}
+      category: driver_examples/irq
+      brief: The IRQ Example project is a demonstration program that uses the MCUXpresso
+        SDK software to useIRQ pin interrupt.The example uses the IRQ pin to generate
+        a falling edge interrupt to show the example.
+      example_readme:
+      - examples/driver_examples/irq/readme.md
+      - ${board_root}/${board}/driver_examples/irq/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

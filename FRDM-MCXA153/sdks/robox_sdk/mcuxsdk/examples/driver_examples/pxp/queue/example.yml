@@ -1,0 +1,17 @@
+pxp_queue:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pxp/queue
+    project-root-path: boards/${board}/driver_examples/pxp/queue/${multicore_foldername}
+    document:
+      name: pxp_queue${core_id_suffix_name}
+      category: driver_examples/pxp
+      brief: The PXP queue project shows how to use the PXP command queue. This exampleuse
+        the command queue to rotate the process surface. If this exampleruns correctly,
+        you will see a square with three color(red, green and blue).The rotate degree
+        is changing.
+      example_readme:
+      - examples/driver_examples/pxp/queue/readme.md
+      - ${board_root}/${board}/driver_examples/pxp/queue/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

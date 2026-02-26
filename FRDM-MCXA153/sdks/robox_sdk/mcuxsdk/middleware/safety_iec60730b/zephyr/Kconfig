@@ -1,0 +1,179 @@
+# Copyright 2025 NXP
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig IEC60730B
+    bool "Safety IEC60730B test library"
+    help
+      Enable the Safety IEC60730B test library.
+
+if IEC60730B
+
+    config IEC60730B_TEST_CPU_REG
+        bool "IEC60730B CPU registers test routines"
+        default y
+        help
+          Enable CPU register test routines for the IEC60730B safety library.
+          This test verifies the integrity of CPU core registers by
+          writing test patterns and reading them back to detect
+          stuck-at faults and other register-related failures.
+
+    config IEC60730B_TEST_CPU_REG_FPU
+        bool "IEC60730B FPU registers test routines"
+        default y
+        depends on IEC60730B_TEST_CPU_REG && CPU_HAS_FPU
+        select FPU
+        help
+          Enable Floating Point Unit (FPU) register test routines for
+          the IEC60730B safety library. This test verifies the integrity of
+          FPU registers by writing test patterns and reading them back
+          to detect stuck-at faults in floating point registers.
+          Requires FPU hardware support.
+
+    config IEC60730B_TEST_CPU_REG_DSP
+        bool "IEC60730B DSP registers test routines"
+        default y
+        depends on IEC60730B_TEST_CPU_REG && ARMV8_M_DSP
+        help
+          Enable Digital Signal Processing (DSP) register test routines
+          for the IEC60730B safety library. This test verifies the
+          integrity of DSP extension registers by writing test patterns
+          and reading them back to detect stuck-at faults in DSP
+          registers. Only available on ARMv8-M processors with DSP
+          extension support.
+
+    config IEC60730B_TEST_CPU_REG_TZ
+        bool "IEC60730B Trust Zone registers test routines"
+        default y
+        depends on IEC60730B_TEST_CPU_REG && ARM_TRUSTZONE_M
+        help
+          Enable TrustZone register test routines for the IEC60730B safety library.
+          This test verifies the integrity of TrustZone
+          security extension registers by writing test patterns and
+          reading them back to detect stuck-at faults in security-
+          related registers. Only available on ARM processors with
+          TrustZone-M support.
+
+    config IEC60730B_TEST_PC
+        bool "IEC60730B Program Counter test routines"
+        default y
+        help
+          Enable Program Counter test routines for the IEC60730B safety library.
+          The PC test verifies the proper execution flow and detects program counter
+          corruption or unexpected jumps in code execution.
+
+    config IEC60730B_TEST_RAM
+        bool "IEC60730B RAM test routines"
+        default y
+        help
+          Enable RAM test routines for the IEC60730B safety library.
+          The RAM test verifies the integrity of system memory using various
+          test patterns and algorithms to detect memory faults.
+
+    config IEC60730B_TEST_FLASH
+        bool "IEC60730B Flash Memory test routines"
+        default y
+        help
+          Enable flash memory test routines for the IEC60730B safety library.
+          This test verifies the integrity of flash memory contents
+          using CRC methods.
+
+    if IEC60730B_TEST_FLASH
+
+    choice IEC60730B_TEST_FLASH_CRC
+        prompt "CRC Algorithm Type"
+        default IEC60730B_TEST_FLASH_CRC16 if CPU_CORTEX_M0PLUS
+        default IEC60730B_TEST_FLASH_CRC32
+        help
+          Select the CRC algorithm type for flash memory integrity testing.
+          Different CRC types provide different levels of error detection
+          capability and performance characteristics.
+
+    config IEC60730B_TEST_FLASH_CRC16
+        bool "CRC-16"
+        help
+          16-bit CRC algorithm (CCITT - 0x1021).
+
+    config IEC60730B_TEST_FLASH_CRC32
+        bool "CRC-32"
+        help
+          32-bit CRC algorithm (MPEG-2 - 0x04C11DB7).
+
+    endchoice
+
+    config IEC60730B_TEST_FLASH_CRC_SEED
+        hex "CRC seed value for flash test"
+        default 0xFFFFFFFF
+        help
+          Initial seed value for CRC calculation.
+          All 0xFF is standard for most CRC implementations.
+          Must match the seed used when pre-calculating the
+          expected CRC value.
+
+    endif #IEC60730B_TEST_FLASH
+
+    config IEC60730B_TEST_STACK
+        bool "IEC60730B Stack Overflow test routines"
+        default y
+        help
+          Enable stack overflow test routines for the IEC60730B safety library.
+          This test monitors stack usage and detects stack overflow conditions
+          to ensure system safety and reliability.
+
+    config IEC60730B_TEST_AIO
+        bool "IEC60730B Analog Input/Output test routines"
+        default y
+        help
+          Enable Analog Input/Output (AIO) test routines for the IEC60730B safety library.
+          This test verifies the integrity of analog input and
+          output channels by checking ADC/DAC functionality, reference
+          voltages, and signal path integrity. The test helps detect
+          stuck-at faults, gain errors, and offset errors in analog
+          signal processing circuits.
+
+    config IEC60730B_TEST_CLOCK
+        bool "IEC60730B Clock Frequency test routines"
+        default y
+        help
+          Enable clock frequency test routines for the IEC60730B safety library.
+          This test verifies the integrity and accuracy of system clocks
+          by monitoring clock frequency, detecting clock failures, and
+          ensuring proper timing for safety-critical operations. The test
+          can detect clock source failures, PLL lock issues, and frequency
+          drift that could affect system timing requirements.
+
+    config IEC60730B_TEST_DIO
+        bool "IEC60730B Digital Input/Output test routines"
+        default y
+        help
+          Enable Digital Input/Output (DIO) test routines for the IEC60730B safety library.
+          This test verifies the integrity of digital I/O pins
+          by checking input/output functionality, pin state detection, and
+          proper signal levels. The test can detect stuck-at faults,
+          short circuits, open circuits, and other GPIO-related failures
+          that could affect safety-critical I/O operations. Includes both
+          basic DIO tests and extended DIO functionality tests.
+
+    config IEC60730B_TEST_TSI
+        bool "IEC60730B Touch Sensing Interface test routines"
+        default y
+        help
+          Enable Touch Sensing Interface (TSI) test routines for the IEC60730B safety library.
+          This test verifies the integrity of capacitive touch
+          sensing functionality by checking electrode sensitivity, baseline
+          calibration, and touch detection accuracy. The test can detect
+          electrode failures, sensitivity drift, noise interference, and
+          other touch sensing related failures that could affect safety-
+          critical touch interface operations.
+
+    config IEC60730B_TEST_WDOG
+        bool "IEC60730B Watchdog Test routines"
+        default y
+        help
+          Enable Watchdog Timer test routines for the IEC60730B safety library.
+          This test verifies the proper operation of the watchdog timer
+          by checking timeout functionality, reset generation, and proper
+          refresh mechanisms. The test ensures that the watchdog can detect
+          software failures and generate system resets when required for
+          safety-critical applications.
+
+endif # IEC60730B

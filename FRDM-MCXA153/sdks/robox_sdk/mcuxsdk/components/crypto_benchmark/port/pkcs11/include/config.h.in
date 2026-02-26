@@ -1,0 +1,19 @@
+/*
+ * Copyright 2025 NXP
+ * All rights reserved.
+ *
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+/**
+ * @file  config.h.in
+ * @brief Declarations for the configuration of the PKCS11 layer.
+ */
+
+#ifndef __CB_PKCS11_PORT_CONFIG_H__
+#define __CB_PKCS11_PORT_CONFIG_H__
+
+#define DEFAULT_PKCS11_LIB "@DEFAULT_PKCS11_LIB@"
+
+#endif /* __CB_PKCS11_PORT_CONFIG_H__ */
+

@@ -1,0 +1,23 @@
+manifest:
+  remotes:
+  - name: nxp
+    url-base: https://github.com/NXP
+  - name: nxp-zephyr
+    url-base: https://github.com/nxp-zephyr
+  - name: nxp-mcuxpresso
+    url-base: https://github.com/nxp-mcuxpresso
+  defaults:
+    remote: nxp-mcuxpresso
+  projects:
+  - name: mcux-devices-mcx
+    revision: 143c345eaa07b259ab93b06243fc5b64ab09552b
+    path: mcuxsdk/devices/MCX
+    groups:
+    - core
+    - ble_nxp
+    userdata:
+      track_branch: release/25.12.00
+      branch_flow: true
+      display_name: MCX Series Device Files
+      description: Device system files, template files, IDE related startup and linker
+        files.

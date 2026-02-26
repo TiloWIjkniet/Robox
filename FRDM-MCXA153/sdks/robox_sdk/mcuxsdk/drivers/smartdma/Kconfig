@@ -1,0 +1,27 @@
+# Copyright 2024-2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_HAS_COMPONENT_driver.smartdma
+    bool
+    default y if MCUX_HW_IP_DriverType_SMARTDMA
+
+config MCUX_COMPONENT_driver.smartdma_rt500
+    bool
+    depends on MCUX_HW_IP_DriverType_SMARTDMA_RT500
+
+config MCUX_COMPONENT_driver.smartdma_mcxn
+    bool
+    depends on MCUX_HW_IP_DriverType_SMARTDMA_MCXN
+
+config MCUX_COMPONENT_driver.smartdma_mcxa
+    bool
+    depends on MCUX_HW_IP_DriverType_SMARTDMA_MCXA
+
+config MCUX_COMPONENT_driver.smartdma
+    bool "smartdma"
+    select MCUX_COMPONENT_driver.common
+    depends on MCUX_HAS_COMPONENT_driver.smartdma
+    select MCUX_COMPONENT_driver.smartdma_rt500 if MCUX_HW_IP_DriverType_SMARTDMA_RT500
+    select MCUX_COMPONENT_driver.smartdma_mcxn if MCUX_HW_IP_DriverType_SMARTDMA_MCXN
+    select MCUX_COMPONENT_driver.smartdma_mcxa if MCUX_HW_IP_DriverType_SMARTDMA_MCXA

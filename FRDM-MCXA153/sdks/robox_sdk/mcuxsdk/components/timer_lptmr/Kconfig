@@ -1,0 +1,6 @@
+# Copyright 2024 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_COMPONENT_driver.timer_lptmr
+    bool "timer_lptmr"
+    select MCUX_COMPONENT_driver.lptmr

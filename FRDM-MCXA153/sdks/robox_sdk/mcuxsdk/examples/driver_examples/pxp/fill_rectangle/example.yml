@@ -1,0 +1,16 @@
+pxp_fill_rectangle:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pxp/fill_rectangle
+    project-root-path: boards/${board}/driver_examples/pxp/fill_rectangle/${multicore_foldername}
+    document:
+      name: pxp_fill_rectangle${core_id_suffix_name}
+      category: driver_examples/pxp
+      brief: The PXP fill rectangle project shows how to use the PXP to draw a solid
+        rectangle with configured color. If this example runs correctly, you will
+        see the panel filled with red, green and blue in a row.
+      example_readme:
+      - examples/driver_examples/pxp/fill_rectangle/readme.md
+      - ${board_root}/${board}/driver_examples/pxp/fill_rectangle/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

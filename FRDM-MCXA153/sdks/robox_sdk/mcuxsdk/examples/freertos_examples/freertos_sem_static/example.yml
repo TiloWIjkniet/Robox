@@ -1,0 +1,22 @@
+freertos_sem_static:
+  section-type: application
+  contents:
+    meta_path: examples/freertos_examples/freertos_sem_static
+    project-root-path: boards/${board}/freertos_examples/freertos_sem_static/${multicore_foldername}
+    document:
+      name: freertos_sem_static${core_id_suffix_name}
+      category: freertos_examples
+      brief: This document explains the freertos_sem example, what to expect when
+        running it and a briefintroduction to the API. The freertos_sem example code
+        shows how semaphores works. Two differenttasks are synchronized in bilateral
+        rendezvous model.The example uses four tasks. One producer_task and three
+        consumer_tasks. The producer_task starts bycreating of two semaphores (xSemaphore_producer
+        and xSemaphore_consumer). These semaphores controlaccess to virtual item.
+        The synchronization is based on bilateral rendezvous pattern. Both ofconsumer
+        and producer must be prepared to enable transaction.
+      example_readme:
+      - examples/freertos_examples/freertos_sem_static/readme.md
+      - ${board_root}/${board}/freertos_examples/freertos_sem_static/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

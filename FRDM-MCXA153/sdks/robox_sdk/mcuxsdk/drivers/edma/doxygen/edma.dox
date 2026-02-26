@@ -1,0 +1,13 @@
+
+
+/*!
+@defgroup edma eDMA: Enhanced Direct Memory Access (eDMA) Controller Driver
+@details The MCUXpresso SDK provides a peripheral driver for the enhanced Direct Memory Access (eDMA)
+         of MCUXpresso SDK devices.
+
+# Typical use case{#EDMATypicalUseCase}
+
+## eDMA Operation{#EDMAOper}
+
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/edma*/
+

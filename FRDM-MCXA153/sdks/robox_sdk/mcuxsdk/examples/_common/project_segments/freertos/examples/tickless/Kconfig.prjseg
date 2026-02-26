@@ -1,0 +1,122 @@
+#
+# Copyright 2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+config MCUX_PRJSEG_ENABLE_FREERTOS_TICKLESS
+    bool "Enable FreeRTOS Tickless Project Segments"
+    default n
+    help
+      Use this symbol to Enable FreeRTOS Tickless Project Segments
+
+config MCUX_PRJSEG_FREERTOS_TICKLESS_HAL
+    bool "Unified Tickless HAL Implementation"
+    default y if MCUX_PRJSEG_ENABLE_FREERTOS_TICKLESS
+    help
+      Unified Tickless HAL Implementation for FreeRTOS
+
+# Timer selection
+choice MCUX_PRJSEG_TICKLESS_TIMER
+    prompt "FreeRTOS Tickless Timer Selection"
+    depends on MCUX_PRJSEG_FREERTOS_TICKLESS_HAL
+    default MCUX_PRJSEG_TICKLESS_TIMER_GPT if MCUX_HAS_COMPONENT_driver.gpt
+    default MCUX_PRJSEG_TICKLESS_TIMER_LPTMR if MCUX_HAS_COMPONENT_driver.lptmr
+    default MCUX_PRJSEG_TICKLESS_TIMER_OSTIMER if MCUX_HAS_COMPONENT_driver.ostimer
+    default MCUX_PRJSEG_TICKLESS_TIMER_RTC_LPC if MCUX_HAS_COMPONENT_driver.lpc_rtc
+    default MCUX_PRJSEG_TICKLESS_TIMER_RTC_JDP if MCUX_HAS_COMPONENT_driver.rtc_jdp
+    default MCUX_PRJSEG_TICKLESS_TIMER_RTC if MCUX_HAS_COMPONENT_driver.rtc
+    default MCUX_PRJSEG_TICKLESS_TIMER_NONE
+    help
+      Select which timer peripheral to use for FreeRTOS tickless mode
+
+config MCUX_PRJSEG_TICKLESS_TIMER_NONE
+    bool "None (GPIO only)"
+    help
+      No timer selected - only GPIO functionality available
+
+config MCUX_PRJSEG_TICKLESS_TIMER_GPT
+    bool "GPT"
+    select MCUX_COMPONENT_driver.gpt
+    help
+      Use General Purpose Timer (GPT) for tickless mode
+
+config MCUX_PRJSEG_TICKLESS_TIMER_LPTMR
+    bool "LPTMR"
+    select MCUX_COMPONENT_driver.lptmr
+    help
+      Use Low Power Timer (LPTMR) for tickless mode
+
+config MCUX_PRJSEG_TICKLESS_TIMER_OSTIMER
+    bool "OSTIMER"
+    select MCUX_COMPONENT_driver.ostimer
+    help
+      Use Low Power Timer (OSTIMER) for tickless mode
+
+config MCUX_PRJSEG_TICKLESS_TIMER_RTC
+    bool "RTC"
+    select MCUX_COMPONENT_driver.lpc_rtc
+    help
+      Use Real Time Clock (RTC) for tickless mode
+
+config MCUX_PRJSEG_TICKLESS_TIMER_RTC_JDP
+    bool "RTC JDP"
+    select MCUX_COMPONENT_driver.rtc_jdp
+    help
+      Use Real Time Clock (RTC) for tickless mode
+
+config MCUX_PRJSEG_TICKLESS_TIMER_RTC_LPC
+    bool "RTC LPC"
+    select MCUX_COMPONENT_driver.lpc_rtc
+    help
+      Use Real Time Clock (RTC) for tickless mode
+
+endchoice
+
+# GPIO/Button interface selection
+choice MCUX_PRJSEG_TICKLESS_GPIO
+    prompt "FreeRTOS Tickless GPIO/Button Interface"
+    depends on MCUX_PRJSEG_FREERTOS_TICKLESS_HAL
+    default MCUX_PRJSEG_TICKLESS_GPIO_RGPIO if MCUX_HAS_COMPONENT_driver.rgpio
+    default MCUX_PRJSEG_TICKLESS_GPIO_IGPIO if MCUX_HAS_COMPONENT_driver.igpio
+    default MCUX_PRJSEG_TICKLESS_GPIO_SIUL2 if MCUX_HAS_COMPONENT_driver.siul2
+    default MCUX_PRJSEG_TICKLESS_GPIO_LPC if MCUX_HAS_COMPONENT_driver.lpc_gpio
+    default MCUX_PRJSEG_TICKLESS_GPIO_STANDARD if MCUX_HAS_COMPONENT_driver.gpio
+    help
+      Select which GPIO peripheral to use for button input
+
+config MCUX_PRJSEG_TICKLESS_GPIO_STANDARD
+    bool "Standard GPIO"
+    select MCUX_COMPONENT_driver.gpio
+    select MCUX_COMPONENT_driver.inputmux if MCUX_HAS_COMPONENT_driver.inputmux
+    select MCUX_COMPONENT_driver.pint if MCUX_HAS_COMPONENT_driver.pint
+    help
+      Use standard GPIO interface
+
+config MCUX_PRJSEG_TICKLESS_GPIO_IGPIO
+    bool "iMX GPIO"
+    select MCUX_COMPONENT_driver.igpio
+    help
+      Use iMX GPIO interface
+
+config MCUX_PRJSEG_TICKLESS_GPIO_RGPIO
+    bool "RGPIO"
+    select MCUX_COMPONENT_driver.rgpio_1
+    help
+      Use RGPIO interface
+
+config MCUX_PRJSEG_TICKLESS_GPIO_SIUL2
+    bool "SIUL2"
+    select MCUX_COMPONENT_driver.siul2
+    help
+      Use SIUL2 interface
+
+config MCUX_PRJSEG_TICKLESS_GPIO_LPC
+    bool "LPC GPIO"
+    select MCUX_COMPONENT_driver.lpc_gpio
+    select MCUX_COMPONENT_driver.inputmux
+    select MCUX_COMPONENT_driver.pint
+    help
+      Use standard LPC GPIO interface
+
+endchoice

@@ -1,0 +1,17 @@
+pin_detect_hid_mouse_freertos:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_pin_detect_hid_mouse/freertos/.
+    project-root-path: boards/${board}/usb_examples/usb_pin_detect_hid_mouse/freertos/${multicore_foldername}
+    document:
+      name: pin_detect_hid_mouse_freertos${core_id_suffix_name}
+      category: usb_examples
+      brief: This pin detect HID example supports the mouse device. The application
+        prints the operation information when the mouse device is attached or plugged
+        in to the PC host.
+      example_readme:
+      - examples/usb_examples/usb_pin_detect_hid_mouse/readme.md
+      - ${board_root}/${board}/usb_examples/usb_pin_detect_hid_mouse/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_pin_detect_hid_mouse/pin_detect.jpg
+  boards: {}

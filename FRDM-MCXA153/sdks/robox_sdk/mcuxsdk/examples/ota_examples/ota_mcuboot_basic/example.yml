@@ -1,0 +1,45 @@
+ota_mcuboot_basic:
+  section-type: application
+  contents:
+    meta_path: examples/ota_examples/ota_mcuboot_basic
+    project-root-path: boards/${board}/ota_examples/ota_mcuboot_basic/${multicore_foldername}
+    document:
+      name: ota_mcuboot_basic${core_id_suffix_name}
+      category: ota_examples
+      brief: This projects gives an example of a basic application bootable by MCUBoot
+      example_readme:
+      - examples/ota_examples/ota_mcuboot_basic/readme.md
+      - ${board_root}/${board}/ota_examples/ota_mcuboot_basic/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153:
+    - -mdk@debug
+    - -mdk@release
+ota_mcuboot_basic@mcxn_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/mcxn/ota_mcuboot_basic.conf
+  boards: {}
+ota_mcuboot_basic@rw61x_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/rw61x/ota_mcuboot_basic.conf
+  boards: {}
+ota_mcuboot_basic@rt1064_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/rt1064/ota_mcuboot_basic.conf
+  boards: {}
+ota_mcuboot_basic@rt10xx_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/rt10xx/ota_mcuboot_basic.conf
+  boards: {}

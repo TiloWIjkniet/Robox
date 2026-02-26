@@ -1,0 +1,20 @@
+csi_fragment_gray:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/csi/fragment_gray
+    project-root-path: boards/${board}/driver_examples/csi/fragment_gray/${multicore_foldername}
+    document:
+      name: csi_fragment_gray${core_id_suffix_name}
+      category: driver_examples/csi
+      brief: The csi_fragment_gray project shows how to use CSI driver fragment mode
+        functions. In this example, the camera input format is YUV422, the CSI driver
+        extracts the Y element of a specific window (gray image). To show gray image,
+        ELCDIF LUT is used. If this example runs successfully, you will see a gray
+        image window in the middle of the LCD panel. The image is updated each time
+        input any value from debug console. Please note that only one frame buffer
+        is used in this example, so there might be screen tearing.
+      example_readme:
+      - examples/driver_examples/csi/fragment_gray/readme.md
+      - ${board_root}/${board}/driver_examples/csi/fragment_gray/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

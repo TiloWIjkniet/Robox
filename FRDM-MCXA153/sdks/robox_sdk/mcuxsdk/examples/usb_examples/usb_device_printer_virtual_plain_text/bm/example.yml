@@ -1,0 +1,29 @@
+dev_printer_virtual_plain_text_bm:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_device_printer_virtual_plain_text/bm/.
+    project-root-path: boards/${board}/usb_examples/usb_device_printer_virtual_plain_text/bm/${multicore_foldername}
+    document:
+      name: dev_printer_virtual_plain_text_bm${core_id_suffix_name}
+      category: usb_examples
+      brief: The USB virtual printer application is a simple application to demonstrate
+        a virtual printer functionality.Because there is no printer language parsing,
+        the received raw data is output directly in the debug console.As a result,
+        only plain text is suitable for testing. For other printer language support,
+        such as postscript, implement the corresponding parser.
+      example_readme:
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/readme.md
+      - ${board_root}/${board}/usb_examples/usb_device_printer_virtual_plain_text/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_add_printer_1.jpg
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_add_printer_2.jpg
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_dev&printer.jpg
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_devmgmt.jpg
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_devmgmt_install1.jpg
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_devmgmt_win10.jpg
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_example_text.jpg
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_example_text_output.jpg
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_find_port.jpg
+      - examples/usb_examples/usb_device_printer_virtual_plain_text/device_printer_install_driver_auto.jpg
+  boards:
+    frdmmcxa153: []

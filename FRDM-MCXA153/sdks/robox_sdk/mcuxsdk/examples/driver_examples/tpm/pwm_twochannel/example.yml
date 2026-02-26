@@ -1,0 +1,18 @@
+tpm_pwm_twochannel:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/tpm/pwm_twochannel
+    project-root-path: boards/${board}/driver_examples/tpm/pwm_twochannel/${multicore_foldername}
+    document:
+      name: tpm_pwm_twochannel${core_id_suffix_name}
+      category: driver_examples/tpm
+      brief: The TPM project is a simple demonstration program of the SDK TPM driver.
+        It sets up the TPMhardware block to output PWM signals on two TPM channels.
+        The PWM dutycycle on both channelsis manually updated. On boards that have
+        an LED connected to the TPM pins, the user will seea change in LED brightness
+        if user enter different values.
+      example_readme:
+      - examples/driver_examples/tpm/pwm_twochannel/readme.md
+      - ${board_root}/${board}/driver_examples/tpm/pwm_twochannel/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}
