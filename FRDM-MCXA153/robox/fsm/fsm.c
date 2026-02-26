@@ -14,6 +14,7 @@ const char* eventNames[] = { "E_INIT_COMPLETE", "E_START_DEV", "E_EXIT_DEV",
                              "E_START_GAME", "E_ROOM_COMPLETED", "E_ROOM_TIMEOUT",
                              "E_LAST_ROOM_COMPLETED", "E_ROOM_LOOP_TO_LAST",
                              "E_GAME_COMPLETED", "E_GAME_TIMEOUT", "E_RESET_COMPLETE" };
+#define DEBUG_PRINT(...)  printf(__VA_ARGS__)
 #endif
 
 
@@ -42,7 +43,7 @@ uint8_t numOfTransitions = 0;
 void FSM_addState(const state_t state, const state_funcs_t *funcs)
 {
     #if DEBUG_FMS
-        printf("[DEBUG_FSM] State added, Event %s\n",stateNames[state]);
+        DEBUG_PRINT("[DEBUG_FSM] State added, Event %s\n",stateNames[state]);
     #endif
     if(numOfStates > MAX_STATES) return;
     memcpy(&state_funcs[state], funcs, sizeof(state_funcs_t));
@@ -55,7 +56,7 @@ void FSM_addState(const state_t state, const state_funcs_t *funcs)
 void FSM_addTransition(const transition_t *transition)
 {
     #if DEBUG_FMS
-        printf("[DEBUG_FSM] Transition added, From %-30s, Event %-35s, To %-30s\n",stateNames[transitions->from],eventNames[transitions->event],stateNames[transitions->to]);
+        DEBUG_PRINT("[DEBUG_FSM] Transition added, From %-30s, Event %-35s, To %-30s\n",stateNames[transitions->from],eventNames[transitions->event],stateNames[transitions->to]);
     #endif
     if(numOfTransitions > MAX_TRANSITIONS) return;
     memcpy(&transitions, transition, sizeof(transition_t));
@@ -143,7 +144,7 @@ void FSM_runStateMachine(void)
         state = FSM_eventHandler(state, event);
 
         #if DEBUG_FMS
-            printf("[DEBUG_FSM] Triggert event %s vanuit state %s\n\n", eventNames[event], stateNames[state]);
+            DEBUG_PRINT("[DEBUG_FSM] Triggert event %s vanuit state %s\n\n", eventNames[event], stateNames[state]);
         #endif
     }
 

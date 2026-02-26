@@ -1,6 +1,22 @@
 #include <stdint.h>
 #include <string.h>
 #include <fsm.h>
+
+
+//Debug options 
+#define DEBUG_DISPLAY 1
+#if DEBUG_DISPLAY
+#include <stdio.h>
+#endif
+#define DEBUG_USER_INPUT 1
+#if DEBUG_USER_INPUT
+#include <stdio.h>
+#endif
+#define DEBUG_TIME 1
+#if DEBUG_TIME
+#include <stdio.h>
+#endif
+
 #define MAX_RUNS 20
 #define MAX_ROOMS 20
 #define MAX_CHAR_IN_STRING 50
@@ -227,12 +243,23 @@ bool displayLoadTemplate(displayTemplate_t displayTemplate, uint32_t minDisplayT
     static displayTemplate_t lastDisplayTemplate = NON;
 
     uint32_t now = 0/*millis()*/; //moet nog;
-    if(now - lastUpdateDisplayMillis < minDisplayTime) return false;
+
+    #if DEBUG_DISPLAY
+        printf("[DEBUG_DISPLAY] Template %d displayed at t=%u\n", displayTemplate, now);
+    #endif
+
+    if(!forceDisplay && now - lastUpdateDisplayMillis < minDisplayTime) return false;
+    
     if(lastDisplayTemplate == displayTemplate) return true;
 
     lastUpdateDisplayMillis = now;
     lastDisplayTemplate = displayTemplate;
     printf(displayTemplates[displayTemplate]); // moet nog
+
+    #if DEBUG_DISPLAY
+        printf("[DEBUG_DISPLAY] text on terminal: %s\n", displayTemplates[displayTemplate]); 
+    #endif
+
     return true;
 }
 
@@ -327,8 +354,18 @@ bool isInCorrectRoom(char *beconIp)
 bool isAnswerCorrect(char *userInput)
 {
     hasNewAnswer  = false;
+
+    #if DEBUG_USER_INPUT
     for(int i = 0; i < MAX_ANSWERS; i++)
     {
+        printf("[DEBUG_USER_INPUT] %s %s %s\n", userInput strcmp(roomsSettings[roomIndex].answers[i], userInput) == 0? "==": "!=", roomsSettings[roomIndex].answers[i])
+    }
+    #endif
+
+
+    for(int i = 0; i < MAX_ANSWERS; i++)
+    {
+        
         if(strcmp(roomsSettings[roomIndex].answers[i], userInput) == 0) return true;
     }
     return false;
@@ -346,6 +383,10 @@ bool isAnswerCorrect(char *userInput)
 bool isWithinTimeLimit(void)
 {
     uint32_t elapsedTime = getElapsedTime(); 
+
+    #if DEBUG_TIME
+        printf("[DEBUG_TIME] Er is: %d over", elapsedTime)
+    #endif
     return  (elapsedTime  <= globalSettings.totalTime) || (globalSettings.difficulty <= 2);
 }
 
@@ -356,33 +397,39 @@ bool isWithinTimeLimit(void)
  */
 uint32_t getWrongAnswerPenalty()
 {
+    uint32_t timePanalty = 0;
     switch (globalSettings.difficulty)
     {
         case WRONG_ANSWER_MINUS_1MIN_CONTINUE:
-            return 60 * 1000; // 1 minuut
+            timePanalty = 60 * 1000; // 1 minuut
             break;
 
         case WRONG_ANSWER_MINUS_5MIN_CONTINUE:
-            return 5 * 60 * 1000; // 5 minuten
+            timePanalty = 5 * 60 * 1000; // 5 minuten
             break;
 
         case WRONG_ANSWER_MINUS_5MIN_STOP:
-            return 5 * 60 * 1000; // 5 minuten, spel stopt bij 0
+            timePanalty = 5 * 60 * 1000; // 5 minuten, spel stopt bij 0
             break;
 
         case WRONG_ANSWER_MINUS_15MIN_STOP:
-            return 15 * 60 * 1000; // 15 minuten, spel stopt bij 0
+            timePanalty = 15 * 60 * 1000; // 15 minuten, spel stopt bij 0
             break;
 
         case WRONG_ANSWER_HALF_REMAINING_STOP:
         
             uint32_t elapsedTime = 0 - startGameMillis; // milliseconden sinds start
             uint32_t remainingTime = (globalSettings.totalTime) - (elapsedTime + timePenaltyMillis);
-            return remainingTime / 2;
+            timePanalty = remainingTime / 2;
             break;
 
         default:
             return 0;
             break;
     }
+    #if DEBUG_TIME
+        printf("[DEBUG_TIME] De time panalty is %d", timePanalty)
+    #endif
+    return timePanalty;
+
 }
