@@ -1,0 +1,29 @@
+# Build files
+build/
+bin/
+obj/
+Debug/
+Release/
+
+# Object files
+*.o
+*.out
+*.elf
+*.axf
+*.map
+*.hex
+
+# Temporary files
+*.tmp
+*.log
+
+# VS Code
+.vscode/
+
+# Windows rommel
+Thumbs.db
+desktop.ini
+
+# Backup files
+*~
+*.bak
