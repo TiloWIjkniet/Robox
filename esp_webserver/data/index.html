@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Robox</title>
+</head>
+
+
+<body>
+
+<!--rij waar de buttons staan en zijn-->
+<div class="button-row">
+
+  <div class="robox-logo">
+  <span class="r">R</span><span class="o">o</span><span class="o2">B</span><span class="o2">o</span><span class="o2">x</span><span class="x"></span>
+  </div>
+  <button id="btn_Gegevens">Gegevens</button>
+  <button id="btn_Instellingen">Instellingen</button>
+  <button id="btn_Overige">Handleiding</button>
+  <div class="made-by-ese">
+    <span class="full-text">made by ESE</span>
+    <span class="short-text">ESE</span>
+</div>
+</div>
+
+<div id="pageInstellingen" class="page" style="display:none;">
+
+  <button id="add-btn" onclick="addItem()">➕ Toevoegen</button>
+
+  <div class="kamers-list-wrapper" >
+      <ul id="kamers-list"></ul>
+  </div>
+
+  <div class = "settings-container">
+    
+    
+    <div class = "button-holder">
+      <button id = "btnSave" class="stijlvolle-knop">Opslaan</button>
+      <span id="saveStatus"></span>
+    </div>
+    <div class = "image-Container">
+       
+      <div class="image-upload">
+        <input type="file" id="imageInput" accept="image/*">
+         <p id="ratioWarning" class="error-afbeelding">Afbeelding moet in een verhouding hebben van 2:1</p>
+        <div id="dropZone">
+        <span id="placeholder">Insert Foto</span>
+        <img id="imagePreview" src="" >
+        </div>
+      </div>
+    
+    </div>
+
+    <div class="settings" >
+    
+      <div class="kamer-settings" >
+      </div>
+      <div class="global-settings" >
+ 
+    </div>
+  </div>
+  </div>
+</div>
+
+<div id="pageGegevens" class="page" style="display:block;">
+  
+  <div id="recordingButtons" class="recording-buttons-scroll">
+    <!-- Knoppen komen hier via JS -->
+  </div>
+
+  
+  <div class = "data-page"> 
+  <!-- Chart container met canvas -->
+  <div id="chartContainer" class="chart">
+      <script src="graphic.js"></script>
+  </div>
+
+  <div id="dataa" class="data">
+    <div id="tijd_data" class="tijd-extra-data">
+      <table class="stats-table">
+        <tr><td>Totale tijd</td><td><span id="totaleTijd">0</span></td></tr>
+        <tr><td>Gemiddelde tijd</td><td><span id="gemiddeldeTijd">0</span></td></tr>
+        <tr><td>Snelste tijd</td><td><span id="snelsteTijd">0</span></td></tr>
+        <tr><td>Langste tijd</td><td><span id="langsteTijd">0</span></td></tr>
+        <tr><td>Tijd over</td><td><span id="tijdOver">0</span></td></tr>
+      </table>
+    </div>
+  
+
+    <div id="data" class="extra-data">
+      <table class="stats-table">
+        <tr><td>Geslaagd</td><td><span id="geslaagd">0</span></td></tr>
+        <tr><td>Aantal fouten</td><td><span id="aantalFouten">0</span></td></tr>
+        <tr><td>Moeilijkheid</td><td><span id="moeilijkheid">0</span></td></tr>
+        <tr><td>Bom tijd</td><td><span id="bomTijd">0</span></td></tr>
+        <tr><td>Kamers behaalt</td><td><span id="kamners">0</span></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="pageOverige" class="page" style="display:none;">
+  <h2>In ontwikkeling</h2>
+  <p>Deze pagina is nog in ontwikkeling.</p>
+</div>
+
+
+
+<!-- Scripts onderaan body -->
+<script src="script.js"></script>
+
+
+
+
+</body>
+</html>

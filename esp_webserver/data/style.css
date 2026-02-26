@@ -1,0 +1,685 @@
+/* Body & algemene styling */
+html, body 
+{
+    margin: 0;
+    height: 100%;
+    width: 100%;
+
+    overflow-x: auto;   
+    overflow-y: hidden; 
+    
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+/* Menu selection */
+.button-row 
+{
+    position: absolute;
+
+    width: 100%;
+    height: 75px;
+
+    min-width: 1050px;
+    
+    background-color: #ccc;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-around; 
+}
+
+
+.button-row button 
+{
+    position: absolute;
+   
+    width: 15%;
+    height: 100%;
+
+    min-width: 200px;
+
+    background-color: #ccc;
+
+    color: #000;
+    font-size: 175%;
+    
+    border-radius:0;
+    border: none;
+
+    cursor: pointer;
+    transition: 0.3s;          
+ 
+   
+}
+
+
+.button-row button:hover 
+{
+  background-color: #645d5d;
+  color: #ffffff;
+}
+
+.button-row button.active 
+{
+  background-color: #645d5d;
+  color: #ffffff;
+}
+
+#btn_Gegevens { left: 30%; } 
+#btn_Instellingen { left: 50%; } 
+#btn_Overige { left: 70%; }
+
+
+
+/*Alle beruikbar ruimte */
+.page 
+{
+    position: absolute;  /* absoluut tov body */
+
+    top: 75px;           /* hoogte van de button-row */
+    left: 5px;
+    right: 5px;
+    bottom: 0;           /* vult de rest van het scherm */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+}
+
+/*Gegevens pagina */
+
+.recording-buttons-scroll, .kamers-list-wrapper
+{
+    position: absolute;
+    top: 60px; 
+    bottom: 20px;    
+
+    gap: 10px;
+    width: 32.5%;          /* breedte van het knoppenveld */
+
+    min-width: 200px;
+    align-items: stretch;
+
+    overflow-y: auto;      /* scroll als er te veel knoppen zijn */
+    display: flex;
+    flex-direction: column;     
+
+    border: 2px solid #222; /* optioneel, zodat veld zichtbaar is */
+
+}
+
+.recording-buttons-scroll button, .kamers-list-wrapper button
+{
+    position: relative;        /* voor absolute positioning van emoji */
+    display: flex;
+    align-items: center;       /* verticaal centreren */
+    justify-content: center;   /* tekst horizontaal centreren */
+    height: 50px;
+    width: 100%;
+    font-size: 20px;
+    background-color: #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.data-page
+{
+    
+    position: relative;
+    height:  100%;
+    left: max(210px, 35%); ;
+    width: 65%;
+    min-width: 690px;
+
+    overflow-y: auto;
+
+}
+
+.chart 
+{
+    
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 95%;       /* vul de volledige breedte van page */
+    height: 70%;
+    min-height: 400px;
+
+}
+
+
+.recording-buttons-scroll button:hover,
+.recording-buttons-scroll button.active ,
+.kamers-list-wrapper button:hover,
+.kamers-list-wrapper button.active
+{
+    background-color: #fff;
+    color: #000;
+    border: 2px solid #222; /* optioneel, zodat veld zichtbaar is */
+}
+
+.recording-buttons-scroll .green 
+{
+  
+    color: #4CAF50; /* groen */
+}
+
+.recording-buttons-scroll .red 
+{
+    color: #F44336; /* rood */
+}
+
+
+.kamers-list-wrapper .btn-text {
+    pointer-events: none;      /* tekst niet klikbaar */
+}
+
+.delete-icon {
+    position: absolute;         /* los van de tekst */
+    right: 10px;                /* altijd rechts */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #F44336;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.delete-icon:hover {
+    transform: translateY(-50%) scale(1.5);
+}
+.data 
+{
+    position: absolute;   /* 👈 DIT is de sleutel */
+    height: auto;
+    top:  max(410px, 70% + 10px); 
+    left: 20px;
+    height: 0%; 
+    width: 95%;
+    
+    min-height: 175px;
+    font-size: max(18px, 1.6vw); 
+    color: #000000;
+    display: flex;              /* 🔑 */
+    flex-direction: row;        /* naast elkaar */
+    gap: 5%;                    /* ruimte ertussen */
+
+   
+}
+
+
+.tijd-extra-data 
+{
+    position: relative;   /* 👈 DIT is de sleutel */
+    
+    height: auto;
+  
+    width: 45%;
+}
+.extra-data 
+{
+    position: relative;   /* 👈 DIT is de sleutel */
+    height: auto;
+    width: 45%;
+} 
+.stats-table ,.settings-table
+{
+    width: 100%;
+    border-collapse: collapse;
+  
+}
+
+.stats-table td, .settings-table td
+{
+    padding: 8px 12px;
+    border-bottom: 1px solid #333;
+}
+
+.stats-table td:first-child, .settings-table tr td:first-child
+{
+    color: #aaa;        /* label */
+}
+
+.stats-table td:last-child ,.settings-table tr td:last-child
+{
+    text-align: right;
+    font-weight: bold;
+}
+
+
+
+#add-btn 
+{
+    position: relative;
+    top: 7.5px;
+    background-color: #ccc;       /* donkere basis */
+    color: #000;                  /* witte tekst */
+    border: 2px solid #555;       /* subtiele rand */
+    border-radius: 8px;           /* afgeronde hoeken */
+    padding: 10px 20px;           /* lekker groot klikvlak */
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;    /* soepele animatie */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2); /* subtiele schaduw */
+}
+
+/* Hover effect */
+#add-btn:hover {
+    background-color: #333;               /* iets lichter */
+    transform: translateY(-2px);          /* lichte “zweef” animatie */
+    box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+}
+
+/* Actieve klik */
+#add-btn:active {
+    transform: translateY(0);             /* indruk-effect */
+    box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+}
+.stijlvolle-knop
+{
+    position: relative;
+    top: 7.5px;
+    background-color: #ccc;       /* donkere basis */
+    color: #000;                  /* witte tekst */
+    border: 2px solid #555;       /* subtiele rand */
+    border-radius: 8px;           /* afgeronde hoeken */
+    padding: 10px 20px;           /* lekker groot klikvlak */
+    font-size: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;    /* soepele animatie */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2); /* subtiele schaduw */
+      font-weight: bold;
+}
+
+.button-holder
+{
+
+    width: 100%;
+    height: 80px;
+}
+
+.image-Container
+{
+
+    position: relative;
+    overflow:visible;
+   
+    aspect-ratio: 2 / 1;
+    width: clamp(690px, 80%, 1200px); /* min 690px, max 1200px, standaard 65% */
+  
+}
+
+#imagePreviewContainer 
+{
+  
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#imagePreview {
+    background-color: #ccc;
+    width: 100%;         /* past in container */
+    height: 100%;
+    object-fit: cover;   /* snijdt bij indien nodig */
+}
+#dropZone {
+ width: 100%;
+    height: 100%;
+    position: absolute;   /* maak het over de hele container */
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;           /* boven andere elementen */
+    align-items: center;       /* verticaal centreren */
+    justify-content: center;   /* horizontaal centreren */
+    padding-top: 20px;         /* schuif naar beneden */
+    
+}
+
+#placeholder 
+{
+    top: 40%;
+    color: #888;
+    font-size:60px;
+    position: absolute;
+    text-align: center;
+    
+
+}
+
+#imageContainer {
+    width: clamp(690px, 65%, 1200px);
+    aspect-ratio: 2 / 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+#imagePreview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#dropZone {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 20px;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    
+}
+
+.gridButton {
+    position: absolute;
+    width: calc(100% / 16);
+    height: calc(100% / 8);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.gridButton:hover {
+    background: rgba(0, 255, 0, 0.1);
+}
+
+.gridButtonindIcator 
+{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(96, 96, 96, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.gridButtonindIcator.active 
+{
+    background-color: rgba(0, 180, 0, 0.6); /* of elke kleur die je wilt voor de laatste klik */
+}
+
+.settings
+{
+    position: relative;
+    display: flex;              /* 🔑 */
+    flex-direction: row;        /* naast elkaar */
+    top: 50px;
+ 
+    width: clamp(1050px, 95%, 100%); /* min 690px, max 1200px, standaard 65% */
+
+    min-width: 1050;
+    height: auto;
+
+}
+
+.image-Container
+{
+    
+    position: relative;
+    
+    aspect-ratio: 2 / 1;
+    width: clamp(1050px,50%, 12000px); /* min 690px, max 1200px, standaard 65% */
+
+    
+  
+}
+
+.axis-label {
+    position: absolute;
+    font-size: 12px;
+    color: #000;
+    pointer-events: none;
+    z-index: 30;
+
+}
+
+.kamer-settings
+{
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: clamp(530px, 45%, 1200px); /* min 690px, max 1200px, standaard 65% */
+    height: 100%;
+     min-width: 500px;
+}
+
+.global-settings
+{
+    position: relative;
+    top: 0px;
+    left: 20px;
+    width: clamp(500px, 45%, 1200px); /* min 690px, max 1200px, standaard 65% */
+    height: 100%;
+     min-width: 500px;
+
+}
+
+.settings-table 
+{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 20px; /* ruimte tussen rijen */
+    font-family: Arial, sans-serif;
+}
+
+.settings-table td 
+{
+    padding: 8px 12px;
+    vertical-align: middle;
+}
+
+.settings-label {
+    font-weight: bold;
+    font-size: 30px;
+    width: 40%;
+    color: #333;
+}
+
+.settings-input-container 
+{
+    width: 30%;
+
+}
+
+.settings-input 
+{
+    width: 100%;
+    
+    padding: 6px 10px;
+    background-color: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 20px;
+    box-sizing: border-box;
+
+}
+
+.settings-container
+{
+    position: relative;
+    top: 0px;
+    left: max(210px, 35%); 
+    width: 65%;
+    height:  95%;
+
+    overflow-y: auto;
+}
+
+.error-afbeelding
+{
+    color:red; 
+    display:none;
+    position: relative;
+    left: 300px;
+    top: -30px;
+}
+
+.has-tooltip {
+    position: relative;
+    cursor: help;
+    border-bottom: 1px dotted #999;
+}
+
+.tooltip {
+    position: absolute;
+    bottom: 120%;
+    left: 0;
+    background: #222;
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 10;
+}
+
+.has-tooltip:hover .tooltip {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+.robox-logo 
+{
+    
+      position: absolute;
+
+  transform: translateX(-50%);
+
+   
+  left: 20%;     
+  width: 200px;
+
+    font-family: "Arial Black", "Trebuchet MS", Verdana, sans-serif;
+    font-size: 50px;
+    font-weight: 900;
+    letter-spacing: -4px;
+    display: inline-block;
+ 
+}
+
+/* Algemene letters */
+.robox-logo span 
+{
+
+
+    position: relative;
+    display: inline-block;
+    padding: 0 2px;
+
+    /* kleurverloop */
+    background: linear-gradient(
+        to bottom,
+        #fefefe 30%,
+        #59d7fd 50%,
+        #2870e7 100%
+    );
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    /* dikke rand */
+    -webkit-text-stroke: 3px #070934;
+
+
+
+}
+.made-by-ese {
+    display: flex;
+    justify-content: flex-end;    /* naar rechts */
+    align-items: center;          /* verticaal centreren */
+    position: absolute;
+    right: 10px;
+    width: 12%;                  /* standaard breedte past zich aan */
+    height: 70%;
+    font-size: 30px;
+    font-weight: 700;
+    color: #ffffff;
+    padding-right: 10px;
+ 
+       background-color: #ff000003;
+}
+
+
+/* korte tekst standaard verbergen */
+.short-text {
+    display: none;
+}
+
+/* Media query: kleiner scherm */
+@media (max-width: 1600px) {
+    .made-by-ese {
+        width: 50px;             /* vaste breedte */
+        font-size: 20px;          /* kleinere letters */
+    }
+    .full-text {
+        display: none;            /* lange tekst verbergen */
+    }
+    .short-text {
+        display: inline;          /* korte tekst tonen */
+    }
+}
+
+
+/* Oranje O */
+.robox-logo .o2 {
+    background: linear-gradient(
+        to bottom,
+        #fef9dc 30%,
+        #feba22 50%,
+        #f56f0e 100%
+    );
+    -webkit-text-stroke: 3px #070934;
+    background-clip: text;
+}
+
+/* Sterretje bij de X */
+.robox-logo .x::after {
+    content: "★";
+    position: absolute;
+    font-size: 22px;
+    color: #FFF;
+      -webkit-text-stroke: 1px #070934;
+
+    right: -18px;
+    bottom: -8px;
+
+ 
+
+    text-shadow:
+        0 0px 0#feba22,
+        0 0px 0px#feba22;
+}
+
+.robox-logo span.r               { transform: rotate(-6deg) translatey(0px); }
+.robox-logo span.o               { transform: rotate(-3deg)translatey(-2px); ; }
+.robox-logo span.o2              { transform: rotate(0deg)translatey(-3px); ; }
+.robox-logo span.o2:nth-child(4) { transform: rotate(3deg)translatey(-2px); ; }
+.robox-logo span.o2:nth-child(5) { transform: rotate(6deg)translatey(0px); ; }
+.robox-logo .x::after            { transform: rotate(10deg)translatey(10px)translatex(-10px);;  }
