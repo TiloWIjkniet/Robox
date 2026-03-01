@@ -30,7 +30,7 @@ void FSM_config(void)
     FSM_addTransition(&(transition_t){S_ROOM_LOOP,  E_ROOM_COMPLETED,        S_ROOM_LOOP});  // Tussenkamer voltooid
     FSM_addTransition(&(transition_t){S_ROOM_LOOP,  E_ROOM_LOOP_TO_LAST,     S_LAST_ROOM});  // Laatste kamer bereikt
     FSM_addTransition(&(transition_t){S_LAST_ROOM,  E_LAST_ROOM_COMPLETED,   S_COMPLETED});  // Laatste kamer voltooid
-    FSM_addTransition(&(transition_t){S_COMPLETED,  E_LAST_ROOM_COMPLETED,   S_RESET});
+    FSM_addTransition(&(transition_t){S_COMPLETED,  E_GAME_COMPLETED,        S_RESET});
     FSM_addTransition(&(transition_t){S_RESET,      E_RESET_COMPLETE,        S_IDLE});
 
     FSM_addTransition(&(transition_t){S_FIRST_ROOM, E_ROOM_TIMEOUT,          S_TIMEOUT});    // Timeout eerste kamer

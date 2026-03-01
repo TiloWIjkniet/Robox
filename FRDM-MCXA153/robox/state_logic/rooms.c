@@ -97,7 +97,6 @@ bool hasAnwertCorrect = false;
 void first_room_onEntry(void)
 {
     //Reset run data
-    
     roomIndex = 0;
     memset(&runData, 0, sizeof(runData));
 
@@ -106,8 +105,8 @@ void first_room_onEntry(void)
     runData.difficulty = globalSettings.difficulty;
     runData.maxRooms   = ARRAY_SIZE(roomsSettings);
 
-    uint16_t now = 0/*millis()*/;   // naar milis();
-    
+    uint32_t now = 0/*millis()*/;   // naar milis();
+
     startGameMillis = now; 
     timeGamePenaltyMillis = 0;
 
@@ -121,7 +120,11 @@ void first_room_onUpdate(void)
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
 
     bool isInCorrectRoom = isInCorrectRoom("BECON IP VAN DICHTSBIJZIJNDE BEACON");
-    if(!isInCorrectRoom) return;
+    if(!isInCorrectRoom) 
+    {
+        displayLoadTemplate(NON,0 , false);
+        return;
+    }
 
 
     if(!hasAnwertCorrect)
@@ -169,7 +172,9 @@ void first_room_onUpdate(void)
         displayFinished = displayLoadTemplate(NON, 5 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
     }
 
-    if(displayFinished) FSM_addEvent(E_ROOM_COMPLETED);
+    if(!displayFinished) return;
+
+    FSM_addEvent(E_ROOM_COMPLETED);
 }
 void first_room_onExit(void)
 {
@@ -183,7 +188,8 @@ void room_loop_onEntry(void)
 }
 void room_loop_onUpdate(void)
 {
-    
+    if(roomIndex < ARRAY_SIZE(roomsSettings) - 1) FSM_addEvent(E_ROOM_COMPLETED);
+    else FSM_addEvent(E_ROOM_LOOP_TO_LAST);   
 }
 void room_loop_onExit(void)
 {
@@ -198,6 +204,7 @@ void last_room_onEntry(void)
 void last_room_onUpdate(void)
 {
    
+    FSM_addEvent(E_LAST_ROOM_COMPLETED);
 
 }
 void last_room_onExit(void)
@@ -266,15 +273,16 @@ bool displayLoadTemplate(displayTemplate_t displayTemplate, uint32_t minDisplayT
     static uint32_t lastUpdateDisplayMillis = 0;
     static displayTemplate_t lastDisplayTemplate = NON;
 
-    uint32_t now = 0/*millis()*/; //moet nog;
+
+    if(lastDisplayTemplate == displayTemplate) return true;
+
+    
 
     #if DEBUG_DISPLAY
         printf("[DEBUG_DISPLAY] Template %d displayed at t=%u\n", displayTemplate, now);
     #endif
-
+    uint32_t now = 0/*millis()*/; //moet nog;
     if(!forceDisplay && now - lastUpdateDisplayMillis < minDisplayTime) return false;
-    
-    if(lastDisplayTemplate == displayTemplate) return true;
 
     lastUpdateDisplayMillis = now;
     lastDisplayTemplate = displayTemplate;
@@ -392,6 +400,7 @@ bool isAnswerCorrect(char *userInput)
         
         if(strcmp(roomsSettings[roomIndex].answers[i], userInput) == 0) return true;
     }
+    wrongAnswerCount.wrongAnswerCount ++;
     return false;
 }
 
