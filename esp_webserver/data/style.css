@@ -11,6 +11,7 @@ html, body
     display: flex;
     flex-direction: column;
     font-family: 'Roboto', sans-serif;
+    background-color:  #181a1b;
 }
 
 
@@ -24,7 +25,7 @@ html, body
 
     min-width: 1050px;
     
-    background-color: #ccc;
+    background-color: #35393b;
 
     display: flex;
     align-items: center;
@@ -41,9 +42,9 @@ html, body
 
     min-width: 200px;
 
-    background-color: #ccc;
+    background-color: #494f52;
 
-    color: #000;
+    color: #b2aca2;
     font-size: 175%;
     
     border-radius:0;
@@ -58,14 +59,12 @@ html, body
 
 .button-row button:hover 
 {
-  background-color: #645d5d;
-  color: #ffffff;
+  background-color: #4B5054;
 }
 
 .button-row button.active 
 {
-  background-color: #645d5d;
-  color: #ffffff;
+  background-color: #51535A;
 }
 
 #btn_Gegevens { left: 30%; } 
@@ -109,12 +108,15 @@ html, body
     display: flex;
     flex-direction: column;     
 
-    border: 2px solid #222; /* optioneel, zodat veld zichtbaar is */
+        background-color: #232627;
+    border: 2px solid #81786a; /* optioneel, zodat veld zichtbaar is */
 
 }
 
 .recording-buttons-scroll button, .kamers-list-wrapper button
 {
+    color: #b2aca2;
+      background-color: #363a3c;
     position: relative;        /* voor absolute positioning van emoji */
     display: flex;
     align-items: center;       /* verticaal centreren */
@@ -122,9 +124,9 @@ html, body
     height: 50px;
     width: 100%;
     font-size: 20px;
-    background-color: #ccc;
     border-radius: 3px;
     cursor: pointer;
+        transition: all 0.2s ease;    /* soepele animatie */
 }
 
 .data-page
@@ -142,7 +144,7 @@ html, body
 
 .chart 
 {
-    
+    color: #b2aca2;  
     position: absolute;
     top: 10px;
     left: 20px;
@@ -158,9 +160,11 @@ html, body
 .kamers-list-wrapper button:hover,
 .kamers-list-wrapper button.active
 {
-    background-color: #fff;
-    color: #000;
-    border: 2px solid #222; /* optioneel, zodat veld zichtbaar is */
+
+
+      background-color: #2b2a33;
+    color: #b2aca2;
+    border: 2px solid #81786a; /* optioneel, zodat veld zichtbaar is */
 }
 
 .recording-buttons-scroll .green 
@@ -203,7 +207,7 @@ html, body
     
     min-height: 175px;
     font-size: max(18px, 1.6vw); 
-    color: #000000;
+    color: #b2aca2;
     display: flex;              /* 🔑 */
     flex-direction: row;        /* naast elkaar */
     gap: 5%;                    /* ruimte ertussen */
@@ -241,7 +245,7 @@ html, body
 
 .stats-table td:first-child, .settings-table tr td:first-child
 {
-    color: #aaa;        /* label */
+    color: #b2aca2;        /* label */
 }
 
 .stats-table td:last-child ,.settings-table tr td:last-child
@@ -256,8 +260,8 @@ html, body
 {
     position: relative;
     top: 7.5px;
-    background-color: #ccc;       /* donkere basis */
-    color: #000;                  /* witte tekst */
+        background-color: #35393b;       /* donkere basis */
+    color: #b2aca2;                  /* witte tekst */
     border: 2px solid #555;       /* subtiele rand */
     border-radius: 8px;           /* afgeronde hoeken */
     padding: 10px 20px;           /* lekker groot klikvlak */
@@ -269,7 +273,7 @@ html, body
 
 /* Hover effect */
 #add-btn:hover {
-    background-color: #333;               /* iets lichter */
+          background-color: #2b2a33;
     transform: translateY(-2px);          /* lichte “zweef” animatie */
     box-shadow: 0 6px 10px rgba(0,0,0,0.3);
 }
@@ -279,12 +283,17 @@ html, body
     transform: translateY(0);             /* indruk-effect */
     box-shadow: 0 3px 5px rgba(0,0,0,0.2);
 }
+#imageInput
+{
+
+    color: #b2aca2;
+}
 .stijlvolle-knop
 {
     position: relative;
     top: 7.5px;
-    background-color: #ccc;       /* donkere basis */
-    color: #000;                  /* witte tekst */
+    background-color: #35393b; 
+    color: #b2aca2;                  /* witte tekst */
     border: 2px solid #555;       /* subtiele rand */
     border-radius: 8px;           /* afgeronde hoeken */
     padding: 10px 20px;           /* lekker groot klikvlak */
@@ -326,7 +335,7 @@ html, body
 }
 
 #imagePreview {
-    background-color: #ccc;
+    background-color: #35393b;
     width: 100%;         /* past in container */
     height: 100%;
     object-fit: cover;   /* snijdt bij indien nodig */
@@ -350,7 +359,7 @@ html, body
 #placeholder 
 {
     top: 40%;
-    color: #888;
+    color: #b2aca2;  
     font-size:60px;
     position: absolute;
     text-align: center;
@@ -393,13 +402,14 @@ html, body
     position: absolute;
     width: calc(100% / 16);
     height: calc(100% / 8);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.15);
 
     box-sizing: border-box;
     cursor: pointer;
 }
 
-.gridButton:hover {
+.gridButton:hover 
+{
     background: rgba(0, 255, 0, 0.1);
 }
 
@@ -507,10 +517,10 @@ html, body
 .settings-input 
 {
     width: 100%;
-    
+    color: #b2aca2;  
     padding: 6px 10px;
-    background-color: #ccc;
-    border: 1px solid #ccc;
+    background-color: #35393b;
+    border: 1px solid #35393b;
     border-radius: 6px;
     font-size: 20px;
     box-sizing: border-box;
@@ -597,7 +607,7 @@ html, body
     /* kleurverloop */
     background: linear-gradient(
         to bottom,
-        #fefefe 30%,
+        #000000 30%,
         #59d7fd 50%,
         #2870e7 100%
     );
@@ -605,7 +615,7 @@ html, body
     -webkit-text-fill-color: transparent;
 
     /* dikke rand */
-    -webkit-text-stroke: 3px #070934;
+    -webkit-text-stroke: 2px #ffffff;
 
 
 
@@ -620,7 +630,7 @@ html, body
     height: 70%;
     font-size: 30px;
     font-weight: 700;
-    color: #ffffff;
+        color: #b2aca2a6;  
     padding-right: 10px;
  
        background-color: #ff000003;
@@ -651,11 +661,11 @@ html, body
 .robox-logo .o2 {
     background: linear-gradient(
         to bottom,
-        #fef9dc 30%,
+        #000000 30%,
         #feba22 50%,
         #f56f0e 100%
     );
-    -webkit-text-stroke: 3px #070934;
+    -webkit-text-stroke: 2px #ffffff;
     background-clip: text;
 }
 
@@ -665,7 +675,7 @@ html, body
     position: absolute;
     font-size: 22px;
     color: #FFF;
-      -webkit-text-stroke: 1px #070934;
+      -webkit-text-stroke: 1px #ffffff;
 
     right: -18px;
     bottom: -8px;

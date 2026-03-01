@@ -29,7 +29,8 @@ buttons.forEach(button =>
 
 let Recordings =
 [
-    
+    [[2,3,4,5,6],false,2,60,2,5],
+    [[2,3,4,5,6],false,2,60,2,5]
 ];
 let currentIndex = 0;
 
@@ -66,20 +67,23 @@ function drawChart()
 
 
 
-    // Y-as titel
+
+
+    // Y-as lijnen en nummers
+    ctx.strokeStyle = '#b2aca2';
+    ctx.fillStyle = '#b2aca2';
+    ctx.font = '17px Arial';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+
+
+        // Y-as titel
     ctx.save();
     ctx.translate(15, height / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.textAlign = 'center';
     ctx.fillText('Tijd (min)', 0, 0);
     ctx.restore();
-
-    // Y-as lijnen en nummers
-    ctx.strokeStyle = '#ccc';
-    ctx.fillStyle = '#000';
-    ctx.font = '17px Arial';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
 
     for (let i = 0; i <= yMax; i++) {
         const y = height - (i / yMax) * (height - 40) - 20;
@@ -104,7 +108,7 @@ function drawChart()
         ctx.fillRect(x, y, barWidth, barHeight);
         ctx.strokeRect(x, y, barWidth, barHeight);
 
-        ctx.fillStyle = '#000';
+            ctx.fillStyle = '#b2aca2';
         ctx.textAlign = 'center';
         ctx.fillText("Kamer "+ labels[i], x + barWidth/2, height - 11);
         ctx.fillText(val + " min",  x + barWidth/2, y - 8);
@@ -596,6 +600,7 @@ function generateGridBtn(activeIndex = null)
     // X-as labels (onder)
     for (let i = 0; i < cols; i++) {
         const label = document.createElement("div");
+        label.style.color = "#b2aca2";
         label.className = "axis-label";
         label.textContent = i;
 
@@ -610,6 +615,7 @@ function generateGridBtn(activeIndex = null)
     // Y-as labels (links)
     for (let j = 0; j < rows; j++) {
         const label = document.createElement("div");
+        label.style.color = "#b2aca2";
         label.className = "axis-label";
         label.textContent = j;
 
@@ -695,6 +701,7 @@ function generateSettingsTable(settings, kamerSettingsDiv) {
             field.style.minWidth = "200px";
 
             const valueLabel = document.createElement("span");
+            valueLabel.style.color = '#b2aca2';
             valueLabel.textContent = field.value;
 
             field.addEventListener("input", () => {
@@ -962,8 +969,6 @@ async function loadData()
         drawChart();
         updateStats();
 
-        updateStats();
-
      
         if (uploadedImageData) showLoadedImage(uploadedImageData);
 
@@ -988,6 +993,10 @@ function showLoadedImage(base64) {
 }
 
 
+        drawRecordingsButtons();
+        currentIndex = 0;
+        drawChart();
+        updateStats();
 async function saveToESP() 
 {
         let resizedImage = null;
