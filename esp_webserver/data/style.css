@@ -315,7 +315,7 @@ html, body
       font-weight: bold;
 }
 
-.stijlvolle-knop:hover
+.stijlvolle-knop:hover , .knop-klijn:hover
 {
               background-color: #2b2a33;
     transform: translateY(-2px);          /* lichte “zweef” animatie */
@@ -327,6 +327,22 @@ html, body
 
     width: 100%;
     height: 80px;
+}
+.knop-klijn
+{
+    
+    position: relative;
+
+    background-color: #35393b; 
+    color: #b2aca2;                  /* witte tekst */
+    border: 2px solid #555;       /* subtiele rand */
+    border-radius: 8px;           /* afgeronde hoeken */
+    padding: 5px 10px;           /* lekker groot klikvlak */
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;    /* soepele animatie */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2); /* subtiele schaduw */
+
 }
 
 .image-Container

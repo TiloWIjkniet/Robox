@@ -101,8 +101,8 @@ function drawChart()
         const x = i * (barWidth + spacing) + spacing/2 + 40;
         const y = height - barHeight - 20;
 
-        ctx.fillStyle = 'rgba(75,192,192,0.6)';
-        ctx.strokeStyle = 'rgba(75,192,192,1)';
+        ctx.fillStyle = 'rgba(43, 42, 51,0.8)';
+        ctx.strokeStyle = 'rgba(98, 101, 112,1)';
         ctx.lineWidth = 3;
 
         ctx.fillRect(x, y, barWidth, barHeight);
@@ -216,14 +216,15 @@ function addItem()
     kamerList.push([btn, emtyKamerListPos,KSD]);
     
     counter++;
-    const delBtn = document.createElement("span");
-    delBtn.classList.add("delete-icon"); 
-    delBtn.textContent = " 🗑️";
-    delBtn.style.cursor = "pointer";
 
     index = kamerList.findIndex(k => k[0] === btn);
     kamerList.forEach(k => k[0].classList.remove("active"));
     btn.classList.add("active");
+
+        const delBtn = document.createElement("span");
+    delBtn.classList.add("delete-icon"); 
+    delBtn.textContent = " 🗑️";
+    delBtn.style.cursor = "pointer";
 
     delBtn.onclick = (e) => 
     {
@@ -313,25 +314,30 @@ function addItem()
 function initKamerList() 
 {
 
+    listWrapper.innerHTML = "";
     let kmaerListLength =  kamerList.length;
+    
     if (kamerList.length != 0)
     {
-    listWrapper.innerHTML = ""; // Eerst DOM leegmaken
-    kamerList.forEach((kamer, i) => {
+    kamerList.forEach((kamer, i) => 
+    {
         const btn = document.createElement("button");
         kamerList[i][0] = btn;
-        kamerList[i][1] = [0,0];
+        if(kamerList[i][1] != null)kamerList[i][1] = [0,0];
         btn.classList.add("kamer-item");
         btn.textContent = kamer[2]["naam-kamer"] || "Kamer " + (i + 1);
 
         // Voeg delete knop toe
-    const delBtn = document.createElement("span");
-    delBtn.textContent = " 🗑️";
-    delBtn.style.cursor = "pointer";
+
 
     index = kamerList.findIndex(k => k[0] === btn);
-    kamerList.forEach(k => k[0].classList.remove("active"));
-    btn.classList.add("active");
+
+
+   
+        const delBtn = document.createElement("span");
+    delBtn.classList.add("delete-icon"); 
+    delBtn.textContent = " 🗑️";
+    delBtn.style.cursor = "pointer";
 
     delBtn.onclick = (e) => 
     {
@@ -342,22 +348,21 @@ function initKamerList()
             return;
         } 
 
-        if (index !== -1) kamerList.splice(index, 1);
+        const ind = kamerList.findIndex(k => k[0] === btn);
         // Confirm popup bij verwijderen
 
-        const ind = kamerList.findIndex(k => k[0] === btn);
 
-        if (ind !== -1) 
-        {
-            kamerList.splice(ind, 1); // verwijder uit array
-        }
-
-        const wasActive = btn.classList.contains("active");
-        isDirty = true;
+        if (ind == -1) return;
         
+        const wasActive = delBtn.parentElement.classList.contains("active");
+        delBtn.parentElement.remove();
+
+        kamerList.splice(ind, 1); 
+        isDirty = true;
+
         // Verwijder uit DOM
 
-        btn.remove();
+
 
         // Verwijder uit kamerList
  
@@ -370,17 +375,18 @@ function initKamerList()
         updateSettings();
     };
 
+
+
     btn.appendChild(delBtn);
 
-        // Klik event
-        btn.addEventListener("click", () => {
-            index = kamerList.findIndex(k => k[0] === btn);
-            kamerList.forEach(k => k[0].classList.remove("active"));
-            btn.classList.add("active");
+    // Click selectie
+    btn.addEventListener("click", () => {
+        index = kamerList.findIndex(k => k[0] === btn);
+        kamerList.forEach(k => k[0].classList.remove("active"));
+        btn.classList.add("active");
+        updateSettings();       
 
-            loadSettings(kamerSettingsDiv1, kamerList[index][2]);
-            generateGridBtn(index);
-        });
+    });
 
         // Voeg button toe aan kamerList[i] zodat we de referentie hebben
         kamer[0] = btn;
@@ -403,6 +409,7 @@ function initKamerList()
             const [moved] = kamerList.splice(draggedIndex, 1);
             kamerList.splice(dropIndex, 0, moved);
         }
+        kamerList[kamerList.length -1][0].add("active");
     });
 
     // Voeg knop toe aan DOM
@@ -421,7 +428,8 @@ function initKamerList()
     {
         for(let i=0; i < 3 - kmaerListLength; i++){console.log(i); addItem();}
     }
-  
+    
+   console.log("Geïmporteerde data:", kamerList);
 }
 
 function updateSettings() {
@@ -1025,7 +1033,7 @@ async function loadData()
         currentIndex = 0;
         drawChart();
         updateStats();
-
+   
      
         if (uploadedImageData) showLoadedImage(uploadedImageData);
 
@@ -1035,7 +1043,7 @@ async function loadData()
     {
         console.error(err);
     }
-       initKamerList();
+    initKamerList();
 }
 
 function showLoadedImage(base64) {
@@ -1152,3 +1160,96 @@ function downscaleImage(file, maxPixels, callback) {
     reader.readAsDataURL(file);
 }
 generateGridBtn();
+
+function exportSettingsNoLib() {
+    const settingsData = {
+        kamerList,
+        uploadedImageData,
+        globalSettings
+    };
+
+    // JSON string
+    const jsonStr = JSON.stringify(settingsData, null, 2);
+
+    // Maak blob aan
+    const blob = new Blob([jsonStr], { type: "application/json" });
+
+    // Trigger download
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "settings.json"; // je kan .zip naam geven, maar het is geen echte ZIP
+    a.click();
+    URL.revokeObjectURL(a.href);
+    console.log(settingsData);
+}
+const btnImport = document.getElementById("btnImport");
+
+const importFileInputS = document.getElementById("importFile");
+btnImport.addEventListener("click", () => {
+    // Open File Explorer
+    importFileInputS.click();
+});
+
+importFileInputS.addEventListener("change", (e) => {
+    if (e.target.files.length > 0) {
+        const file = e.target.files[0]; // dit is het gekozen bestand
+        importSettingsNoLib(file);      // doorgeven aan je functie
+    }
+});
+
+function importSettingsNoLib(file) 
+{
+     const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+
+
+
+
+            // Kopieer data terug naar je variabelen
+// 1. Maak de DOM leeg
+
+
+    // 2. Reset alle kamer[0] naar null
+    kamerList.forEach(k => k[0] = null);
+    kamerList.length = 0; // oude data wissen
+    if (data.kamerList) {
+        data.kamerList.forEach(k => {
+            const kamerData = k[2] || {
+                "naam-kamer": "",
+                "becon-ip": "",
+                "antwoord": "",
+                "open-compartment": 0,
+                "special-acties": 0
+            };
+            kamerList.push([null, k[1] || [0,0], kamerData]);
+                       
+        });
+    }
+ console.log("Geïmporteerde data:", kamerList);
+            uploadedImageData = data.uploadedImageData || null;
+            globalSettings = data.globalSettings || { "moeilijkheid": 2, "start-tijd": 60, "audio": 0 };
+
+
+        drawRecordingsButtons();
+        currentIndex = 0;
+        drawChart();
+        updateStats();
+            
+            if (uploadedImageData) showLoadedImage(uploadedImageData);
+
+     
+            loadSettings(kamerSettingsDiv2, globalSettings);
+
+            alert("Instellingen succesvol geïmporteerd!");
+        } catch(err) {
+            console.error("Fout bij importeren:", err);
+            alert("Fout bij importeren: " + err.message);
+        }
+
+        initKamerList();
+    };
+    reader.readAsText(file);
+
+}
