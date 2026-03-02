@@ -480,46 +480,103 @@ dropZone.addEventListener("drop", (e) => {
 // Functie om bestand te tonen en 2:1 te checken
 
 let myFile = null;
+
 function handleFile(file) 
 {
     if (!file.type.startsWith("image/")) return;
+
     myFile = file;
     const objectURL = URL.createObjectURL(file);
-
     const img = new Image();
-    img.onload = function() {
-        const ratio = img.width / img.height;
 
-        if (Math.abs(ratio - RATIO_2_1) / RATIO_2_1 > 0.05) {
+    img.onload = function() 
+    {
+        // ===== 1️⃣ Ratio check =====
+        const ratio = img.naturalWidth / img.naturalHeight;
+
+        if (Math.abs(ratio - RATIO_2_1) / RATIO_2_1 > 0.05) 
+        {
             ratioWarning.style.display = "block";
             uploadedImageData = null;
-             imagePreview.src = "";
+
+            imagePreview.src = "";
             imagePreview.style.display = "none";
             placeholder.style.display = "block";
-
-            // Optioneel: reset file input zodat dezelfde file opnieuw kan worden geselecteerd
             imageInput.value = "";
-            return;
-        } else {
-            ratioWarning.style.display = "none";
 
+            return;
         }
 
-        // Preview tonen
-        imagePreview.src = objectURL;
+        ratioWarning.style.display = "none";
+
+        // ===== 2️⃣ Canvas maken =====
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext("2d");
+
+        // Eerst tekenen
+        ctx.drawImage(img, 0, 0);
+
+        // ===== 3️⃣ Helderheid meten =====
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        let totalBrightness = 0;
+        const pixelCount = data.length / 4;
+
+        for (let i = 0; i < data.length; i += 4) 
+        {
+            const brightness =
+                0.299 * data[i] +
+                0.587 * data[i + 1] +
+                0.114 * data[i + 2];
+
+            totalBrightness += brightness;
+        }
+
+        const averageBrightness = totalBrightness / pixelCount;
+        console.log("Average brightness:", averageBrightness);
+
+        // ===== 4️⃣ Dark mode toepassen als nodig =====
+        // ===== Custom smooth recolor =====
+        if (averageBrightness > 10) 
+        {
+            const darkColor  = [178, 172, 162]; // 87847d
+            const lightColor = [81, 83, 90];    // 51535a
+
+            for (let i = 0; i < data.length; i += 4) 
+            {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+
+                // helderheid berekenen
+                const brightness =
+                    0.299 * r +
+                    0.587 * g +
+                    0.114 * b;
+
+                const factor = brightness / 255; // 0 → zwart, 1 → wit
+
+                data[i]     = darkColor[0]  + factor * (lightColor[0]  - darkColor[0]);
+                data[i + 1] = darkColor[1]  + factor * (lightColor[1]  - darkColor[1]);
+                data[i + 2] = darkColor[2]  + factor * (lightColor[2]  - darkColor[2]);
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        // ===== 5️⃣ Preview & opslaan =====
+        const finalImage = canvas.toDataURL("image/png");
+
+        imagePreview.src = finalImage;
         imagePreview.style.display = "block";
         placeholder.style.display = "none";
 
-        // Sla image op als base64 string
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
+        uploadedImageData = finalImage;
+    };
 
-        uploadedImageData = canvas.toDataURL("image/png"); // dit is een string die je kunt opslaan
-        console.log("Image opgeslagen in variabele:", uploadedImageData);
-    }
     img.src = objectURL;
 }
 

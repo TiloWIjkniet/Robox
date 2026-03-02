@@ -34,7 +34,7 @@ html, body
 
 
 .button-row button 
-{
+{      font-weight: bold;
     position: absolute;
    
     width: 15%;
@@ -59,12 +59,15 @@ html, body
 
 .button-row button:hover 
 {
-  background-color: #4B5054;
+        transform: scale(1.04);
+         color: #c9c4bb;
+  background-color: #51535A;
 }
 
 .button-row button.active 
 {
-  background-color: #51535A;
+        color: #c9c4bb;
+  background-color: #626570;
 }
 
 #btn_Gegevens { left: 30%; } 
@@ -108,15 +111,16 @@ html, body
     display: flex;
     flex-direction: column;     
 
-        background-color: #232627;
+    background-color: #232627;
     border: 2px solid #81786a; /* optioneel, zodat veld zichtbaar is */
 
 }
 
 .recording-buttons-scroll button, .kamers-list-wrapper button
 {
+    
     color: #b2aca2;
-      background-color: #363a3c;
+    background-color: #363a3c;
     position: relative;        /* voor absolute positioning van emoji */
     display: flex;
     align-items: center;       /* verticaal centreren */
@@ -126,7 +130,7 @@ html, body
     font-size: 20px;
     border-radius: 3px;
     cursor: pointer;
-        transition: all 0.2s ease;    /* soepele animatie */
+    transition: all 0.2s ease;    /* soepele animatie */
 }
 
 .data-page
@@ -156,14 +160,20 @@ html, body
 
 
 .recording-buttons-scroll button:hover,
-.recording-buttons-scroll button.active ,
-.kamers-list-wrapper button:hover,
-.kamers-list-wrapper button.active
+.kamers-list-wrapper button:hover
 {
 
+        transform: scale(1.04);
+    background-color: #2b2a33;
+    color: #c9c4bb;
+    border: 2px solid #81786a; /* optioneel, zodat veld zichtbaar is */
+}
 
-      background-color: #2b2a33;
-    color: #b2aca2;
+.recording-buttons-scroll button.active ,
+.kamers-list-wrapper button.active
+{
+    background-color: #2b2a33;
+    color: #c9c4bb;
     border: 2px solid #81786a; /* optioneel, zodat veld zichtbaar is */
 }
 
@@ -258,6 +268,7 @@ html, body
 
 #add-btn 
 {
+          font-weight: bold;
     position: relative;
     top: 7.5px;
         background-color: #35393b;       /* donkere basis */
@@ -304,6 +315,13 @@ html, body
       font-weight: bold;
 }
 
+.stijlvolle-knop:hover
+{
+              background-color: #2b2a33;
+    transform: translateY(-2px);          /* lichte “zweef” animatie */
+    box-shadow: 0 6px 10px rgba(0,0,0,0.3);
+}
+
 .button-holder
 {
 
@@ -336,8 +354,8 @@ html, body
 
 #imagePreview {
     background-color: #35393b;
-    width: 100%;         /* past in container */
-    height: 100%;
+    width: 100% ;         /* past in container */
+    height: 100%+ 20px;
     object-fit: cover;   /* snijdt bij indien nodig */
 }
 #dropZone {
@@ -352,7 +370,7 @@ html, body
     z-index: 2;           /* boven andere elementen */
     align-items: center;       /* verticaal centreren */
     justify-content: center;   /* horizontaal centreren */
-    padding-top: 20px;         /* schuif naar beneden */
+        top: 25px;
     
 }
 
@@ -385,18 +403,6 @@ html, body
     object-fit: cover;
 }
 
-#dropZone {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 20px;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    
-}
 
 .gridButton {
     position: absolute;
@@ -410,6 +416,7 @@ html, body
 
 .gridButton:hover 
 {
+
     background: rgba(0, 255, 0, 0.1);
 }
 
@@ -426,8 +433,11 @@ html, body
     pointer-events: none;
 }
 
+
+
 .gridButtonindIcator.active 
 {
+  
     background-color: rgba(0, 180, 0, 0.6); /* of elke kleur die je wilt voor de laatste klik */
 }
 
@@ -505,7 +515,7 @@ html, body
     font-weight: bold;
     font-size: 30px;
     width: 40%;
-    color: #333;
+    color: #b2aca2;
 }
 
 .settings-input-container 
