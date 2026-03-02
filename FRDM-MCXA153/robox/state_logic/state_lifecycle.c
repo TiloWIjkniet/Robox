@@ -1,3 +1,8 @@
+#include "game_data.h"
+#include "display_template.h"
+#include <fsm.h>
+#include "game_logic.h"
+
 void completed_onEntry(void) 
 { 
     runData.finished = true;
@@ -34,11 +39,10 @@ void timeout_onExit(void)
 
 void reset_onEntry(void) 
 { 
- 
     timeGamePenaltyMillis += timeGamePanaltyBuffer;
     timeGamePanaltyBuffer = 0;
     uint32_t elapsedTime = getElapsedTime();
-    runData.totalTime = elapsedTime;
+    runData.totalTime = elapsedTime / 1000; // millis naar sec
 }
 void reset_onUpdate(void) 
 { 

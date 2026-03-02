@@ -17,11 +17,14 @@ mcux_add_source(
             fifo/fifo.c
             fsm/fsm.c
             fsm/fsm_config.c
+
             serial/retarget.c
             serial/serial.c
+
             state_logic/idle.c
             state_logic/dev_page.c
-            state_logic/
+            state_logic/rooms.c
+            state_logic/game_logic.c
 )
 
 mcux_add_include(

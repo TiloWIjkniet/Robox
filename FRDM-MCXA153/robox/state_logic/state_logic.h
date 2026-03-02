@@ -1,4 +1,4 @@
-#ifdef STATE_LOGIC
+#ifndef STATE_LOGIC
 #define STATE_LOGIC
 
 void dev_page_onEntry(void);

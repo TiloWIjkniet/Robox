@@ -323,7 +323,7 @@ function initKamerList()
     {
         const btn = document.createElement("button");
         kamerList[i][0] = btn;
-        if(kamerList[i][1] != null)kamerList[i][1] = [0,0];
+        if(kamerList[i][1] == null)kamerList[i][1] = [0,0];
         btn.classList.add("kamer-item");
         btn.textContent = kamer[2]["naam-kamer"] || "Kamer " + (i + 1);
 
@@ -929,7 +929,8 @@ generateSettingsTable([
     { key: "start-tijd",label: "Start tijd", type:  "text", value: 60 , help:"Hoeveel tijd er is om het spel op te lossen"},
     { key: "audio",label: "Audio ", type: "select", value: 0, options: [
             { label: "Aan", value: 0 },
-            { label: "Uit", value: 1 },],
+            { label: "Uit", value: 1 },
+             { label: "Gecensureerd", value: 2 },],
             help:"Toggle sound effects en getik "  
         }
 ], kamerSettingsDiv2);
@@ -1231,11 +1232,6 @@ function importSettingsNoLib(file)
             uploadedImageData = data.uploadedImageData || null;
             globalSettings = data.globalSettings || { "moeilijkheid": 2, "start-tijd": 60, "audio": 0 };
 
-
-        drawRecordingsButtons();
-        currentIndex = 0;
-        drawChart();
-        updateStats();
             
             if (uploadedImageData) showLoadedImage(uploadedImageData);
 
