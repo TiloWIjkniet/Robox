@@ -22,7 +22,6 @@ IPAddress myIP;
 struct Recording 
 {
     float times[MAXS_TIMES];    // array voor tijdwaardes (pas grootte aan indien nodig)
-    bool completed;      // of de opname voltooid is
     int errors;          // aantal fouten
     float startTime;     // starttijd in seconden
     int difficulty;      // moeilijkheidsgraad
@@ -130,7 +129,7 @@ void handleLoad()
       }
 
       // overige velden
-      r.add(recordings[i].completed);
+      r.add(false);
       r.add(recordings[i].errors);
       r.add(recordings[i].startTime);
       r.add(recordings[i].difficulty);

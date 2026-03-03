@@ -27,7 +27,6 @@ void dev_page_onUpdate(void)
         FSM_addEvent(E_EXIT_DEV); 
     }
 
-    
 
 }
 

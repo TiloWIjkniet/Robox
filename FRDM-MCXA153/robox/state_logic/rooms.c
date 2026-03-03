@@ -31,7 +31,6 @@ void first_room_onEntry(void)
 
     commonRoom_onEntry();
 
-   
     displayLoadTemplate(NON,0 , true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
 }
 void first_room_onUpdate(void)
@@ -270,3 +269,4 @@ void commonRoom_onExit()
 
 
 
+  

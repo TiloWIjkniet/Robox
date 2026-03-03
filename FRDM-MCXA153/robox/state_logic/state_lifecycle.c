@@ -5,7 +5,7 @@
 
 void completed_onEntry(void) 
 { 
-    runData.finished = true;
+
 }
 void completed_onUpdate(void) 
 { 
@@ -17,12 +17,10 @@ void completed_onUpdate(void)
 }
 void completed_onExit(void) 
 { 
-
 }
 
 void timeout_onEntry(void) 
 { 
-    runData.finished = false;
 }
 void timeout_onUpdate(void) 
 { 
@@ -39,10 +37,7 @@ void timeout_onExit(void)
 
 void reset_onEntry(void) 
 { 
-    timeGamePenaltyMillis += timeGamePanaltyBuffer;
-    timeGamePanaltyBuffer = 0;
-    uint32_t elapsedTime = getElapsedTime();
-    runData.totalTime = elapsedTime / 1000; // millis naar sec
+    //Save data to eprmp
 }
 void reset_onUpdate(void) 
 { 

@@ -10,7 +10,6 @@
 typedef struct 
 {
     uint16_t roomTimes[MAX_ROOMS];
-    bool finished;
     uint8_t wrongAnswerCount;
     uint8_t totalTime;
     uint8_t difficulty;
@@ -37,6 +36,7 @@ typedef struct
     char answers[MAX_ANSWERS][MAX_CHAR_IN_STRING];
     compartment_t openCompartment;
     specialActies_t specialActies;
+    
 }roomSettings_t;
 
 typedef struct 
@@ -66,7 +66,6 @@ uint32_t timeGamePanaltyBuffer;
 uint32_t timeGamePenaltyMillis;
 
 uint32_t startGameMillis;
-
 
 char answerBuffer[MAX_CHAR_IN_STRING];
 

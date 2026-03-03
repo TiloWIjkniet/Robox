@@ -30,7 +30,7 @@ buttons.forEach(button =>
 let Recordings =
 [
     [[2,3,4,5,6],false,2,60,2,5],
-    [[2,3,4,5,6],false,2,60,2,5]
+    [[2,3,4],false,2,60,2,5]
 ];
 let currentIndex = 0;
 
@@ -62,8 +62,8 @@ function drawChart()
     const values = Recordings[currentIndex][0];
     const labels = values.map((_, i) => `${i+1}`); // automatisch labels
     const yMax = Math.max(...values) + 2;
-    const barWidth = width / values.length * 0.6;
-    const spacing = width / values.length * 0.4;
+    const barWidth = width / Recordings[currentIndex][5] * 0.6;
+    const spacing = width / Recordings[currentIndex][5]* 0.4;
 
 
 
@@ -94,10 +94,15 @@ function drawChart()
         ctx.fillText(i, 35, y);
     }
 
+
     // Blokken tekenen
-    values.forEach((val, i) => 
+     for (let i = 0; i <  Recordings[currentIndex][5]; i++) 
     {
-        const barHeight = (val / yMax) * (height - 40);
+        let barHeight = 0.1 ;
+        if(Recordings[currentIndex][0][i] != null)
+        {
+             barHeight = (Recordings[currentIndex][0][i] / yMax) * (height - 40);
+        }
         const x = i * (barWidth + spacing) + spacing/2 + 40;
         const y = height - barHeight - 20;
 
@@ -110,9 +115,16 @@ function drawChart()
 
             ctx.fillStyle = '#b2aca2';
         ctx.textAlign = 'center';
-        ctx.fillText("Kamer "+ labels[i], x + barWidth/2, height - 11);
-        ctx.fillText(val + " min",  x + barWidth/2, y - 8);
-    });
+        ctx.fillText("Kamer "+ (i + 1), x + barWidth/2, height - 11);
+        if(Recordings[currentIndex][0][i] != null)
+        {
+            ctx.fillText(Recordings[currentIndex][0][i] + " min",  x + barWidth/2, y - 8);
+        }
+        else 
+            {
+        
+            }
+    }
 }
 
 // --- Update stats ---
@@ -130,7 +142,7 @@ function updateStats() {
     document.getElementById("gemiddeldeTijd").textContent = formatTime(gemiddeld);
     document.getElementById("tijdOver").textContent = formatTime(data[3]-totaal);
 
-    document.getElementById("geslaagd").textContent = data[1]?"Gehaald":"Niet gehaalt";
+    document.getElementById("geslaagd").textContent = data[5] == data[0].length?"Gehaald":"Niet gehaalt";
     document.getElementById("aantalFouten").textContent = data[2];
     document.getElementById("moeilijkheid").textContent = data[4]+"/5";
     document.getElementById("bomTijd").textContent = formatTime(data[3]);
