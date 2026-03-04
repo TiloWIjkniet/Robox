@@ -1,0 +1,293 @@
+# Copyright 2024 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_COMPONENT_driver.video-common
+    bool
+    select MCUX_COMPONENT_driver.common
+
+config MCUX_COMPONENT_driver.dc-fb-common
+    bool
+    select MCUX_COMPONENT_driver.video-common
+
+config MCUX_COMPONENT_driver.display-common
+    bool
+    prompt "MCUX_COMPONENT_driver.display-common"
+    select MCUX_COMPONENT_driver.video-common
+
+config MCUX_COMPONENT_driver.video-i2c
+    bool
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.flexcomm_i2c if MCUX_HAS_COMPONENT_driver.flexcomm_i2c
+    select MCUX_COMPONENT_driver.i2c if MCUX_HAS_COMPONENT_driver.i2c
+    select MCUX_COMPONENT_driver.ii2c if MCUX_HAS_COMPONENT_driver.ii2c
+    select MCUX_COMPONENT_driver.lpc_i2c if MCUX_HAS_COMPONENT_driver.lpc_i2c
+    select MCUX_COMPONENT_driver.lpc_i2c_1 if MCUX_HAS_COMPONENT_driver.lpc_i2c_1
+    select MCUX_COMPONENT_driver.lpi2c if MCUX_HAS_COMPONENT_driver.lpi2c
+
+config MCUX_COMPONENT_driver.fbdev
+    bool "Use frame buffer component files"
+    select MCUX_COMPONENT_driver.video-common
+    select MCUX_COMPONENT_middleware.freertos-kernel
+
+config MCUX_COMPONENT_driver.dbi
+    bool
+    select MCUX_COMPONENT_driver.video-common
+
+# The dbi drivers shall be invisible and selected by board project segment by default
+config MCUX_COMPONENT_driver.dbi_dcif
+    bool
+    select MCUX_COMPONENT_driver.dbi
+    select MCUX_COMPONENT_driver.dcif_1
+
+config MCUX_COMPONENT_driver.dbi_flexio_edma
+    bool
+    select MCUX_COMPONENT_driver.dbi
+    select MCUX_COMPONENT_driver.flexio_mculcd
+    select MCUX_COMPONENT_driver.flexio_mculcd_edma
+
+config MCUX_COMPONENT_driver.dbi_flexio_smartdma
+    bool
+    select MCUX_COMPONENT_driver.dbi
+    select MCUX_COMPONENT_driver.flexio_mculcd
+    select MCUX_COMPONENT_driver.flexio_mculcd_smartdma
+
+config MCUX_COMPONENT_driver.dbi_lcdic_dma
+    bool
+    select MCUX_COMPONENT_driver.dbi
+    select MCUX_COMPONENT_driver.lcdic_dma
+
+config MCUX_COMPONENT_driver.dbi_lcdif
+    bool
+    select MCUX_COMPONENT_driver.dbi
+    select MCUX_COMPONENT_driver.lcdif
+    select MCUX_COMPONENT_driver.mipi_dsi if DBI_USE_MIPI_PANEL && MCUX_HAS_COMPONENT_driver.mipi_dsi
+
+config MCUX_COMPONENT_driver.dbi_lpc_spi_dma
+    bool
+    select MCUX_COMPONENT_driver.dbi
+    select MCUX_COMPONENT_driver.flexcomm_spi_dma
+
+if MCUX_COMPONENT_driver.dbi_lcdif
+
+config DBI_USE_MIPI_PANEL
+    bool "Whether the DBI panel uses MIPI interface"
+    default n
+    help
+        No prefix in generated macro
+endif
+
+menu "Display Controller Frame Buffer Adapters"
+config MCUX_COMPONENT_driver.dc-fb-dsi-cmd
+    bool "DSI command mode"
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.dc-fb-common
+
+config MCUX_COMPONENT_driver.dc-fb-elcdif
+    bool "elcdif"
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.elcdif
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.dc-fb-common
+
+config MCUX_COMPONENT_driver.dc-fb-lcdif
+    bool "lcdif"
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.lcdif
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.dc-fb-common
+
+config MCUX_COMPONENT_driver.dc-fb-lcdifv2
+    bool "lcdifv2"
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.lcdifv2
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.dc-fb-common
+
+config MCUX_COMPONENT_driver.dc-fb-lcdifv3
+    bool "lcdifv3"
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.lcdifv3
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.dc-fb-common
+
+config MCUX_COMPONENT_driver.dc-fb-dcif
+    bool "Use display controller frame buffer adapter for dcif"
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.dcif
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.dc-fb-common
+
+config MCUX_COMPONENT_driver.dc-fb-dcif_1
+    bool "Use display controller frame buffer adapter for dcif_1"
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.dcif_1
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.dc-fb-common
+
+config MCUX_COMPONENT_driver.dc-fb-dbi
+    bool "DBI bus"
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.dbi
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.dc-fb-common
+
+config MCUX_COMPONENT_driver.dc-fb-ssd1963
+    bool "SSD1963"
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.ssd1963
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.dc-fb-common
+endmenu
+
+config MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+    bool
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.mipi_dsi if MCUX_HAS_COMPONENT_driver.mipi_dsi
+    select MCUX_COMPONENT_driver.mipi_dsi_split if MCUX_HAS_COMPONENT_driver.mipi_dsi_split
+    select MCUX_COMPONENT_driver.mipi_dsi_split_1 if MCUX_HAS_COMPONENT_driver.mipi_dsi_split_1
+
+menu "Display Panel Driverss"
+config MCUX_COMPONENT_driver.display-hx8394
+    bool "hx8394"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+
+config MCUX_COMPONENT_driver.display-rm68191
+    bool "rm68191"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+
+config MCUX_COMPONENT_driver.display-rm68200
+    bool "rm68200"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+
+config MCUX_COMPONENT_driver.display-rm67191
+    bool "rm67191"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+
+config MCUX_COMPONENT_driver.display-rm67162
+    bool "rm67162"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+
+config MCUX_COMPONENT_driver.display-co5300
+    bool "co5300"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+
+config MCUX_COMPONENT_driver.display-rm692c9
+    bool "rm692c9"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+
+config MCUX_COMPONENT_driver.display-rpi
+    bool "rpi"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.display-mipi-dsi-cmd
+
+config MCUX_COMPONENT_driver.display-adv7535
+    bool "adv7535"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.video-i2c
+
+config MCUX_COMPONENT_driver.display-sn65dsi83
+    bool "sn65dsi83"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.video-i2c
+
+config MCUX_COMPONENT_driver.display-it6263
+    bool "it6263"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.video-i2c
+
+config MCUX_COMPONENT_driver.display-it6161
+    bool "it6161"
+    select MCUX_COMPONENT_driver.display-common
+    select MCUX_COMPONENT_driver.video-i2c
+endmenu
+
+config MCUX_COMPONENT_driver.camera-common
+    bool
+    select MCUX_COMPONENT_driver.video-common
+
+config MCUX_COMPONENT_driver.camera-device-common
+    bool
+    select MCUX_COMPONENT_driver.camera-common
+
+config MCUX_COMPONENT_driver.camera-device-sccb
+    bool
+    select MCUX_COMPONENT_driver.common
+    select MCUX_COMPONENT_driver.flexcomm_i2c if MCUX_HAS_COMPONENT_driver.flexcomm_i2c
+    select MCUX_COMPONENT_driver.i2c if MCUX_HAS_COMPONENT_driver.i2c
+    select MCUX_COMPONENT_driver.ii2c if MCUX_HAS_COMPONENT_driver.ii2c
+    select MCUX_COMPONENT_driver.lpc_i2c if MCUX_HAS_COMPONENT_driver.lpc_i2c
+    select MCUX_COMPONENT_driver.lpc_i2c_1 if MCUX_HAS_COMPONENT_driver.lpc_i2c_1
+    select MCUX_COMPONENT_driver.lpi2c if MCUX_HAS_COMPONENT_driver.lpi2c
+    select MCUX_COMPONENT_driver.lpflexcomm_lpi2c if MCUX_HAS_COMPONENT_driver.lpflexcomm_lpi2c
+
+menu "Camera Device Drivers"
+config MCUX_COMPONENT_driver.camera-device-ov5640
+    bool "ov5640"
+    select MCUX_COMPONENT_driver.camera-device-common
+    select MCUX_COMPONENT_driver.camera-device-sccb
+
+config MCUX_COMPONENT_driver.camera-device-ov7670
+    bool "ov7670"
+    select MCUX_COMPONENT_driver.camera-device-common
+    select MCUX_COMPONENT_driver.camera-device-sccb
+
+    if MCUX_COMPONENT_driver.camera-device-ov7670
+
+    config OV7670_FREERUNNING_PCLK
+    bool "Enable OV7670 freerunning PCLK"
+    default y if MCUX_COMPONENT_driver.flexio_camera
+    help
+        Enable OV7670 freerunning PCLK, otherwise PCLK is disabled in HBLANK period.
+
+    endif
+
+config MCUX_COMPONENT_driver.camera-device-ov7725
+    bool "ov7725"
+    select MCUX_COMPONENT_driver.camera-device-common
+    select MCUX_COMPONENT_driver.camera-device-sccb
+
+config MCUX_COMPONENT_driver.camera-device-mt9m114
+    bool "mt9m114"
+    select MCUX_COMPONENT_driver.camera-device-common
+    select MCUX_COMPONENT_driver.video-i2c
+
+config MCUX_COMPONENT_driver.camera-device-max9286
+    bool "max9286"
+    select MCUX_COMPONENT_driver.camera-device-common
+    select MCUX_COMPONENT_driver.video-i2c
+
+config MCUX_COMPONENT_driver.camera-device-ap1302
+    bool "ap1302"
+    select MCUX_COMPONENT_driver.camera-device-common
+    select MCUX_COMPONENT_driver.video-i2c
+endmenu
+
+config MCUX_COMPONENT_driver.camera-receiver-common
+    bool
+    select MCUX_COMPONENT_driver.camera-common
+
+menu "Camera Receiver Adapter"
+config MCUX_COMPONENT_driver.camera-receiver-csi
+    bool "csi driver adapter"
+    select MCUX_COMPONENT_driver.camera-receiver-common
+    select MCUX_COMPONENT_driver.csi
+
+config MCUX_COMPONENT_driver.camera-receiver-isi
+    bool "isi driver adapter"
+    select MCUX_COMPONENT_driver.camera-receiver-common
+    select MCUX_COMPONENT_driver.isi
+
+config MCUX_COMPONENT_driver.camera-receiver-flexio
+    bool "flexio camera driver adapter"
+    select MCUX_COMPONENT_driver.camera-receiver-common
+    select MCUX_COMPONENT_driver.flexio_camera_edma
+endmenu

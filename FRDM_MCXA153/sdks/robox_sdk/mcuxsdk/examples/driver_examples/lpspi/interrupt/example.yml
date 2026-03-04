@@ -1,0 +1,19 @@
+lpspi_interrupt:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lpspi/interrupt
+    project-root-path: boards/${board}/driver_examples/lpspi/interrupt/${multicore_foldername}
+    document:
+      name: lpspi_interrupt${core_id_suffix_name}
+      category: driver_examples/lpspi
+      brief: The lpspi_functional_interrupt example shows how to use LPSPI driver
+        in interrupt way:In this example , one lpspi instance used as LPSPI master
+        and another lpspi instance used as LPSPI slave .1. LPSPI master send/received
+        data to/from LPSPI slave in interrupt . (LPSPI Slave using interrupt to receive/send
+        the data)
+      example_readme:
+      - examples/driver_examples/lpspi/interrupt/readme.md
+      - ${board_root}/${board}/driver_examples/lpspi/interrupt/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

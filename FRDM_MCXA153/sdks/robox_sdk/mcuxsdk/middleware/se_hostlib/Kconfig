@@ -1,0 +1,175 @@
+#
+# Copyright 2024,2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
+
+menu "SE Hostlib"
+
+    menu "SE05X Libraries"
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonSe050
+        bool "SE050 Library"
+        default n
+        help
+            Common SE050 hostlib and sss library files
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_ksdk
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050smCom
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050infra
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_sss_ex
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_CurrentApplet
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_Scp03
+        select MCUX_COMPONENT_middleware.se_hostlib.mwlog
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonSe050_mcxa
+        bool "SE05X Library for Low Power MCUs (MCXA153)"
+        default n
+        help
+            Common SE050 hostlib and sss library files for Low Power MCUs (MCXA153 - SCP Excluded)
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_ksdk
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050smCom
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050infra
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_sss_ex
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_CurrentApplet
+        select MCUX_COMPONENT_middleware.se_hostlib.mwlog
+
+    endmenu
+
+    menu "SE05X Components"
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonSe050_ksdk
+        bool "Host MCU Drivers"
+        default n
+        help
+            Host MCU driver files
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonSe050smCom
+        bool "Secure MW Communication"
+        default n
+        help
+            Secure Middleware Communication Files
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonSe050infra
+        bool "Utilities"
+        default n
+        help
+            Common Utilities
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonSe050_sss_ex
+        bool "Bootup"
+        default n
+        help
+            Host Bootup files
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonSe050_CurrentApplet
+        bool "Current Applet Support"
+        default n
+        help
+            Current Applet Support
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonSe050_Scp03
+        bool "Secure Channel Protocol (SCP-03)"
+        default n
+        help
+            Add Platfrom SCP-03 support
+
+    config MCUX_COMPONENT_middleware.se_hostlib.serial_manager_usb_cdc
+        bool "Serial Manager USB_CDC"
+        default n
+        help
+            Serial Manager USB_CDC
+        select MCUX_COMPONENT_middleware.usb.device.cdc.external
+
+    config MCUX_COMPONENT_middleware.se_hostlib.mwlog
+        bool "MW Log"
+        default n
+        help
+            Middleware logs
+
+    config MCUX_COMPONENT_middleware.se_hostlib.mbedtls_alt_demo_common
+        bool "mbedtls Alt"
+        default n
+        help
+            Mbedtls Alt
+
+    config MCUX_COMPONENT_middleware.se_hostlib.tstutils
+        bool "Hostlib Utilities"
+        default n
+        help
+            Hostlib Time Utilities
+        select MCUX_COMPONENT_middleware.se_hostlib.tstutils.time
+
+    config MCUX_COMPONENT_middleware.se_hostlib.tstutils.time
+        bool "Hostlib Time Utilities"
+        default n
+        help
+            Hostlib Time Utilities
+
+    endmenu
+
+    menu "SE05X Secure Subsystem"
+
+    config MCUX_COMPONENT_middleware.se_hostlib.mbedtls_sss
+        bool "mbedtls SSS ALT"
+        default n
+        help
+            Include Mbedtls SSS ALT
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050
+        select MCUX_COMPONENT_middleware.se_hostlib.mbedtls_alt_demo_common
+
+    config MCUX_COMPONENT_middleware.se_hostlib.mbedtls_sss_mcx
+        bool "mbedtls SSS ALT for MCXN MCUs"
+        default n
+        help
+            Include Mbedtls ALT for MCXN MCUs
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_sss_ex
+
+    config MCUX_COMPONENT_middleware.se_hostlib.sss_lp
+        bool "SSS for Low Power MCUs (MCXA)"
+        default n
+        help
+            Include Secure Subsystem files for Low Power MCUs (MCXA153)
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_mcxa
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050_sss_ex
+
+    endmenu
+
+    menu "SE05X Cloud Demos"
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonSe050CloudDemos
+        bool "Cloud Library"
+        default n
+        help
+            Common files for cloud demos
+        select MCUX_COMPONENT_middleware.se_hostlib.commonSe050
+        select MCUX_COMPONENT_middleware.se_hostlib.commonCloudDemos
+        select MCUX_COMPONENT_middleware.se_hostlib.mbedtls_sss
+
+    config MCUX_COMPONENT_middleware.se_hostlib.commonCloudDemos
+        bool "Freertos"
+        default n
+        help
+            Include  Freertos and PKCS for cloud demos
+        select MCUX_COMPONENT_middleware.freertos.coremqtt
+        select MCUX_COMPONENT_middleware.pkcs11
+        select MCUX_COMPONENT_middleware.freertos.backoffalgorithm
+
+    config MCUX_COMPONENT_middleware.se_hostlib.cloud_Wifi
+        bool "Wifi"
+        default n
+        help
+            Include Wifi for cloud demo
+        select MCUX_COMPONENT_driver.flexcomm_i2c_freertos
+        select MCUX_COMPONENT_middleware.freertos-kernel.cm33_non_trustzone
+
+    endmenu
+
+endmenu
+
+if MCUX_COMPONENT_middleware.se_hostlib.commonCloudDemos
+    choice MCUX_MISC_middleware.freertos-kernel.dynamic_allocator.selection
+        default MCUX_COMPONENT_middleware.freertos-kernel.heap_4
+    endchoice
+endif

@@ -1,0 +1,18 @@
+pxp_blend:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pxp/blend
+    project-root-path: boards/${board}/driver_examples/pxp/blend/${multicore_foldername}
+    document:
+      name: pxp_blend${core_id_suffix_name}
+      category: driver_examples/pxp
+      brief: The PXP blend project shows how to blend process surface and alpha surface
+        usingPXP. If this example runs correctly, you will see two rectangles moving
+        in thescreen. One rectangle is process surface output, and the other is alpha
+        surfaceoutput, the overlay region color is OR'ed value of process surface
+        and alpha surface.
+      example_readme:
+      - examples/driver_examples/pxp/blend/readme.md
+      - ${board_root}/${board}/driver_examples/pxp/blend/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

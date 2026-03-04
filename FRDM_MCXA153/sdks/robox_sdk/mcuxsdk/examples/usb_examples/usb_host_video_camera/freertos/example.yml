@@ -1,0 +1,24 @@
+host_video_camera_freertos:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_host_video_camera/freertos/.
+    project-root-path: boards/${board}/usb_examples/usb_host_video_camera/freertos/${multicore_foldername}
+    document:
+      name: host_video_camera_freertos${core_id_suffix_name}
+      category: usb_examples
+      brief: The application supports to get JPEG image from camera function.
+      example_readme:
+      - examples/usb_examples/usb_host_video_camera/readme.md
+      - ${board_root}/${board}/usb_examples/usb_host_video_camera/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_host_video_camera/com_port.jpg
+      - examples/usb_examples/usb_host_video_camera/host_video_camera_example.jpg
+      - examples/usb_examples/usb_host_video_camera/host_video_camera_initialization_bm.jpg
+      - examples/usb_examples/usb_host_video_camera/host_video_camera_work_flow.jpg
+      - examples/usb_examples/usb_host_video_camera/host_video_camera_write_sdcard_bm.jpg
+      - examples/usb_examples/usb_host_video_camera/host_video_transfer_callback_work_flow.jpg
+      - examples/usb_examples/usb_host_video_camera/host_video_transfer_callback_work_flow_bm.jpg
+      - examples/usb_examples/usb_host_video_camera/putty_open.jpg
+      - examples/usb_examples/usb_host_video_camera/sdcard_insert.jpg
+      - examples/usb_examples/usb_host_video_camera/yuv_open.jpg
+  boards: {}

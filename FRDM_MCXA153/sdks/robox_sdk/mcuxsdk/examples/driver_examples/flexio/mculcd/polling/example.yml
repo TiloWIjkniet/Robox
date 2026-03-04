@@ -1,0 +1,15 @@
+flexio_mculcd_polling:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexio/mculcd/polling
+    project-root-path: boards/${board}/driver_examples/flexio/mculcd/polling/${multicore_foldername}
+    document:
+      name: flexio_mculcd_polling${core_id_suffix_name}
+      category: driver_examples/flexio
+      brief: The flexio_mculcd_polling example shows how to use flexio mculcd driver
+        polling APIs to drive MCU LCD panel.
+      example_readme:
+      - examples/driver_examples/flexio/mculcd/polling/readme.md
+      - ${board_root}/${board}/driver_examples/flexio/mculcd/polling/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

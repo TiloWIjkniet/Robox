@@ -1,0 +1,18 @@
+freertos_swtimer:
+  section-type: application
+  contents:
+    meta_path: examples/freertos_examples/freertos_swtimer
+    project-root-path: boards/${board}/freertos_examples/freertos_swtimer/${multicore_foldername}
+    document:
+      name: freertos_swtimer${core_id_suffix_name}
+      category: freertos_examples
+      brief: This document explains the freertos_swtimer example. It shows usage of
+        software timer and itscallback.The example application creates one software
+        timer SwTimer. The timer's callback SwTimerCallback isperiodically executed
+        and text "Tick." is printed to terminal.
+      example_readme:
+      - examples/freertos_examples/freertos_swtimer/readme.md
+      - ${board_root}/${board}/freertos_examples/freertos_swtimer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

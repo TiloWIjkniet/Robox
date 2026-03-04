@@ -1,0 +1,14 @@
+
+
+/*!
+@defgroup otp OTP: One-Time Programmable memory and API
+@details The MCUXpresso SDK provides a peripheral driver for the OTP module of MCUXpresso SDK devices.
+
+The main clock has to be set to a frequency stated in user manual prior to using OTP driver.
+OTP memory is manipulated by calling provided API stored in ROM. MCUXpresso SDK driver encapsulates this.
+
+# OTP example {#OTPExample}
+
+This example shows how to write to OTP.
+
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/otp*/

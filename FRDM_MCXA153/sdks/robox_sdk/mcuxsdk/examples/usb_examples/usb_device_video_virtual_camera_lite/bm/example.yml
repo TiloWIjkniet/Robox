@@ -1,0 +1,20 @@
+dev_video_virtual_camera_lite_bm:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_device_video_virtual_camera_lite/bm/.
+    project-root-path: boards/${board}/usb_examples/usb_device_video_virtual_camera_lite/bm/${multicore_foldername}
+    document:
+      name: dev_video_virtual_camera_lite_bm${core_id_suffix_name}
+      category: usb_examples
+      brief: The USB video virtual camera application is a simple demonstration program
+        based on the MCUXpresso SDK.It is enumerated as a camera and users can see
+        the video of the device by using a PC test tool.
+      example_readme:
+      - examples/usb_examples/usb_device_video_virtual_camera_lite/readme.md
+      - ${board_root}/${board}/usb_examples/usb_device_video_virtual_camera_lite/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_device_video_virtual_camera_lite/usb_device_video_test_tool_attached.jpg
+      - examples/usb_examples/usb_device_video_virtual_camera_lite/usb_device_video_test_tool_web.jpg
+      - examples/usb_examples/usb_device_video_virtual_camera_lite/usb_device_video_test_tool_windows.jpg
+  boards:
+    frdmmcxa153: []

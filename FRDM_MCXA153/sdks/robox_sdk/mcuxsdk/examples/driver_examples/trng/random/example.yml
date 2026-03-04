@@ -1,0 +1,18 @@
+trng_random:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/trng/random
+    project-root-path: boards/${board}/driver_examples/trng/random/${multicore_foldername}
+    document:
+      name: trng_random${core_id_suffix_name}
+      category: driver_examples/trng
+      brief: The True Random Number Generator (TRNG) is a hardware accelerator module
+        that generates a 512-bitentropy as needed by an entropy consuming module or
+        by other post processing functions. The TRNGExample project is a demonstration
+        program that uses the KSDK software to generate random numbersand prints them
+        to the terminal.
+      example_readme:
+      - examples/driver_examples/trng/random/readme.md
+      - ${board_root}/${board}/driver_examples/trng/random/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

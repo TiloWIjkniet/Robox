@@ -1,0 +1,11 @@
+/*!
+@defgroup mcm MCM: Miscellaneous Control Module
+@details The (MCM) provides a myriad of miscellaneous control functions.
+
+This driver covers such features:
+
+- Program-visible information on the platform configuration and revision
+- Error status and interrupts for the cache write buffer
+- Error status and interrupts for the core's floating-point unit (FPU)
+
+*/

@@ -1,0 +1,16 @@
+pxp_color_key:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pxp/color_key
+    project-root-path: boards/${board}/driver_examples/pxp/color_key/${multicore_foldername}
+    document:
+      name: pxp_color_key${core_id_suffix_name}
+      category: driver_examples/pxp
+      brief: The PXP color key project shows how to use the AS color key together
+        with the alpha blend. In this example, the AS pixel format is RGB565, the
+        global alpha is used for alpha blend.
+      example_readme:
+      - examples/driver_examples/pxp/color_key/readme.md
+      - ${board_root}/${board}/driver_examples/pxp/color_key/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

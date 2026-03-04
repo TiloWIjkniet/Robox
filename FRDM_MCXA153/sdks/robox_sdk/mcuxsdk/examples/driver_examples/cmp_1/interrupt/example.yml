@@ -1,0 +1,14 @@
+cmp_1_interrupt:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/cmp_1/interrupt
+    project-root-path: boards/${board}/driver_examples/cmp/interrupt/${multicore_foldername}
+    document:
+      name: cmp_1_interrupt${core_id_suffix_name}
+      category: driver_examples/cmp
+      brief: The CMP interrupt Example shows how to use interrupt with CMP driver.
+      example_readme:
+      - examples/driver_examples/cmp_1/interrupt/readme.md
+      - ${board_root}/${board}/driver_examples/cmp/interrupt/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

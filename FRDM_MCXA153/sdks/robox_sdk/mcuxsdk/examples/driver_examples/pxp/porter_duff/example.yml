@@ -1,0 +1,19 @@
+pxp_porter_duff:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pxp/porter_duff
+    project-root-path: boards/${board}/driver_examples/pxp/porter_duff/${multicore_foldername}
+    document:
+      name: pxp_porter_duff${core_id_suffix_name}
+      category: driver_examples/pxp
+      brief: This example shows how to use the PXP Porter Duff compositing. In this
+        example, A blue rectangle is in the left up corner of the destination surface
+        (also named PS surface, or s0 in reference mannal). A red rectangle is in
+        the center of the source surface (also named AS surface, or s1 in reference
+        mannal). When press any key in the terminal, the Porter Duff mode changes
+        and the panel shows the result.
+      example_readme:
+      - examples/driver_examples/pxp/porter_duff/readme.md
+      - ${board_root}/${board}/driver_examples/pxp/porter_duff/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

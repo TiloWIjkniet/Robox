@@ -1,0 +1,19 @@
+# Copyright 2024-2025 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+menuconfig MCUX_COMPONENT_component.smbus
+    bool "smbus"
+    select MCUX_COMPONENT_component.smbus.port_pn_i2c
+
+if MCUX_COMPONENT_component.smbus
+    config MCUX_COMPONENT_component.smbus_event
+        bool "event"
+        select MCUX_COMPONENT_component.osa
+
+    config MCUX_COMPONENT_component.smbus.port_pn_i2c
+        bool "port pn i2c"
+        select MCUX_COMPONENT_driver.i2c_gpdma
+        select MCUX_COMPONENT_driver.i2c
+        select MCUX_COMPONENT_driver.gpdma
+        select MCUX_COMPONENT_component.smbus_event
+endif

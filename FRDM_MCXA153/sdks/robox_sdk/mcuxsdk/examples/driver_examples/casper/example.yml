@@ -1,0 +1,15 @@
+casper:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/casper
+    project-root-path: boards/${board}/driver_examples/casper/${multicore_foldername}
+    document:
+      name: casper${core_id_suffix_name}
+      category: driver_examples/casper
+      brief: The CASPER Example project is a demonstration program that uses the KSDK
+        software to calculate RSA.
+      example_readme:
+      - examples/driver_examples/casper/readme.md
+      - ${board_root}/${board}/driver_examples/casper/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

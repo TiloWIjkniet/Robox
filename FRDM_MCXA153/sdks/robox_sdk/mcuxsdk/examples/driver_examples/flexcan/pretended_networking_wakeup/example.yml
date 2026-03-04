@@ -1,0 +1,19 @@
+flexcan_pretended_networking_wakeup:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexcan/pretended_networking_wakeup
+    project-root-path: boards/${board}/driver_examples/flexcan/pretended_networking_wakeup/${multicore_foldername}
+    document:
+      name: flexcan_pretended_networking_wakeup${core_id_suffix_name}
+      category: driver_examples/flexcan
+      brief: The flexcan_pretended_networking_wakeup example shows how to wake up
+        FLEXCAN module from Pretended Networking mode:In this example, 2 boards are
+        connected through CAN bus. Endpoint A(board A) send a CAN Message to Endpoint
+        B(board B) when user press space key in terminal. Endpoint B will wake up
+        from STOP mode after receive 4 specific frame, and print the message content
+        to terminal.
+      example_readme:
+      - examples/driver_examples/flexcan/pretended_networking_wakeup/readme.md
+      - ${board_root}/${board}/driver_examples/flexcan/pretended_networking_wakeup/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

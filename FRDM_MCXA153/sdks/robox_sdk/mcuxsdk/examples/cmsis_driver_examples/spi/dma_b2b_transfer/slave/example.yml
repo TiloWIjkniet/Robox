@@ -1,0 +1,18 @@
+cmsis_spi_dma_b2b_transfer_slave:
+  section-type: application
+  contents:
+    meta_path: examples/cmsis_driver_examples/spi/dma_b2b_transfer/slave
+    project-root-path: boards/${board}/cmsis_driver_examples/spi/dma_b2b_transfer/slave/${multicore_foldername}
+    document:
+      name: cmsis_spi_dma_b2b_transfer_slave${core_id_suffix_name}
+      category: cmsis_driver_examples/spi
+      brief: 'The spi_dma_b2b_transfer example shows how to use SPI CMSIS driver in
+        dma way:In this example , we need two boards, one board used as SPI master
+        and another board used as SPI slave.The file ''spi_dma_b2b_transfer_slave.c''
+        includes the SPI slave code.1. SPI master send/received data to/from SPI slave
+        in dma . '
+      example_readme:
+      - examples/cmsis_driver_examples/spi/dma_b2b_transfer/slave/readme.md
+      - ${board_root}/${board}/cmsis_driver_examples/spi/dma_b2b_transfer/slave/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

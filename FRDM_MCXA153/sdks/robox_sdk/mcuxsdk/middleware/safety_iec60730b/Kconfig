@@ -1,0 +1,59 @@
+### Safety IEC60730 class B library
+
+menuconfig MCUX_COMPONENT_middleware.safety
+    bool "Safety IEC60730b"
+    help
+        Safety IEC60730 class B library.
+
+    if MCUX_COMPONENT_middleware.safety
+
+### Generate configuration
+
+        config MCUX_PRJSEG_middleware.safety.generated_config
+            bool "Generate configuration file"
+            select SAFETY_GENERATED_CONFIGURATION
+            default y
+            help
+				Generate default defines based on the used device. 
+				Otherwise user needs to provide his own device_information.h.
+
+        # Generate configuration header file
+        if MCUX_PRJSEG_middleware.safety.generated_config
+
+            menu "Configuration header (device_information.h)"
+
+                config SAFETY_GENERATED_CONFIGURATION
+                    bool
+                    default y
+                    help
+                        Used generated Safety IEC60730b device_information.h header.
+                        No prefix in generated macro
+
+                config FPU_SUPPORT			 
+					int "FPU"
+					default 0 if MCUX_HW_NO_FPU
+					default 1 if !MCUX_HW_NO_FPU				 
+                    help
+						No prefix in generated macro
+						Set to 1 if device has FPU, or 0 if FPU is not available.
+ 
+               config DSP_SUPPORT
+					int "DSP"
+					default 0 if !MCUX_HW_DSP
+					default 1 if MCUX_HW_DSP
+					help
+						No prefix in generated macro
+						Set to 1 if device has DSP, or 0 if DSP is not available.
+						
+               config TZ_SUPPORT
+					int "TrustZone"
+					default 0 if !MCUX_HW_SAU
+					default 1 if MCUX_HW_SAU
+					help
+						No prefix in generated macro
+						Set to 1 if device has TrustZone, or 0 if TrustZone is not available.
+			
+            endmenu
+
+        endif
+    endif

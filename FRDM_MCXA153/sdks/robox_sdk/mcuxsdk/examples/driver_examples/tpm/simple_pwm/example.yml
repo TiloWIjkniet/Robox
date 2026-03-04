@@ -1,0 +1,18 @@
+tpm_simple_pwm:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/tpm/simple_pwm
+    project-root-path: boards/${board}/driver_examples/tpm/simple_pwm/${multicore_foldername}
+    document:
+      name: tpm_simple_pwm${core_id_suffix_name}
+      category: driver_examples/tpm
+      brief: The TPM project is a simple demonstration program of the SDK TPM driver.
+        It sets up the TPMhardware block to output a center-aligned PWM signal. The
+        PWM dutycycle is manually updated.On boards that have an LED connected to
+        the TPM pins, the user will see a change in LEDbrightness if user enter different
+        values.
+      example_readme:
+      - examples/driver_examples/tpm/simple_pwm/readme.md
+      - ${board_root}/${board}/driver_examples/tpm/simple_pwm/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

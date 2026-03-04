@@ -1,0 +1,16 @@
+pxp_flip:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pxp/flip
+    project-root-path: boards/${board}/driver_examples/pxp/flip/${multicore_foldername}
+    document:
+      name: pxp_flip${core_id_suffix_name}
+      category: driver_examples/pxp
+      brief: The PXP flip project shows how to use the PXP flip function. If this
+        exampleruns correctly, you will see a square with three color(red, green and
+        blue).The flip mode is changing.
+      example_readme:
+      - examples/driver_examples/pxp/flip/readme.md
+      - ${board_root}/${board}/driver_examples/pxp/flip/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

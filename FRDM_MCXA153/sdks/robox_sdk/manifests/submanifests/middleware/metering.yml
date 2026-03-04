@@ -1,0 +1,23 @@
+manifest:
+  remotes:
+  - name: nxp
+    url-base: https://github.com/NXP
+  - name: nxp-zephyr
+    url-base: https://github.com/nxp-zephyr
+  - name: nxp-mcuxpresso
+    url-base: https://github.com/nxp-mcuxpresso
+  defaults:
+    remote: nxp-mcuxpresso
+  projects:
+  - name: metering
+    userdata:
+      owner: pavel.rech@nxp.com
+      track_branch: main_github
+      branch_flow: false
+      display_name: Metering
+      description: Metering Library
+    path: mcuxsdk/middleware/metering
+    revision: 149308be7bef7ea231ee1557eb79da16022a3c2e
+    repo-path: mcux-metering
+    groups:
+    - metering

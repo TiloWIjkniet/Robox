@@ -1,0 +1,14 @@
+powerquad_transform:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/powerquad/transform
+    project-root-path: boards/${board}/driver_examples/powerquad/transform/${multicore_foldername}
+    document:
+      name: powerquad_transform${core_id_suffix_name}
+      category: driver_examples/powerquad
+      brief: This example shows how to use powerquad driver transform functions.
+      example_readme:
+      - examples/driver_examples/powerquad/transform/readme.md
+      - ${board_root}/${board}/driver_examples/powerquad/transform/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

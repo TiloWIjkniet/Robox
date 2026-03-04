@@ -1,0 +1,14 @@
+usart_transfer_interrupt:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lpc_miniusart/transfer_interrupt
+    project-root-path: boards/${board}/driver_examples/usart/transfer_interrupt/${multicore_foldername}
+    document:
+      name: usart_transfer_interrupt${core_id_suffix_name}
+      category: driver_examples/usart
+      brief: usart_transfer_interrupt
+      example_readme:
+      - examples/driver_examples/lpc_miniusart/transfer_interrupt/readme.md
+      - ${board_root}/${board}/driver_examples/usart/transfer_interrupt/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

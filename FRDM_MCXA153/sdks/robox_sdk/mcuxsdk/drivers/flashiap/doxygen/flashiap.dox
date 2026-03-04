@@ -1,0 +1,20 @@
+
+
+/*!
+@defgroup flashiap_driver FLASHIAP: Flash In Application Programming Driver
+@details The MCUXpresso SDK provides a driver for the Flash In Application Programming (FLASHIAP).
+ @n
+It provides a set of functions to call the on-chip in application flash programming interface. User code executing from on-chip flash or RAM can call these function to erase and write the flash memory.
+ @n
+
+
+# GFlash In Application Programming operation {#FLASHIAPInit}
+
+FLASHIAP_PrepareSectorForWrite() prepares a sector for write or erase operation.
+
+FLASHIAP_CopyRamToFlash() function programs the flash memory.
+
+FLASHIAP_EraseSector() function erase a flash sector. A sector must be erased before write operation.
+
+# Typical use case {#FLASHIAPTypUC}
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/flashiap*/

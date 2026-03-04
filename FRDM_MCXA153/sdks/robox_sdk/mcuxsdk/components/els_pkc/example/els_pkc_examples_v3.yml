@@ -1,0 +1,617 @@
+# yaml-language-server: $schema=../../../../../../../../bin/generator/sdk_generator/data/sdk_data_schema/v3/software_set_and_project_schema.json
+
+__hierarchy__:
+  tmp_els_pkc_examples_lpc_settings:
+    section-type: application
+    belong_to:
+      kex_package: set.board.${board}
+      cmsis_pack: set.board.${board}.els_pkc
+    dependency:
+    - driver.common
+    - driver.clock
+    - driver.power
+    - driver.power_no_lib
+    - driver.reset
+    contents:
+      configuration:
+        tools:
+          __common__:
+            config:
+              __common__: {}
+              debug:
+                cc-define:
+                  DEBUG: 
+                cx-define:
+                  DEBUG: 
+          iar:
+            config:
+              __common__: 
+              release: {}
+          mdk:
+            config:
+              release: {}
+      modules:
+        boardset:
+          required: true
+          cc-include:
+          - path: boards/${board}
+            package_path: project-root-path
+            project_path: board
+          files:
+          - source: boards/${board}/board.c
+            package_path: project-root-path
+            project_path: board
+          - source: boards/${board}/board.h
+            package_path: project-root-path
+            project_path: board
+          - source: boards/${board}/clock_config.c
+            package_path: project-root-path
+            project_path: board
+          - source: boards/${board}/clock_config.h
+            package_path: project-root-path
+            project_path: board
+        device_configuration_data:
+          required: false
+          cc-include:
+          - path: boards/${board}
+            package_path: project-root-path
+            project_path: board
+          files:
+          - source: boards/${board}/dcd.c
+            package_path: project-root-path
+            project_path: board
+          - source: boards/${board}/dcd.h
+            package_path: project-root-path
+            project_path: board
+        readme:
+          files:
+          - source: project-root-path/readme.txt
+            toolchains: iar mdk mcux armgcc
+            project_path: doc
+els_pkc_common:
+  section-type: application
+  belong_to:
+    kex_package: set.board.${board}
+    cmsis_pack: set.board.${board}.els_pkc
+  dependency:
+  - component.els_pkc
+  - component.els_pkc.examples
+  contents:
+    configuration:
+      tools:
+        mdk:
+          config:
+            __common__:
+              cc-flags:
+              - "-Wno-tautological-constant-compare"
+    document:
+      name: els_pkc_common
+      readme:
+      - boards/${board}/els_pkc_examples/els_pkc_common/board.readme
+      - components/els_pkc/example/els_pkc_common/els_pkc_common.readme
+      category: els_pkc_examples
+      brief: The ELS PKC application provides examples which demonstrate usage of common features including PRNG and a crypto library lightweight testing.
+    project-root-path: boards/${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}
+  # configuration:
+    # tools:
+      # __common__:
+        # config:
+          # __common__: {}
+      # iar:
+        # config:
+          # __common__:
+            # ad-flags:
+            # - __stack_size__=0x1000
+            # - __heap_size__=0x2000
+      # mcux:
+        # config:
+          # __common__:
+            # ad-flags:
+            # - "-Xlinker --defsym=__stack_size__=0x1000"
+            # - "-Xlinker --defsym=__heap_size__=0x2000"
+      # mdk:
+        # config:
+          # __common__:
+            # ad-flags:
+            # - --predefine="-D__stack_size__=0x1000"
+            # - --predefine="-D__heap_size__=0x2000"
+      # armgcc:
+        # config:
+          # __common__:
+            # ad-flags:
+            # - "-Xlinker --defsym=__stack_size__=0x1000"
+            # - "-Xlinker --defsym=__heap_size__=0x2000"
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_pkc_common
+          package_path: boards/${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}
+          project_path: board
+        files:
+        - source: components/els_pkc/example/els_pkc_common/els_pkc_common.c
+          merge-to-main: main
+          package_path: boards/${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}
+          project_path: main
+        - source: components/els_pkc/example/els_pkc_common/els_pkc_common.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}
+          project_path: main
+        - source: boards/${board}/els_pkc_examples/els_pkc_common/pin_mux.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/els_pkc_examples/els_pkc_common/pin_mux.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}
+          project_path: "${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}"
+        files:
+        - source: boards/${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}"
+        - source: boards/${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_pkc_common/${multicore_foldername}"
+els_symmetric:
+  section-type: application
+  belong_to:
+    kex_package: set.board.${board}
+    cmsis_pack: set.board.${board}.els_pkc
+  dependency:
+  - component.els_pkc
+  - component.els_pkc.examples
+  contents:
+    configuration:
+      tools:
+        mdk:
+          config:
+            __common__:
+              cc-flags:
+              - "-Wno-tautological-constant-compare"
+    document:
+      name: els_symmetric
+      readme:
+      - boards/${board}/els_pkc_examples/els_symmetric/board.readme
+      - components/els_pkc/example/els_symmetric/els_symmetric.readme
+      category: els_pkc_examples
+      brief: The ELS PKC application provides examples which demonstrate usage of symmetric algorithms and a crypto library lightweight testing.
+    project-root-path: boards/${board}/els_pkc_examples/els_symmetric/${multicore_foldername}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_symmetric
+          package_path: boards/${board}/els_pkc_examples/els_symmetric/${multicore_foldername}
+          project_path: board
+        files:
+        - source: components/els_pkc/example/els_symmetric/els_symmetric.c
+          merge-to-main: main
+          package_path: boards/${board}/els_pkc_examples/els_symmetric/${multicore_foldername}
+          project_path: main
+        - source: components/els_pkc/example/els_symmetric/els_symmetric.h
+          package_path: boards/${board}/els_pkc_examples/els_symmetric/${multicore_foldername}
+          project_path: main
+        - source: boards/${board}/els_pkc_examples/els_symmetric/pin_mux.c
+          package_path: boards/${board}/els_pkc_examples/els_symmetric/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/els_pkc_examples/els_symmetric/pin_mux.h
+          package_path: boards/${board}/els_pkc_examples/els_symmetric/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_symmetric/${multicore_foldername}
+          project_path: "${board}/els_pkc_examples/els_symmetric/${multicore_foldername}"
+        files:
+        - source: boards/${board}/els_pkc_examples/els_symmetric/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_symmetric/${multicore_foldername}"
+        - source: boards/${board}/els_pkc_examples/els_symmetric/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_symmetric/${multicore_foldername}"
+els_hash:
+  section-type: application
+  belong_to:
+    kex_package: set.board.${board}
+    cmsis_pack: set.board.${board}.els_pkc
+  dependency:
+  - component.els_pkc
+  - component.els_pkc.examples
+  contents:
+    configuration:
+      tools:
+        iar:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - __stack_size__=0x1000
+        mdk:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - --predefine="-D__stack_size__=0x1000"
+              cc-flags:
+              - "-Wno-tautological-constant-compare"
+    document:
+      name: els_hash
+      readme:
+      - boards/${board}/els_pkc_examples/els_hash/board.readme
+      - components/els_pkc/example/els_hash/els_hash.readme
+      category: els_pkc_examples
+      brief: The ELS PKC application provides examples which demonstrate usage of hash algorithms and a crypto library lightweight testing.
+    project-root-path: boards/${board}/els_pkc_examples/els_hash/${multicore_foldername}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_hash
+          package_path: boards/${board}/els_pkc_examples/els_hash/${multicore_foldername}
+          project_path: board
+        files:
+        - source: components/els_pkc/example/els_hash/els_hash.c
+          merge-to-main: main
+          package_path: boards/${board}/els_pkc_examples/els_hash/${multicore_foldername}
+          project_path: main
+        - source: components/els_pkc/example/els_hash/els_hash.h
+          package_path: boards/${board}/els_pkc_examples/els_hash/${multicore_foldername}
+          project_path: main
+        - source: boards/${board}/els_pkc_examples/els_hash/pin_mux.c
+          package_path: boards/${board}/els_pkc_examples/els_hash/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/els_pkc_examples/els_hash/pin_mux.h
+          package_path: boards/${board}/els_pkc_examples/els_hash/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_hash/${multicore_foldername}
+          project_path: "${board}/els_pkc_examples/els_hash/${multicore_foldername}"
+        files:
+        - source: boards/${board}/els_pkc_examples/els_hash/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_hash/${multicore_foldername}"
+        - source: boards/${board}/els_pkc_examples/els_hash/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_hash/${multicore_foldername}"
+els_pkc_asymmetric:
+  section-type: application
+  belong_to:
+    kex_package: set.board.${board}
+    cmsis_pack: set.board.${board}.els_pkc
+  dependency:
+  - component.els_pkc
+  - component.els_pkc.examples
+  contents:
+    configuration:
+      tools:
+        iar:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - __stack_size__=0x1000
+        mdk:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - --predefine="-D__stack_size__=0x1000"
+              cc-flags:
+              - "-Wno-tautological-constant-compare"
+        armgcc:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - "-Xlinker --defsym=__stack_size__=0x1000"
+        mcux:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - "-Xlinker --defsym=__stack_size__=0x1000"
+    document:
+      name: els_pkc_asymmetric
+      readme:
+      - boards/${board}/els_pkc_examples/els_pkc_asymmetric/board.readme
+      - components/els_pkc/example/els_pkc_asymmetric/els_pkc_asymmetric.readme
+      category: els_pkc_examples
+      brief: The ELS PKC application provides examples which demonstrate usage of asymmetric algorithms and a crypto library lightweight testing.
+    project-root-path: boards/${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_pkc_asymmetric
+          package_path: boards/${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}
+          project_path: board
+        files:
+        - source: components/els_pkc/example/els_pkc_asymmetric/els_pkc_asymmetric.c
+          merge-to-main: main
+          package_path: boards/${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}
+          project_path: main
+        - source: components/els_pkc/example/els_pkc_asymmetric/els_pkc_asymmetric.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}
+          project_path: main
+        - source: boards/${board}/els_pkc_examples/els_pkc_asymmetric/pin_mux.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/els_pkc_examples/els_pkc_asymmetric/pin_mux.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}
+          project_path: "${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}"
+        files:
+        - source: boards/${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}"
+        - source: boards/${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_pkc_asymmetric/${multicore_foldername}"
+els_pkc_fips_st:
+  section-type: application
+  belong_to:
+    kex_package: set.board.${board}
+    cmsis_pack: set.board.${board}.els_pkc
+  dependency:
+  - component.els_pkc
+  - component.els_pkc.examples
+  - middleware.mbedtls3x
+  contents:
+    configuration:
+      tools:
+        __common__:
+          config:
+            __common__: {}
+        iar:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - __stack_size__=0x4000
+                - __heap_size__=0x8000
+        mdk:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - --predefine="-D__stack_size__=0x4000"
+                - --predefine="-D__heap_size__=0x8000"
+              cc-flags:
+              - "-Wno-tautological-constant-compare"
+        armgcc:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - "-Xlinker --defsym=__stack_size__=0x4000"
+                - "-Xlinker --defsym=__heap_size__=0x8000"
+        mcux:
+          config:
+            __common__:
+              __replace__:
+                ad-flags:
+                - "-Xlinker --defsym=__stack_size__=0x4000"
+                - "-Xlinker --defsym=__heap_size__=0x8000"
+    document:
+      name: els_pkc_fips_st
+      readme:
+      - boards/${board}/els_pkc_examples/els_pkc_fips_st/board.readme
+      - components/els_pkc/example/els_pkc_fips_st/els_pkc_fips_st.readme
+      category: els_pkc_examples
+      brief: This application is executing tests using els_pkc crypto library on RW61x board w.r.t. the NIST Cryptographic Algorithm Validation Program (CAVP).
+    project-root-path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_pkc_fips_st
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: board
+        - path: components/els_pkc/example/els_pkc_fips_st/inc
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: main
+        - path: components/els_pkc/example/els_pkc_fips_st/inc/test_vectors
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: main
+        files:
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_st.c
+          merge-to-main: main
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_cipher.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_cipher.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_ecdsa.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_ecdsa.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_rsa.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_rsa.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_hash.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_hash.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_mac.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_mac.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_drbg.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_drbg.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_key_gen.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_key_gen.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_kdf.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_kdf.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_ecdh.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_ecdh.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/src/els_pkc_fips_util.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_util.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_fips_st/inc/els_pkc_fips_config.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: source
+        - source: boards/${board}/els_pkc_examples/els_pkc_fips_st/pin_mux.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/els_pkc_examples/els_pkc_fips_st/pin_mux.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}
+          project_path: "${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}"
+        files:
+        - source: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}/hardware_init.c
+          project_path: "${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}"
+        - source: boards/${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}/app.h
+          project_path: "${board}/els_pkc_examples/els_pkc_fips_st/${multicore_foldername}"
+els_pkc_benchmark:
+  section-type: application
+  belong_to:
+    kex_package: set.board.${board}
+    cmsis_pack: set.board.${board}.els_pkc
+  dependency:
+  - component.els_pkc
+  - component.els_pkc.examples 
+  contents:
+    document:
+      name: els_pkc_benchmark
+      readme:
+      - boards/${board}/els_pkc_examples/els_pkc_benchmark/board.readme
+      - components/els_pkc/example/els_pkc_benchmark/els_pkc_benchmark.readme
+      category: els_pkc_examples
+      brief: This benchmark is analyzing the performance of various symmetric and asymmetric key cryptographic algorithms.
+    project-root-path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+    modules:
+      demo:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_pkc_benchmark
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: board
+        - path: components/els_pkc/example/els_pkc_benchmark/inc
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: main
+        files:
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_benchmark.c
+          merge-to-main: main
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_bm_symmetric.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_bm_symmetric.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_bm_asymmetric.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_bm_asymmetric.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_bm_hash.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_bm_hash.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_bm_mac.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_bm_mac.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_bm_drbg.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_bm_drbg.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_bm_kdf.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_bm_kdf.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_bm_dh.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_bm_dh.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_bm_kwa.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_bm_kwa.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_benchmark_utils.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_benchmark_utils.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/src/els_pkc_bm_key_gen.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: components/els_pkc/example/els_pkc_benchmark/inc/els_pkc_bm_key_gen.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: source
+        - source: boards/${board}/els_pkc_examples/els_pkc_benchmark/pin_mux.c
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: board
+        - source: boards/${board}/els_pkc_examples/els_pkc_benchmark/pin_mux.h
+          package_path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: board
+      pinset:
+        required: true
+        cc-include:
+        - path: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}
+          project_path: "${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}"
+        files:
+        - source: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}/hardware_init.c
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}"
+        - source: boards/${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}/app.h
+          merge-to-main: sub
+          project_path: "${board}/els_pkc_examples/els_pkc_benchmark/${multicore_foldername}"

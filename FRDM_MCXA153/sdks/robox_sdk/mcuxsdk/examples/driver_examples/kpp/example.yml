@@ -1,0 +1,16 @@
+kpp:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/kpp
+    project-root-path: boards/${board}/driver_examples/kpp/${multicore_foldername}
+    document:
+      name: kpp${core_id_suffix_name}
+      category: driver_examples/kpp
+      brief: The KPP Example project is a demonstration program that uses the KSDK
+        software to manipulate the Keypad MATRIX.The example is use the continuous
+        column and rows as 4*4 or 8*8 matrix to show the example.
+      example_readme:
+      - examples/driver_examples/kpp/readme.md
+      - ${board_root}/${board}/driver_examples/kpp/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

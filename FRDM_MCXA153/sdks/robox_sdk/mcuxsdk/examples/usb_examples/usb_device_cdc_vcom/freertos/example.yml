@@ -1,0 +1,26 @@
+dev_cdc_vcom_freertos:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_device_cdc_vcom/freertos/.
+    project-root-path: boards/${board}/usb_examples/usb_device_cdc_vcom/freertos/${multicore_foldername}
+    document:
+      name: dev_cdc_vcom_freertos${core_id_suffix_name}
+      category: usb_examples
+      brief: The Virtual COM project is  enumerated as a COM port, which the users
+        can open using terminal tools, such as TeraTerm. The demo echoes back any
+        character it receives.
+      example_readme:
+      - examples/usb_examples/usb_device_cdc_vcom/readme.md
+      - ${board_root}/${board}/usb_examples/usb_device_cdc_vcom/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_device_cdc_vcom/cdc_driver_install_00.jpg
+      - examples/usb_examples/usb_device_cdc_vcom/cdc_driver_install_01.jpg
+      - examples/usb_examples/usb_device_cdc_vcom/cdc_driver_install_02.jpg
+      - examples/usb_examples/usb_device_cdc_vcom/cdc_driver_install_03.jpg
+      - examples/usb_examples/usb_device_cdc_vcom/cdc_driver_install_04.jpg
+      - examples/usb_examples/usb_device_cdc_vcom/cdc_driver_install_05.jpg
+      - examples/usb_examples/usb_device_cdc_vcom/cdc_driver_install_06.jpg
+      - examples/usb_examples/usb_device_cdc_vcom/run_vcom.jpg
+      - examples/usb_examples/usb_device_cdc_vcom/run_vcom_keepalive.jpg
+  boards:
+    frdmmcxa153: []

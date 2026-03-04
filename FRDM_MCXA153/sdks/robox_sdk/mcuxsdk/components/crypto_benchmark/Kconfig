@@ -1,0 +1,71 @@
+# Copyright 2025 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+menu "Crypto Benchmark"
+    config MCUX_COMPONENT_component.crypto_benchmark
+        bool "Crypto Benchmark Core"
+
+    config MCUX_COMPONENT_component.crypto_benchmark.port.ele_s400
+        bool "ELE S400 Port"
+        select MCUX_COMPONENT_component.crypto_benchmark
+        select MCUX_COMPONENT_driver.s3mu
+        select MCUX_COMPONENT_component.ele_crypto
+
+    config MCUX_COMPONENT_component.crypto_benchmark.port.ele_s200
+        bool "ELE S200 Port"
+        select MCUX_COMPONENT_component.crypto_benchmark
+        select MCUX_COMPONENT_middleware.secure-subsystem
+        select MCUX_COMPONENT_middleware.secure-subsystem.elemu
+        select MCUX_COMPONENT_driver.elemu
+
+    config MCUX_COMPONENT_component.crypto_benchmark.port.custom
+        bool "Custom Port"
+        select MCUX_COMPONENT_component.crypto_benchmark
+
+######################### PSA #########################
+
+    # This one is common for all PSA layers
+    config MCUX_COMPONENT_component.crypto_benchmark.port.psa
+        bool
+        default n
+        select MCUX_COMPONENT_component.crypto_benchmark
+
+    config MCUX_COMPONENT_component.crypto_benchmark.port.psa.ele_s200
+        bool "PSA ELE S200 Port"
+        select MCUX_COMPONENT_component.crypto_benchmark.port.psa
+        select MCUX_COMPONENT_component.psa_crypto_driver.ele_s200
+        depends on MCUX_HW_DEVICE_KW47B42Z83 || MCUX_HW_DEVICE_KW47B42Z96 || MCUX_HW_DEVICE_KW47B42Z97 || MCUX_HW_DEVICE_KW47B42ZB2 || MCUX_HW_DEVICE_KW47B42ZB3 || MCUX_HW_DEVICE_KW47B42ZB6 || MCUX_HW_DEVICE_KW47B42ZB7 || MCUX_HW_DEVICE_KW47Z42082 || MCUX_HW_DEVICE_KW47Z42092 || MCUX_HW_DEVICE_KW47Z420B2 || MCUX_HW_DEVICE_KW47Z420B3 || \
+                   MCUX_HW_DEVICE_KW45B41Z52 || MCUX_HW_DEVICE_KW45B41Z53 || MCUX_HW_DEVICE_KW45B41Z82 || MCUX_HW_DEVICE_KW45B41Z83 || MCUX_HW_DEVICE_KW45Z41052 || MCUX_HW_DEVICE_KW45Z41053 || MCUX_HW_DEVICE_KW45Z41082 || MCUX_HW_DEVICE_KW45Z41083
+
+    config MCUX_COMPONENT_component.crypto_benchmark.port.psa.ele_s4xx_psa
+        bool "PSA ELE S4xx Port"
+        select MCUX_COMPONENT_component.crypto_benchmark.port.psa
+        select MCUX_COMPONENT_component.psa_crypto_driver.ele_s4xx_psa
+        depends on MCUX_HW_DEVICE_MIMXRT1181 || MCUX_HW_DEVICE_MIMXRT1182 || MCUX_HW_DEVICE_MIMXRT1187 || MCUX_HW_DEVICE_MIMXRT1189
+
+    config MCUX_COMPONENT_component.crypto_benchmark.port.psa.els_pkc
+        bool "PSA ELS PKC Port"
+        select MCUX_COMPONENT_component.crypto_benchmark.port.psa
+        select MCUX_COMPONENT_component.psa_crypto_driver.els_pkc
+        depends on MCUX_HW_DEVICE_MIMXRT735S || MCUX_HW_DEVICE_MIMXRT758S || MCUX_HW_DEVICE_MIMXRT798S || \
+                   MCUX_HW_DEVICE_MCXN546 ||  MCUX_HW_DEVICE_MCXN547 || MCUX_HW_DEVICE_MCXN946 || MCUX_HW_DEVICE_MCXN947
+
+    config MCUX_COMPONENT_component.crypto_benchmark.port.psa.sgi
+        bool "PSA SGI Port"
+        select MCUX_COMPONENT_component.crypto_benchmark.port.psa
+        select MCUX_COMPONENT_component.psa_crypto_driver.sgi
+        depends on MCUX_HW_DEVICE_MCXA175 || MCUX_HW_DEVICE_MCXA176 || MCUX_HW_DEVICE_MCXA185 || MCUX_HW_DEVICE_MCXA186 || \
+                   MCUX_HW_DEVICE_MCXA255 || MCUX_HW_DEVICE_MCXA256 || MCUX_HW_DEVICE_MCXA265 || MCUX_HW_DEVICE_MCXA266 || \
+                   MCUX_HW_DEVICE_MCXA345 || MCUX_HW_DEVICE_MCXA346 || MCUX_HW_DEVICE_MCXA355 || MCUX_HW_DEVICE_MCXA356 || \
+                   MCUX_HW_DEVICE_MCXA365 || MCUX_HW_DEVICE_MCXA366 || MCUX_HW_DEVICE_MCXL253 || MCUX_HW_DEVICE_MCXL254 || \
+                   MCUX_HW_DEVICE_MCXL255
+
+    config MBEDTLS_PSA_ASSUME_EXCLUSIVE_BUFFERS
+        default 0x1
+        hex "PSA should assume exclusive buffers"
+        depends on MCUX_COMPONENT_component.crypto_benchmark.port.psa
+        help
+            No prefix in generated macro
+            This is defined to prevent PSA from copying the input and output buffers.
+            For more detail see `<sdk_root>/middleware/mbedtls3x/docs/architecture/psa-shared-memory.md`.
+endmenu

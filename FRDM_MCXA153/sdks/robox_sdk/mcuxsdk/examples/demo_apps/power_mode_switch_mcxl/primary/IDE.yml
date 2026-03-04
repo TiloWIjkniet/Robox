@@ -1,0 +1,20 @@
+iar:
+  shared-workspace: power_mode_switch_mcxl
+  sharing-workspace:
+  - ../../power_mode_switch_mcxl_secondary/iar/power_mode_switch_mcxl_secondary_${SB_CONFIG_secondary_core_id}
+  config:
+    __common__:
+      asym-multicore-debugger:
+        enable: true
+        slave-workspace: "../../power_mode_switch_mcxl_secondary/iar/power_mode_switch_mcxl_secondary_${SB_CONFIG_secondary_core_id}.eww"
+        slave-project: power_mode_switch_mcxl_secondary_${SB_CONFIG_secondary_core_id}
+    debug:
+      asym-multicore-debugger:
+        slave-configuration: debug
+    release:
+      asym-multicore-debugger:
+        slave-configuration: release
+mdk:
+  shared-workspace: power_mode_switch_mcxl
+  sharing-workspace:
+  - ../../power_mode_switch_mcxl_secondary/mdk/power_mode_switch_mcxl_secondary_${SB_CONFIG_secondary_core_id}

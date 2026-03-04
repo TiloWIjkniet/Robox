@@ -1,0 +1,21 @@
+fmstr_example_any:
+  section-type: application
+  contents:
+    document:
+      brief: FreeMASTER example fully configured by MCUXpresso ConfigTools. Serial
+        communication is used by default, but it can be changed easily to CAN or other
+        in the MCUXpresso Peripheral Tool. Also FreeMASTER driver features are configured
+        graphically in this tool. The Pins and Clock Tool are used to configure pin
+        multiplexers and clocks. Just like other FreeMASTER examples, the application
+        demonstrates use of FreeMASTER tool to visualize internal variables and to
+        control the application flow by modifying variables. The application also
+        shows use of advanced FreeMASTER features like TSA tables and Pipes.
+      category: freemaster_examples
+      example_readme:
+      - examples/freemaster_examples/fmstr_example_any/readme.md
+      - ${board_root}/${board}/freemaster_examples/fmstr_any/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      name: fmstr_example_any${core_id_suffix_name}
+    meta_path: examples/freemaster_examples/fmstr_example_any
+    project-root-path: boards/${board}/freemaster_examples/fmstr_any/${multicore_foldername}
+  boards: {}

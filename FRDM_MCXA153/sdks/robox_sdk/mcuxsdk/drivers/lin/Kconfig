@@ -1,0 +1,33 @@
+# Copyright 2024 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_HAS_COMPONENT_driver.lin_lpuart
+    bool
+    default y if MCUX_HW_IP_DriverType_LPUART_LIN
+
+config MCUX_HAS_COMPONENT_driver.lin
+    bool
+    default y if MCUX_HW_IP_DriverType_LPUART_LIN
+
+config MCUX_COMPONENT_driver.lin_lpuart
+    bool "lin_lpuart"
+    select MCUX_COMPONENT_driver.common
+    depends on MCUX_HAS_COMPONENT_driver.lin_lpuart
+
+config MCUX_COMPONENT_driver.lin
+    bool "lin"
+    select MCUX_COMPONENT_driver.lin_lpuart
+    depends on MCUX_HAS_COMPONENT_driver.lin
+
+if MCUX_COMPONENT_driver.lin_lpuart
+
+    config LIN_LPUART_TRANSMISSION_COMPLETE_TIMEOUT
+        int "Max loops to wait for LIN LPUART transmission complete (0 means wait forever)"
+        default 0
+        help
+          When de-initializing the LIN LPUART module, the program shall wait for the previous
+          transmission to complete. This parameter defines how many loops to check
+          completion before return error. If defined as 0, driver will wait forever until completion.
+
+endif

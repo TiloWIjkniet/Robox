@@ -1,0 +1,15 @@
+eeprom_ftmr:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flash_ftmr/eeprom
+    project-root-path: boards/${board}/driver_examples/flash/eeprom/${multicore_foldername}
+    document:
+      name: eeprom_ftmr${core_id_suffix_name}
+      category: driver_examples/flash
+      brief: 'The eeprom example shows how to use flash driver to operate program
+        eeprom:'
+      example_readme:
+      - examples/driver_examples/flash_ftmr/eeprom/readme.md
+      - ${board_root}/${board}/driver_examples/flash/eeprom/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

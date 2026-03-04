@@ -1,0 +1,16 @@
+# FIXME improved shared arch files
+rsource "../../arch/xtensa/configuration/Kconfig"
+rsource "../../arch/xtensa/core/Kconfig"
+
+menu "Startup components"
+    config MCUX_COMPONENT_device.CMSIS
+        bool "header"
+
+    config MCUX_COMPONENT_device.system
+        bool "system"
+        imply MCUX_COMPONENT_device.CMSIS
+endmenu
+
+config MCUX_PRJSEG_module.device.suite
+    bool
+    default y

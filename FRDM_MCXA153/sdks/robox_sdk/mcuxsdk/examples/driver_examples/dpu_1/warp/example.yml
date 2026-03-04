@@ -1,0 +1,14 @@
+dpu_1_warp:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/dpu_1/warp
+    project-root-path: boards/${board}/driver_examples/dpu/warp/${multicore_foldername}
+    document:
+      name: dpu_1_warp${core_id_suffix_name}
+      category: driver_examples/dpu
+      brief: This project shows the arbitrary warping function of fetch warp unit.
+      example_readme:
+      - examples/driver_examples/dpu_1/warp/readme.md
+      - ${board_root}/${board}/driver_examples/dpu/warp/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,16 @@
+kbi:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/kbi
+    project-root-path: boards/${board}/driver_examples/kbi/${multicore_foldername}
+    document:
+      name: kbi${core_id_suffix_name}
+      category: driver_examples/kbi
+      brief: The KBI Example project is a demonstration program that uses the KSDK
+        software to usekeyboard interrupt.The example uses one KBI pin to generate
+        a raising edge interrupt to show the example.
+      example_readme:
+      - examples/driver_examples/kbi/readme.md
+      - ${board_root}/${board}/driver_examples/kbi/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

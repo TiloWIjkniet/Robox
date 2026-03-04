@@ -1,0 +1,16 @@
+csi_raw8:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/csi/raw8
+    project-root-path: boards/${board}/driver_examples/csi/raw8/${multicore_foldername}
+    document:
+      name: csi_raw8${core_id_suffix_name}
+      category: driver_examples/csi
+      brief: This project shows how to receive the camera RAW8 data using CSI driver.
+        In this example, the RAW8 data is convert to RGB565 data, then shown in the
+        panel.
+      example_readme:
+      - examples/driver_examples/csi/raw8/readme.md
+      - ${board_root}/${board}/driver_examples/csi/raw8/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

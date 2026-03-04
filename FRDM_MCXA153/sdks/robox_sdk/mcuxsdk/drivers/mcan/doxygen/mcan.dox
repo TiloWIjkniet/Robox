@@ -1,0 +1,9 @@
+
+
+/*!
+@defgroup mcan MCAN: Controller Area Network Driver
+@details The MCUXpresso SDK provides a peripheral driver for the Controller Area Network (MCAN)
+         module of MCUXpresso SDK devices.
+*/
+
+

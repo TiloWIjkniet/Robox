@@ -1,0 +1,18 @@
+mpi_loader_dsp_hello_world:
+  skip_build: true
+  section-type: application
+  contents:
+    meta_path: examples/component_examples/mpi_loader/dsp_hello_world/dsp_hello_world
+    project-root-path: boards/${board}/dsp_examples/hello_world_usart/${core_id}
+    document:
+      name: mpi_loader_dsp_hello_world
+      category: component_examples/mpi_loader
+      brief: The mpi_loader_dsp_hello_world example demonstrates how to add secondary
+        bootloader in CM33 application to load the multicore packed image, created
+        by elftosb tool. Once the DSP image is loaded, CM33 can kick off it and both
+        cores then execute in parallel.
+      example_readme:
+      - examples/component_examples/mpi_loader/dsp_hello_world/dsp_hello_world/readme.md
+      - ${board_root}/${board}/dsp_examples/hello_world_usart/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

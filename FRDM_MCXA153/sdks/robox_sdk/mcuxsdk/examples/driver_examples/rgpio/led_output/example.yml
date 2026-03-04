@@ -1,0 +1,17 @@
+rgpio_led_output:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/rgpio/led_output
+    project-root-path: boards/${board}/driver_examples/rgpio/led_output/${multicore_foldername}
+    document:
+      name: rgpio_led_output${core_id_suffix_name}
+      category: driver_examples/rgpio
+      brief: The RGPIO Example project is a demonstration program that uses the SDK
+        software to manipulate the general-purposeoutputs.The example is supported
+        by the set, clear, and toggle write-only registers for each port output data
+        register. The example take turns to shine the LED.
+      example_readme:
+      - examples/driver_examples/rgpio/led_output/readme.md
+      - ${board_root}/${board}/driver_examples/rgpio/led_output/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

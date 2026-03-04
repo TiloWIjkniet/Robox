@@ -1,0 +1,16 @@
+snvs_lp_mc:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/snvs_hp/snvs_lp_mc
+    project-root-path: boards/${board}/driver_examples/snvs/snvs_lp_mc/${multicore_foldername}
+    document:
+      name: snvs_lp_mc${core_id_suffix_name}
+      category: driver_examples/snvs
+      brief: The SNVS LP MC project shows how to use the Monotonic Counter (MC) based
+        on SDK SNVS LP driver. In this example, the MC value is increased and checked
+        several times.
+      example_readme:
+      - examples/driver_examples/snvs_hp/snvs_lp_mc/readme.md
+      - ${board_root}/${board}/driver_examples/snvs/snvs_lp_mc/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

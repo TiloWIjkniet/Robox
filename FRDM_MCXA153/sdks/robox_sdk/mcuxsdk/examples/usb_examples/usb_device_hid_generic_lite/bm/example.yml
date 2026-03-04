@@ -1,0 +1,20 @@
+dev_hid_generic_lite_bm:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_device_hid_generic_lite/bm/.
+    project-root-path: boards/${board}/usb_examples/usb_device_hid_generic_lite/bm/${multicore_foldername}
+    document:
+      name: dev_hid_generic_lite_bm${core_id_suffix_name}
+      category: usb_examples
+      brief: The USB HID generic application is a simple demonstration program based
+        on the MCUXpresso SDK.It is enumerated as a HID-compliant device. A PC application
+        can be used to exchange data with the device.
+      example_readme:
+      - examples/usb_examples/usb_device_hid_generic_lite/readme.md
+      - ${board_root}/${board}/usb_examples/usb_device_hid_generic_lite/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_device_hid_generic_lite/cpu_platform.jpg
+      - examples/usb_examples/usb_device_hid_generic_lite/usb_device_hid_generic_test_tool_open.jpg
+      - examples/usb_examples/usb_device_hid_generic_lite/usb_device_hid_generic_test_tool_send.jpg
+  boards:
+    frdmmcxa153: []

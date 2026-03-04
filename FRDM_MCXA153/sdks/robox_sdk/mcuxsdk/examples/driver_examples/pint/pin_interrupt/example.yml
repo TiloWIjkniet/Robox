@@ -1,0 +1,15 @@
+pint_pin_interrupt:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pint/pin_interrupt
+    project-root-path: boards/${board}/driver_examples/pint/pin_interrupt/${multicore_foldername}
+    document:
+      name: pint_pin_interrupt${core_id_suffix_name}
+      category: driver_examples/pint
+      brief: This example shows how to use SDK drivers to use the Pin interrupt &
+        pattern match peripheral.
+      example_readme:
+      - examples/driver_examples/pint/pin_interrupt/readme.md
+      - ${board_root}/${board}/driver_examples/pint/pin_interrupt/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

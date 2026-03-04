@@ -1,0 +1,12 @@
+# Copyright 2024-2025 NXP
+# SPDX-License-Identifier: Apache-2.0
+
+config MCUX_HAS_COMPONENT_driver.cmsis_lpsci
+    bool
+    default y if MCUX_HW_IP_DriverType_LPSCI
+
+config MCUX_COMPONENT_driver.cmsis_lpsci
+    bool "lpsci"
+    select MCUX_COMPONENT_CMSIS_Driver_Include.USART
+    select MCUX_COMPONENT_device.RTE
+    depends on MCUX_HAS_COMPONENT_driver.cmsis_lpsci

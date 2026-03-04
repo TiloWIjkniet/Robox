@@ -1,0 +1,67 @@
+
+
+/*!
+@defgroup sai SAI: Serial Audio Interface
+@details The MCUXpresso SDK provides a peripheral driver for the Serial Audio Interface (SAI)
+         module of MCUXpresso SDK devices.
+
+
+SAI driver includes functional APIs and transactional APIs.
+
+Functional APIs target low-level APIs.
+Functional APIs can be used for SAI initialization, configuration and operation, and
+for optimization and customization purposes. Using the functional API requires the
+knowledge of the SAI peripheral and how to organize functional APIs to
+meet the application requirements. All functional API use the peripheral base
+address as the first parameter. SAI functional operation groups provide the
+functional API set.
+
+Transactional APIs target high-level APIs.
+Transactional APIs can be used to enable the peripheral and in the
+application if the code size and performance of transactional APIs satisfy the
+requirements. If the code size and performance are a critical requirement,
+see the transactional API implementation and write a custom code. All
+transactional APIs use the sai_handle_t as the first parameter.
+Initialize the handle by calling the SAI_TransferTxCreateHandle() or SAI_TransferRxCreateHandle() API.
+
+Transactional APIs support asynchronous transfer. This means that the functions
+SAI_TransferSendNonBlocking() and SAI_TransferReceiveNonBlocking() set up the interrupt for data
+transfer. When the transfer completes, the upper layer is notified through a callback
+function with the kStatus_SAI_TxIdle and kStatus_SAI_RxIdle status.
+
+# Typical configurations{#SAIConfigurations}
+## Bit width configuration
+SAI driver support 8/16/24/32bits stereo/mono raw audio data transfer.
+SAI EDMA driver support 8/16/32bits stereo/mono raw audio data transfer, since the EDMA doesn't support 24bit data width, so application should pre-convert the 24bit data to 32bit.
+SAI DMA driver support 8/16/32bits stereo/mono raw audio data transfer, since the EDMA doesn't support 24bit data width, so application should pre-convert the 24bit data to 32bit.
+SAI SDMA driver support 8/16/24/32bits stereo/mono raw audio data transfer.
+## Frame configuration
+SAI driver support I2S, DSP, Left justified, Right justified, TDM mode.
+Application can call the api directly:
+SAI_GetClassicI2SConfig
+SAI_GetLeftJustifiedConfig
+SAI_GetRightJustifiedConfig
+SAI_GetTDMConfig
+SAI_GetDSPConfig
+
+# Typical use case {#SAICase}
+
+## SAI Send/receive using an interrupt method {#SAICaseInterrupt}
+
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/sai
+## SAI Send/receive using a DMA method {#SAICaseDma}
+
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/sai
+
+*/
+
+/*!
+@defgroup sai_driver SAI Driver
+@ingroup sai
+*/
+
+
+
+
+
+

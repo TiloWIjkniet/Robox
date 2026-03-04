@@ -1,0 +1,18 @@
+trdc:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/trdc/basic
+    project-root-path: boards/${board}/driver_examples/trdc/${multicore_foldername}
+    document:
+      name: trdc${core_id_suffix_name}
+      category: driver_examples/trdc
+      brief: The trdc example shows how to control the memory block checker(MBC) and
+        memory region checker(MRC) access policy using TRDC. In this example, a MRC
+        memory region and a MBC memory block are set to unaccessible, then the hardfault
+        occurs.
+      example_readme:
+      - examples/driver_examples/trdc/basic/readme.md
+      - ${board_root}/${board}/driver_examples/trdc/basic/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

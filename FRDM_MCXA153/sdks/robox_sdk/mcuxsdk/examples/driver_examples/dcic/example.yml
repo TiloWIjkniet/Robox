@@ -1,0 +1,14 @@
+dcic:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/dcic
+    project-root-path: boards/${board}/driver_examples/dcic/${multicore_foldername}
+    document:
+      name: dcic${core_id_suffix_name}
+      category: driver_examples/dcic
+      brief: This example shows how to use DCIC to monitor the display content integrity.
+      example_readme:
+      - examples/driver_examples/dcic/readme.md
+      - ${board_root}/${board}/driver_examples/dcic/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

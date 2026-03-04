@@ -1,0 +1,14 @@
+sysctr:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/sysctr
+    project-root-path: boards/${board}/driver_examples/sysctr/${multicore_foldername}
+    document:
+      name: sysctr${core_id_suffix_name}
+      category: driver_examples/sysctr
+      brief: The sysctr example shows the usage of System Counter driver in application.
+      example_readme:
+      - examples/driver_examples/sysctr/readme.md
+      - ${board_root}/${board}/driver_examples/sysctr/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,17 @@
+flexcomm_spi_interrupt:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexcomm/spi/interrupt
+    project-root-path: boards/${board}/driver_examples/spi/interrupt/${multicore_foldername}
+    document:
+      name: flexcomm_spi_interrupt${core_id_suffix_name}
+      category: driver_examples/spi
+      brief: The spi_interrupt example shows how to use spi functional API to do interrupt
+        transfer:In this example, one spi instance as master and another spi instance
+        as slave. Master sends a piece of data to slave,and check if the data slave
+        received is correct.
+      example_readme:
+      - examples/driver_examples/flexcomm/spi/interrupt/readme.md
+      - ${board_root}/${board}/driver_examples/spi/interrupt/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

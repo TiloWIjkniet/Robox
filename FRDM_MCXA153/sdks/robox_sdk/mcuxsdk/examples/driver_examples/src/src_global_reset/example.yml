@@ -1,0 +1,15 @@
+src_global_reset:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/src/src_global_reset
+    project-root-path: boards/${board}/driver_examples/src/src_global_reset/${multicore_foldername}
+    document:
+      name: src_global_reset${core_id_suffix_name}
+      category: driver_examples
+      brief: The src_global_reset example shows how to reset the selected slice via
+        software.s
+      example_readme:
+      - examples/driver_examples/src/src_global_reset/readme.md
+      - ${board_root}/${board}/driver_examples/src/src_global_reset/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

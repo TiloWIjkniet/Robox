@@ -1,0 +1,18 @@
+flexio_spi_edma_lpspi_transfer_slave_dynamic:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexio/spi/edma_lpspi_transfer/slave_dynamic
+    project-root-path: boards/${board}/driver_examples/flexio/spi/edma_lpspi_transfer/slave_dynamic/${multicore_foldername}
+    document:
+      name: flexio_spi_edma_lpspi_transfer_slave_dynamic${core_id_suffix_name}
+      category: driver_examples/flexio
+      brief: The flexio_spi_slave_dynamic example shows how to use flexio spi slave
+        driver in edma way, In this example, a flexio simulated slave connect to a
+        lpspi master. The CS signal remains low during transfer, after master finishes
+        the transfer and re-asserts the CS signal, interrupt is triggered to let user
+        know.
+      example_readme:
+      - examples/driver_examples/flexio/spi/edma_lpspi_transfer/slave_dynamic/readme.md
+      - ${board_root}/${board}/driver_examples/flexio/spi/edma_lpspi_transfer/slave_dynamic/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

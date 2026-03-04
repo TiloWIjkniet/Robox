@@ -1,0 +1,16 @@
+project_template:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/project_template
+    project-root-path: boards/${board}/project_template/${multicore_foldername}
+    document:
+      name: project_template${core_id_suffix_name}
+      category: demo_apps
+      brief: The project template including basic SDK drivers and FreeMaster support
+        as well. User can clone his/her project from this project in MCUXpresso CFG
+        tool.
+      example_readme:
+      - examples/demo_apps/project_template/readme.md
+      - ${board_root}/${board}/project_template/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

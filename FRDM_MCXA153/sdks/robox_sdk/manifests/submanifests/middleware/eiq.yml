@@ -1,0 +1,63 @@
+manifest:
+  remotes:
+  - name: nxp
+    url-base: https://github.com/NXP
+  - name: nxp-zephyr
+    url-base: https://github.com/nxp-zephyr
+  - name: nxp-mcuxpresso
+    url-base: https://github.com/nxp-mcuxpresso
+  defaults:
+    remote: nxp-mcuxpresso
+  projects:
+  - name: mcux-sdk-middleware-eiq
+    userdata:
+      owner: null
+      track_branch: main
+      branch_flow: false
+      display_name: eIQ
+      description: 'eIQ machine learning SDK containing: - ARM CMSIS-NN library (neural
+        network kernels optimized  for Cortex-M cores) - an inference engine for running
+        TensorFlow Lite models'
+    path: mcuxsdk/middleware/eiq
+    revision: 58af72b1294170ad5b13ac8f31e79037b0587d7e
+    groups:
+    - eiq
+    - middleware
+  - name: mcux-sdk-middleware-tensorflow
+    userdata:
+      owner: null
+      track_branch: main
+      branch_flow: false
+      display_name: TensorFlow Lite for Microcontrollers
+      description: Software library for running machine learning models on embedded
+        devices
+    path: mcuxsdk/middleware/eiq/tensorflow-lite
+    revision: faf8874ba963d68d6e467279af2b81e06ed853c3
+    groups:
+    - eiq
+    - middleware
+  - name: mcux-sdk-middleware-mpp
+    userdata:
+      owner: null
+      track_branch: external_main
+      branch_flow: false
+      display_name: Multimedia Processing Pipelines (MPP)
+      description: Library to build vision pipelines
+    path: mcuxsdk/middleware/eiq/mpp
+    revision: e301b6130073637e6be848fbc92149f8e8db29f1
+    groups:
+    - eiq
+    - middleware
+  - name: mcuxsdk-middleware-executorch
+    userdata:
+      owner: null
+      track_branch: release/mcux
+      branch_flow: false
+      display_name: ExecuTorch
+      description: Software library for running machine learning models on embedded
+        devices
+    path: mcuxsdk/middleware/eiq/executorch
+    revision: ec2c35ffdfabf9ac43af76774bc688ce97604b56
+    groups:
+    - eiq
+    - middleware

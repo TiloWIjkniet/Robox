@@ -1,0 +1,21 @@
+safety_iec60730b:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/safety_iec60730b
+    project-root-path: boards/${board}/demo_apps/safety_iec60730b/${multicore_foldername}
+    document:
+      name: safety_iec60730b${core_id_suffix_name}
+      category: demo_apps
+      brief: This example demonstrates the safety library usage.
+      example_readme:
+      - examples/demo_apps/safety_iec60730b/readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153:
+    - -armgcc@debug
+    - -armgcc@release
+    - -iar@release
+    - -mdk@debug
+    - -mdk@release
+    - -mcux@debug
+    - -mcux@release

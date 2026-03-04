@@ -1,0 +1,72 @@
+# Copyright 2024 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_HAS_COMPONENT_driver.flash
+    bool
+    default y if MCUX_HW_IP_DriverType_FTFE || MCUX_HW_IP_DriverType_FTFA || MCUX_HW_IP_DriverType_FTFL || MCUX_HW_IP_DriverType_FTFC
+
+config MCUX_COMPONENT_driver.flash
+    bool "flash"
+    select MCUX_COMPONENT_driver.common
+    depends on MCUX_HAS_COMPONENT_driver.flash
+
+
+if MCUX_COMPONENT_driver.flash
+    menu "Flash examples"
+
+#        # This is problematic with current pflash example structure
+#        # needs refactoring the example first
+#
+#        config IFLASH_TEST_USE_SECTOR_INDEX_FROM_END
+#        int "Test flash on a specified sector number from the end"
+#        default 1
+#        help
+#            Run flash test on a specified sector number counting from
+#            the end of flash.
+#
+#        config IFLASH_TEST_USE_ADDRESS
+#        hex "Test flash on a specified address"
+#        default 0
+#        help
+#            Instead of using a sector number from the end of flash
+#            use an explicit address. This must be sector aligned non-zero
+#            value.
+
+        config  IFLASH_EXPLICIT_DEVICE_CONFIG_VALUES
+        bool "Use non-default device specific configuration"
+        default n
+        help
+            Flash examples that require device specific configuration
+            can use either default values or values specified by Kconfig.
+
+        if IFLASH_EXPLICIT_DEVICE_CONFIG_VALUES
+
+            config IFLASH_DEPART_CODE
+            hex "FlexNVM partition code"
+            help
+                Device specific value that determines how the data flash
+                will be split between area for data and area for emulated
+                EEPROM. See device RM for possible values.
+
+            config IFLASH_EEESIZE_CODE
+            hex "EEPROM size code"
+            help
+                Device specific value that configures size for EEPROM emulated
+                data. The frontend of this interface is SRAM memory of the
+                specified size. The backend is located in DFlash where the actual
+                data is stored.
+
+        endif
+
+        config IFLASH_EEPROM_QUICK_WRITE
+        bool "Use EEPROM Quick Write mode in flexnvm_eeprom example"
+        default n
+        depends on MCUX_HW_IP_DriverType_FTFC
+        help
+            This option enables EEPROM Quick Write mode in flexnvm_eeprom example
+            instead of the normal EEPROM mode. This is currently only available for
+            devices with FTFC flash controller such as MCXE247.
+
+    endmenu
+endif

@@ -1,0 +1,14 @@
+tee_fault_core1:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/tee_fault/core1
+    project-root-path: boards/${board}/demo_apps/tee_fault/core1
+    document:
+      name: tee_fault_core1
+      category: demo_apps/tee_fault
+      brief: This example shows how to use the MCUXpresso Config Tools TEE tool.
+      example_readme:
+      - examples/demo_apps/tee_fault/readme.md
+      - ${board_root}/${board}/demo_apps/tee_fault/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

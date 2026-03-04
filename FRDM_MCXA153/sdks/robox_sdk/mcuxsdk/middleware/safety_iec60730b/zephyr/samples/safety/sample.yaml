@@ -1,0 +1,8 @@
+sample:
+  name: Safety iec60730b Sample
+tests:
+  sample.iec60730b.safety:
+    tags:
+      - safety
+    integration_platforms:
+      - frdm_rw612

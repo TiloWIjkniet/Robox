@@ -1,0 +1,22 @@
+freertos_segger_sysview:
+  section-type: application
+  contents:
+    meta_path: examples/freertos_examples/visualization/freertos_segger_sysview
+    project-root-path: boards/${board}/freertos_examples/freertos_segger_sysview/${multicore_foldername}
+    document:
+      name: freertos_segger_sysview${core_id_suffix_name}
+      category: freertos_examples
+      brief: 'Segger Sysview demo shows the basic capabilities of Segger System Viewer
+        tool.Required software:    - J-Link Software and Documentation Pack    - SystemView
+        - Real-time analysis and visualization    - J-Link OpenSDA - Board-Specific
+        Firmwarescan be downloaded from https://www.segger.com/downloads/jlinkDemo
+        requires JLink connected. The JLink can be external probe or on board SDA
+        debugger.In case of SDA debugger you have to change firmware to J-Link OpenSDA
+        by holding board RESET button while power up board. The board is then detected
+        as USB mass storage device and it''s required to copy the .bin firmware to
+        the device. When it''s done you have to reset the board once more.'
+      example_readme:
+      - examples/freertos_examples/visualization/freertos_segger_sysview/readme.md
+      - ${board_root}/${board}/freertos_examples/visualization/freertos_segger_sysview/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

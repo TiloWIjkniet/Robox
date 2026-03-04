@@ -1,0 +1,18 @@
+hello_world_secondary_core_boot_primary_core:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/hello_world_secondary_core_boot/primary_core
+    project-root-path: boards/${board}/demo_apps/hello_world_secondary_core_boot/${multicore_foldername}
+    document:
+      name: hello_world_secondary_core_boot_primary_core${core_id_suffix_name}
+      category: demo_apps
+      brief: The hello_world_secondary_core_boot demo use cm7 core to wake up cm4
+        core to prints the "Hello World" string to the terminal on dual XIP way(CM7
+        core boot from flash, then wake up cm4 core, boot cm4 image from flash address).
+        Case shows how to make CM4 core available from flash boot on the default CM7
+        boot chip, so that users can run cm4 code stored in flash using POR way.
+      example_readme:
+      - examples/demo_apps/hello_world_secondary_core_boot/readme.md
+      - ${board_root}/${board}/demo_apps/hello_world_secondary_core_boot/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

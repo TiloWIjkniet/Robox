@@ -1,0 +1,20 @@
+lpuart_9bit_interrupt_transfer:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lpuart/9bit_interrupt_transfer
+    project-root-path: boards/${board}/driver_examples/lpuart/9bit_interrupt_transfer/${multicore_foldername}
+    document:
+      name: lpuart_9bit_interrupt_transfer${core_id_suffix_name}
+      category: driver_examples/lpuart
+      brief: The lpuart_9bit_interrupt_transfer example shows how to use lpuart driver
+        in 9-bit mode in multi-slave system. Master can send data to slave with certain
+        address specifically, and slave can only receive data when it is addressed.
+        In this example, one lpuart instance is used with address configured. Its
+        TX and RX pins are connected together. First it sends a piece of data out,
+        then addresses itself, after that sends the other piece of data. Only data
+        sent after the address can be received by itself.
+      example_readme:
+      - examples/driver_examples/lpuart/9bit_interrupt_transfer/readme.md
+      - ${board_root}/${board}/driver_examples/lpuart/9bit_interrupt_transfer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

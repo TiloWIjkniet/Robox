@@ -1,0 +1,45 @@
+# Copyright 2024 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_HAS_COMPONENT_driver.sfa
+    bool
+    default y if MCUX_HW_IP_DriverType_SFA
+
+config MCUX_COMPONENT_driver.sfa
+    bool "sfa"
+    select MCUX_COMPONENT_driver.common
+    depends on MCUX_HAS_COMPONENT_driver.sfa
+
+if MCUX_COMPONENT_driver.sfa
+
+    config SFA_SRAM_MEASUREMENT_START_TIMEOUT
+        int "Max loops to wait for SFA measurement started (0 means wait forever)"
+        default 0
+        help
+          This parameter defines how many loops to check completion before return timeout.
+          If defined as 0, driver will wait forever until completion.
+
+endif
+
+if MCUX_COMPONENT_driver.sfa
+
+    config SFA_CUT_COUNTER_STOP_TIMEOUT
+        int "Max loops to wait for SFA CUT counter has stopped (0 means wait forever)"
+        default 0
+        help
+          This parameter defines how many loops to check completion before return timeout.
+          If defined as 0, driver will wait forever until completion.
+
+endif
+
+if MCUX_COMPONENT_driver.sfa
+
+    config SFA_REF_COUNTER_STOP_TIMEOUT
+        int "Max loops to wait for SFA REF counter has stopped (0 means wait forever)"
+        default 0
+        help
+          This parameter defines how many loops to check completion before return timeout.
+          If defined as 0, driver will wait forever until completion.
+
+endif

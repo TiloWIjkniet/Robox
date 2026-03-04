@@ -1,0 +1,16 @@
+rnga_random:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/rnga/random
+    project-root-path: boards/${board}/driver_examples/rnga/random/${multicore_foldername}
+    document:
+      name: rnga_random${core_id_suffix_name}
+      category: driver_examples/rnga
+      brief: The RNGA is a digital integrated circuit capable of generating the 32-bit
+        random numbers. The RNGAExample project is a demonstration program that uses
+        the KSDK software to generate random numbersand prints them to the terminal.
+      example_readme:
+      - examples/driver_examples/rnga/random/readme.md
+      - ${board_root}/${board}/driver_examples/rnga/random/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

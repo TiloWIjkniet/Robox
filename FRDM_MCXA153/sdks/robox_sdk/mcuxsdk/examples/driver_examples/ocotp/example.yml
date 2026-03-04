@@ -1,0 +1,15 @@
+ocotp_example:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/ocotp
+    project-root-path: boards/${board}/driver_examples/ocotp/${multicore_foldername}
+    document:
+      name: ocotp_example${core_id_suffix_name}
+      category: driver_examples/ocotp
+      brief: The ocotp driver example shows how to operation the OCOTP register with
+        driver API.
+      example_readme:
+      - examples/driver_examples/ocotp/readme.md
+      - ${board_root}/${board}/driver_examples/ocotp/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

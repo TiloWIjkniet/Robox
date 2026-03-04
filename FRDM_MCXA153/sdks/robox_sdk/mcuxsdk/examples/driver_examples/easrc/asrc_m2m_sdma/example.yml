@@ -1,0 +1,16 @@
+easrc_m2m_sdma:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/easrc/asrc_m2m_sdma
+    project-root-path: boards/${board}/driver_examples/asrc/asrc_m2m_sdma/${multicore_foldername}
+    document:
+      name: easrc_m2m_sdma${core_id_suffix_name}
+      category: driver_examples/asrc
+      brief: The asrc_m2m_sdma example shows how to use asrc driver with SDMA:In this
+        example, one asrc instance convert the audio data stored in ram using SDMA
+        channel.
+      example_readme:
+      - examples/driver_examples/easrc/asrc_m2m_sdma/readme.md
+      - ${board_root}/${board}/driver_examples/asrc/asrc_m2m_sdma/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

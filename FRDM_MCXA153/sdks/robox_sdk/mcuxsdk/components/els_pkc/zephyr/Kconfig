@@ -1,0 +1,10 @@
+# MCUXpresso SDK HW_ACCL els_pkc
+
+# Copyright (c) 2024, NXP
+# SPDX-License-Identifier: Apache-2.0
+
+config MCUX_ELS_PKC
+	bool "Build els_pkc"
+	default y if BUILD_WITH_TFM
+	help
+	    Include the els_pkc component from the NXP MCU SDK in the build.

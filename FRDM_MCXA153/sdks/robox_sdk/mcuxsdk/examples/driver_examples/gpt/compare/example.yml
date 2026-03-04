@@ -1,0 +1,16 @@
+gpt_compare:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/gpt/compare
+    project-root-path: boards/${board}/driver_examples/gpt/compare/${multicore_foldername}
+    document:
+      name: gpt_compare${core_id_suffix_name}
+      category: driver_examples/gpt
+      brief: The gpt_compare project is a simple demonstration program of the SDK
+        GPT driver's output compare feature. Once content of an OCRx matches the value
+        in GPT_CNT, output compare timer pin is toggled.
+      example_readme:
+      - examples/driver_examples/gpt/compare/readme.md
+      - ${board_root}/${board}/driver_examples/gpt/compare/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

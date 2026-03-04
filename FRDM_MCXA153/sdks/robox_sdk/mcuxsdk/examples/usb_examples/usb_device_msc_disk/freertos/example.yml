@@ -1,0 +1,22 @@
+dev_msc_disk_freertos:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_device_msc_disk/freertos/.
+    project-root-path: boards/${board}/usb_examples/usb_device_msc_disk/freertos/${multicore_foldername}
+    document:
+      name: dev_msc_disk_freertos${core_id_suffix_name}
+      category: usb_examples
+      brief: The USB MSC RAM disk application is a simple demonstration program based
+        on the MCUXpresso SDK.It is enumerated as a U-disk. Users can read and write
+        the SD card or MMC as a standard U-disk.
+      example_readme:
+      - examples/usb_examples/usb_device_msc_disk/readme.md
+      - ${board_root}/${board}/usb_examples/usb_device_msc_disk/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_device_msc_disk/bm_timing.jpg
+      - examples/usb_examples/usb_device_msc_disk/freertos_optimization_timing.jpg
+      - examples/usb_examples/usb_device_msc_disk/freertos_timing.jpg
+      - examples/usb_examples/usb_device_msc_disk/IAR_setting.jpg
+      - examples/usb_examples/usb_device_msc_disk/sdcard_scan.jpg
+      - examples/usb_examples/usb_device_msc_disk/sd_card.jpg
+  boards: {}
