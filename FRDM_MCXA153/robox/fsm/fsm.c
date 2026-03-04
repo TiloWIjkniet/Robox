@@ -143,11 +143,14 @@ void FSM_runStateMachine(void)
     if(head != tail)
     {
         event = FSM_getEvent();
-        state = FSM_eventHandler(state, event);
 
         #if DEBUG_FMS
-            DEBUG_PRINT("[DEBUG_FSM] Triggert event %s naar state %s\n\n", eventNames[event], stateNames[state]);
+            DEBUG_PRINT("[DEBUG_FSM] Triggert event %s van state %s\n\n", eventNames[event], stateNames[state]);
         #endif
+
+        state = FSM_eventHandler(state, event);
+
+
     }
 
     if(state_funcs[state].onUpdate != NULL)

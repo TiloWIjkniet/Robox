@@ -47,7 +47,7 @@ typedef struct
 typedef struct 
 {
     uint8_t difficulty;
-    uint8_t totalTime;
+    float totalTime;
     bool audio;
 
 }globalSettings_t;

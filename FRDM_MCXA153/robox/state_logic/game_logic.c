@@ -80,24 +80,32 @@ compartment_t openCompartment(compartment_t compartment)
  */
 bool displayLoadTemplate(displayTemplate_t displayTemplate, uint32_t minDisplayTime, bool forceDisplay)
 {
+    static uint32_t lastMinDisplayTime = 0;
     static uint32_t lastUpdateDisplayMillis = 0;
     static displayTemplate_t lastDisplayTemplate = RESET_D;
-
-
-    if(lastDisplayTemplate == displayTemplate) return true;
-
-    
 
     #if DEBUG_DISPLAY
         printf("[DEBUG_DISPLAY] Template %d displayed at t=%u\n", displayTemplate, now);
     #endif
-    uint32_t now = millis(); 
-    if(!forceDisplay && now - lastUpdateDisplayMillis < minDisplayTime) return false;
 
+    uint32_t now = millis();
+    if(forceDisplay && lastDisplayTemplate != displayTemplate)
+    {
+        printf(displayTemplates[displayTemplate]); // moet nog
+        lastDisplayTemplate = displayTemplate;
+        lastUpdateDisplayMillis = now;
+        lastMinDisplayTime = minDisplayTime;
+    }
+
+
+ 
+    if(now - lastUpdateDisplayMillis < lastMinDisplayTime) return false;
     lastUpdateDisplayMillis = now;
+    lastMinDisplayTime = minDisplayTime;
+    if(lastDisplayTemplate == displayTemplate) return true;
+
+    printf(displayTemplates[displayTemplate]);
     lastDisplayTemplate = displayTemplate;
-    printf(displayTemplates[displayTemplate]); // moet nog
-    
 
     #if DEBUG_DISPLAY
         printf("[DEBUG_DISPLAY] text on terminal: %s\n", displayTemplates[displayTemplate]); 
@@ -245,7 +253,24 @@ bool isWithinTimeLimit(void)
     #if DEBUG_TIME
         printf("[DEBUG_TIME] Er is: %d over", elapsedTime)
     #endif
-    return  (elapsedTime  <= globalSettings.totalTime * 60 * 1000) || (globalSettings.difficulty <= 2);
+    return  (elapsedTime  <= globalSettings.totalTime * 60.0f * 1000.0f) || (globalSettings.difficulty <= 2);
+}
+
+
+/**
+ * @brief Geeft het aantal geconfigureerde kamers terug.
+ *
+ *
+ * @return uint8_t Het aantal gevonden kamers.
+ */
+uint8_t getNumRooms(void) 
+{
+    uint8_t count = 0;
+    for(uint8_t i = 0; i < ARRAY_SIZE(roomsSettings); i++) {
+        if(roomsSettings[i].beconIp[0] == '\0') break;
+        count++;
+    }
+    return count;
 }
 
 /**

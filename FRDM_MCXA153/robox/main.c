@@ -10,16 +10,17 @@
 
 int main(void)
 {
-    serial_init(115200);
-    FSM_config();
-    keyPad_init();
-    millis_init();
-    //Haal data uit epromp
 
-    while(1)
-    {
-      FSM_runStateMachine();
-      updateTimeGamePanaltuMillis();
-    }
+  serial_init(115200);
+  FSM_config();
+  keyPad_init();
+  millis_init();
+  //Haal data uit epromp
+
+  while(1)
+  {
+    FSM_runStateMachine();
+    updateTimeGamePanaltuMillis();
+  }
 }
 

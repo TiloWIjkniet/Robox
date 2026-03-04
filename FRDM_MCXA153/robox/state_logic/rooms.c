@@ -61,7 +61,7 @@ void first_room_onUpdate(void)
         {
             //Fout antwoord
             applyWrongAnswerPenalty();
-            displayLoadTemplate(FOUD_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
             return;  
         }
         hasAnwertCorrect = true;
@@ -72,12 +72,12 @@ void first_room_onUpdate(void)
     if(required != NON_S)
     {
         //Spechale actie nodig
-        displayLoadTemplate(GOED_S_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_S_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
         specialActies_t performed = getSpecialActies();
         if(performed == NON_S) return;
         if(performed != required)
         {
-            displayLoadTemplate(FOUD_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
             applyWrongAnswerPenalty();
             return; 
         } 
@@ -85,18 +85,17 @@ void first_room_onUpdate(void)
 
     //Alles goed ga door
     compartment_t compartment = roomsSettings[roomIndex].openCompartment;
-    bool displayFinished = false;
     if (compartment != NON_C)
     {
-        displayFinished =  displayLoadTemplate(GOED_C_D, 5 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+       displayLoadTemplate(GOED_C_D, 5 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
         openCompartment(compartment);
     }
     else
     {
-        displayFinished = displayLoadTemplate(GOED_D, 5 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_D, 5 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
     }
 
-    if(!displayFinished) return;
+
 
     FSM_addEvent(E_ROOM_COMPLETED);
 }
@@ -134,7 +133,7 @@ void room_loop_onUpdate(void)
         {
             //Fout antwoord
             applyWrongAnswerPenalty();
-            displayLoadTemplate(FOUD_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
             return;  
         }
         hasAnwertCorrect = true;
@@ -145,12 +144,12 @@ void room_loop_onUpdate(void)
     if(required != NON_S)
     {
         //Spechale actie nodig
-        displayLoadTemplate(GOED_S_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_S_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
         specialActies_t performed = getSpecialActies();
         if(performed == NON_S) return;
         if(performed != required)
         {
-            displayLoadTemplate(FOUD_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
             applyWrongAnswerPenalty();
             return; 
         } 
@@ -158,20 +157,20 @@ void room_loop_onUpdate(void)
 
     //Alles goed ga door
     compartment_t compartment = roomsSettings[roomIndex].openCompartment;
-    bool displayFinished = false;
+
     if (compartment != NON_C)
     {
-        displayFinished = displayLoadTemplate(GOED_C_D, 5 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_C_D, 5 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
         openCompartment(compartment);
     }
     else
     {
-        displayFinished = displayLoadTemplate(GOED_D, 5 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_D, 5 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
     }
 
-    if(!displayFinished) return;
 
-    if(roomIndex < getNumRooms() - 1) FSM_addEvent(E_ROOM_COMPLETED);
+
+    if(roomIndex < getNumRooms() - 2) FSM_addEvent(E_ROOM_COMPLETED);
     else FSM_addEvent(E_ROOM_LOOP_TO_LAST);   
 }
 void room_loop_onExit(void)
@@ -208,7 +207,7 @@ void last_room_onUpdate(void)
         {
             //Fout antwoord
             applyWrongAnswerPenalty();
-            displayLoadTemplate(FOUD_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
             return;  
         }
         hasAnwertCorrect = true;
@@ -219,12 +218,12 @@ void last_room_onUpdate(void)
     if(required != NON_S)
     {
         //Spechale actie nodig
-        displayLoadTemplate(GOED_S_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_S_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
         specialActies_t performed = getSpecialActies();
         if(performed == NON_S) return;
         if(performed != required)
         {
-            displayLoadTemplate(FOUD_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
             applyWrongAnswerPenalty();
             return; 
         } 
@@ -232,18 +231,17 @@ void last_room_onUpdate(void)
 
     //Alles goed ga door
     compartment_t compartment = roomsSettings[roomIndex].openCompartment;
-    bool displayFinished = false;
     if (compartment != NON_C)
     {
-        displayFinished =  displayLoadTemplate(GOED_C_D, 5 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_C_D, 5 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
         openCompartment(compartment);
     }
     else
     {
-        displayFinished = displayLoadTemplate(GOED_D, 5 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_D, 5 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
     }
 
-    if(!displayFinished) return;
+  
     FSM_addEvent(E_LAST_ROOM_COMPLETED);
 
 }
@@ -275,6 +273,12 @@ void commonRoom_onExit()
 {
     uint32_t roomElapsedMillis = (millis() - startRoomMillis) + timeRoomPanaltyMillis;  
     runData.roomTimes[roomIndex] = ((float)roomElapsedMillis) / 1000.0f / 60.0f;
+
+    float minutes = runData.roomTimes[roomIndex];
+    uint16_t totalSec = (uint16_t)(minutes * 60.0f);
+    uint16_t min = totalSec / 60;
+    uint16_t sec = totalSec % 60;
+    printf("room %d: %u:%02u\n", roomIndex, min, sec);
 }
 
 

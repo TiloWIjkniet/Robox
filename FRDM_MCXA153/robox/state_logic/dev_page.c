@@ -13,7 +13,7 @@
 globalSettings_t globalSettings =
 {
     3,
-    60,
+    1,
     true
 };
 runData_t runData;
@@ -25,15 +25,7 @@ roomSettings_t roomsSettings[MAX_ROOMS] =
     {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"3333"},NON_C, NON_S},
 };
 
-uint8_t getNumRooms(void) 
-{
-    uint8_t count = 0;
-    for(uint8_t i = 0; i < ARRAY_SIZE(roomsSettings); i++) {
-        if(roomsSettings[i].beconIp[0] == '\0') break;
-        count++;
-    }
-    return count -1;
-}
+
 
 void dev_page_onEntry(void)
 {

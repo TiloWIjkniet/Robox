@@ -49,15 +49,22 @@ void reset_onUpdate(void)
 void reset_onExit(void) 
 { 
 
-    for(uint8_t i = 0; i < getNumRooms(); i++) {
-        uint16_t minutes = (uint16_t)runData.roomTimes[i];        // hele minuten
-        uint16_t seconds = (uint16_t)((runData.roomTimes[i] - minutes) * 60); // rest seconden
-        printf("    room %d: %u:%02u ", i, minutes, seconds);
-         printf("\n");
+    for(uint8_t i = 0; i < getNumRooms(); i++) 
+    {
+        float minutes = runData.roomTimes[i];
+        uint16_t totalSec = (uint16_t)(minutes * 60.0f);
+        uint16_t min = totalSec / 60;
+        uint16_t sec = totalSec % 60;
+        printf("room %d: %u:%02u\n", i, min, sec);
     }
    
     printf("Aantal fouten: %d\n",runData.wrongAnswerCount);
-    printf("Start Tijd: %d\n",runData.totalTime);
+   
+    float minutes = runData.totalTime;
+    uint16_t totalSec = (uint16_t)(minutes * 60.0f);
+    uint16_t min = totalSec / 60;
+    uint16_t sec = totalSec % 60;
+    printf("Start Tijd: %u:%02u\n",min, sec);
     printf("Moelijkhijd: %d\n",runData.difficulty);
     printf("Max Rooms: %d\n",runData.maxRooms);
 
