@@ -169,8 +169,8 @@ function drawRecordingsButtons()
         const btn = document.createElement('button');
         btn.textContent = idx=== 0 ? 'Afgelopen run' : `${idx} Runs geleden`;
         const indicator = document.createElement('span');
-        indicator.textContent = Recordings[idx][1]?"✓":"✗";
-        indicator.style.color = Recordings[idx][1]?"green":"red";
+        indicator.textContent = Recordings[idx][5] == Recordings[idx][0].length?"✓":"✗";
+        indicator.style.color = Recordings[idx][5] == Recordings[idx][0].length?"green":"red";
         indicator.style.marginLeft="5px";
         btn.appendChild(indicator);
 
