@@ -296,13 +296,7 @@ html, body
 }
 
 
-#imageInput
-{
-   /* float: right;*/
-    transform: translateY(25px);  
-    background-color: #ff0000;
-    color: #b2aca2;
-}
+
 .stijlvolle-knop
 {
     position: relative;
@@ -326,22 +320,33 @@ html, body
     box-shadow: 0 6px 10px rgba(0,0,0,0.3);
 }
 
-.button-holder
+#imageInput
 {
 
-    width: 100%;
+       position: absolute;
+       width:  70px;
+      right: 5px;
+    bottom: 5px;  
+
+    color: #b2aca200;
+}
+
+.button-holder
+{
+    position: relative;
+   
+       width: clamp(1050px, 100%, 1200px);
     height: 80px;
 }
 .knop-klijn
 {
     
     position: relative;
-
+    bottom:  -15px;
     background-color: #35393b; 
     color: #b2aca2;                  /* witte tekst */
     border: 2px solid #555;       /* subtiele rand */
-    border-radius: 8px;           /* afgeronde hoeken */
-    padding: 5px 10px;           /* lekker groot klikvlak */
+    border-radius: 8px;           /* afgeronde hoeken */          /* lekker groot klikvlak */
     font-size: 15px;
     cursor: pointer;
     transition: all 0.2s ease;    /* soepele animatie */
@@ -376,6 +381,7 @@ html, body
 }
 
 #imagePreview {
+
     background-color: #35393b;
     width: 100% ;         /* past in container */
     height: 100%+ 20px;
@@ -501,6 +507,7 @@ html, body
 .kamer-settings
 {
     position: relative;
+    
     top: 0px;
     left: 0px;
     width: clamp(530px, 45%, 1200px); /* min 690px, max 1200px, standaard 65% */
@@ -535,7 +542,7 @@ html, body
 
 .settings-label {
     font-weight: bold;
-    font-size: 30px;
+    font-size: 25px;
     width: 40%;
     color: #b2aca2;
 }
@@ -601,7 +608,11 @@ html, body
     transition: opacity 0.15s ease, transform 0.15s ease;
     z-index: 10;
 }
-
+.janne
+{
+    font-size: 10px;
+    color: #ffffff00;
+}
 .has-tooltip:hover .tooltip {
     opacity: 1;
     transform: translateY(0);
@@ -616,7 +627,7 @@ html, body
   transform: translateX(-50%);
 
    
-  left: 20%;     
+  left: 17%;     
   width: 200px;
 
     font-family: "Arial Black", "Trebuchet MS", Verdana, sans-serif;

@@ -142,7 +142,7 @@ function updateStats() {
     document.getElementById("gemiddeldeTijd").textContent = formatTime(gemiddeld);
     document.getElementById("tijdOver").textContent = formatTime(data[3]-totaal);
 
-    document.getElementById("geslaagd").textContent = data[5] == data[0].length?"Gehaald":"Niet gehaalt";
+    document.getElementById("geslaagd").textContent = data[5] == data[0].length?"Succesvol":"Onsuccesvol";
     document.getElementById("aantalFouten").textContent = data[2];
     document.getElementById("moeilijkheid").textContent = data[4]+"/5";
     document.getElementById("bomTijd").textContent = formatTime(data[3]);
@@ -516,7 +516,7 @@ function handleFile(file)
 
         if (Math.abs(ratio - RATIO_2_1) / RATIO_2_1 > 0.05) 
         {
-            ratioWarning.style.display = "block";
+          //  ratioWarning.style.display = "block";
             uploadedImageData = null;
 
             imagePreview.src = "";
@@ -903,14 +903,14 @@ generateSettingsTable([
     {  key: "naam-kamer", label: "Naam kamer", type: "text", value: "Kamer " + index,help:"De naam van de kamer"},
     { key: "becon-ip", label: "Beacon ip", type:  "text", value: "" , help:"Het aderes van de becon"},
     { key: "antwoord",label: "Antwoord", type:  "text", value: "", help:"Welk antwoord er goed zijn <br> Gebruik een ',' om meerdere antwoorden in te vullen <br>" },
-    { key: "open-compartment",label: "Open compartment",type: "select", value: 0, options: [
+    { key: "open-compartment",label: "Open compartiment",type: "select", value: 0, options: [
             { label: "Geen", value: 0 },
-            { label: "Compartment 1", value: 1 },
-            { label: "Compartment 2", value: 2 },
-            { label: "Compartment 3", value: 3 }],
+            { label: "Compartiment 1", value: 1 },
+            { label: "Compartiment 2", value: 2 },
+            { label: "Compartiment 3", value: 3 }],
             help:"Welke ruimte er open gaat na het oplossen van de pussel"
     },
-    { key: "special-acties",label: "Special acties",type: "select", value: 0, options: [
+    { key: "special-acties",label: "Speciale acties",type: "select", value: 0, options: [
             { label: "Geen", value: 0 },
             { label: "Knip draat", value: 1 },
             { label: "Draai sluetel", value: 2 },
@@ -939,7 +939,7 @@ generateSettingsTable([
         <b>4</b>: -15 min, spel stopt bij 0<br>\
         <b>5</b>: resterende tijd /2, spel stopt bij 0"
         },
-    { key: "start-tijd",label: "Start tijd", type:  "text", value: 60 , help:"Hoeveel tijd er is om het spel op te lossen"},
+    { key: "start-tijd",label: "Starttijd", type:  "text", value: 60 , help:"Hoeveel tijd er is om het spel op te lossen"},
     { key: "audio",label: "Audio ", type: "select", value: 0, options: [
             { label: "Aan", value: 0 },
             { label: "Uit", value: 1 },
