@@ -11,6 +11,10 @@
 		{
 			"name": "frdmmcxa153_assignments_led_chaser",
 			"path": "../../../../Project/frdmmcxa153_assignments_led_chaser"
+		},
+		{
+			"name": "mcuxsdk",
+			"path": "../sdks/robox_sdk/mcuxsdk"
 		}
 	]
 }

@@ -593,6 +593,7 @@ function handleFile(file)
         imagePreview.src = finalImage;
         imagePreview.style.display = "block";
         placeholder.style.display = "none";
+        
 
         uploadedImageData = finalImage;
     };

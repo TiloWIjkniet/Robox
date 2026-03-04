@@ -294,9 +294,13 @@ html, body
     transform: translateY(0);             /* indruk-effect */
     box-shadow: 0 3px 5px rgba(0,0,0,0.2);
 }
+
+
 #imageInput
 {
-
+   /* float: right;*/
+    transform: translateY(25px);  
+    background-color: #ff0000;
     color: #b2aca2;
 }
 .stijlvolle-knop
@@ -389,7 +393,7 @@ html, body
     z-index: 2;           /* boven andere elementen */
     align-items: center;       /* verticaal centreren */
     justify-content: center;   /* horizontaal centreren */
-        top: 25px;
+      
     
 }
 
@@ -400,7 +404,7 @@ html, body
     font-size:60px;
     position: absolute;
     text-align: center;
-    
+    font-style:oblique;
 
 }
 
@@ -478,7 +482,6 @@ html, body
 {
     
     position: relative;
-    
     aspect-ratio: 2 / 1;
     width: clamp(1050px,50%, 12000px); /* min 690px, max 1200px, standaard 65% */
 
@@ -654,14 +657,14 @@ html, body
     justify-content: flex-end;    /* naar rechts */
     align-items: center;          /* verticaal centreren */
     position: absolute;
-    right: 10px;
+    right: 40px;
     width: 12%;                  /* standaard breedte past zich aan */
     height: 70%;
-    font-size: 30px;
+    font-size: 15px;
     font-weight: 700;
         color: #b2aca2a6;  
     padding-right: 10px;
- 
+    font-style:oblique;
        background-color: #ff000003;
 }
 
@@ -675,7 +678,7 @@ html, body
 @media (max-width: 1600px) {
     .made-by-ese {
         width: 50px;             /* vaste breedte */
-        font-size: 20px;          /* kleinere letters */
+        font-size: 15px;          /* kleinere letters */
     }
     .full-text {
         display: none;            /* lange tekst verbergen */

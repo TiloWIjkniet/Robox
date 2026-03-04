@@ -39,18 +39,19 @@
     
     <div class = "button-holder">
       <button id = "btnSave" class="stijlvolle-knop">Opslaan</button>
-      <button id = "btnSave"onclick="exportSettingsNoLib()" class="knop-klijn">Export Settings</button>
-      <button id = "btnImport" class="knop-klijn">Import Settings</button>
+      <button id = "btnSave"onclick="exportSettingsNoLib()" class="knop-klijn">Instellingen exporten </button>
+      <button id = "btnImport" class="knop-klijn">Instellingen importen</button>
           <input type="file" id="importFile" accept=".json" style="display:none" />
+          <img id="imagePreview" style="display:none;" />
+            <input type="file" id="imageInput" accept="image/*">
       <span id="saveStatus"></span>
     </div>
     <div class = "image-Container">
        
       <div class="image-upload">
-      <input type="file" id="imageInput" accept="image/*">
          <p id="ratioWarning" class="error-afbeelding">Afbeelding moet in een verhouding hebben van 2:1</p>
         <div id="dropZone">
-        <span id="placeholder">Insert Foto</span>
+        <span id="placeholder">Importeer foto</span>
         <img id="imagePreview" src="" >
         </div>
       </div>
