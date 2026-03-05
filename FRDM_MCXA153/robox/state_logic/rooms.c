@@ -6,7 +6,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "time_millis.h"
-#include <stdio.h>
 #include "keypad.h"
 
 uint32_t startRoomMillis;
@@ -43,6 +42,7 @@ void first_room_onUpdate(void)
 {
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
     bool inCorrectRoom = isInCorrectRoom("BECON IP VAN DICHTSBIJZIJNDE BEACON");
+
     if(!inCorrectRoom) 
     {
         displayLoadTemplate(KAMER_D,0 , false);
@@ -62,7 +62,7 @@ void first_room_onUpdate(void)
         {
             //Fout antwoord
             applyWrongAnswerPenalty();
-            displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET zTEXT
             return;  
         }
         hasAnwertCorrect = true;
@@ -95,8 +95,6 @@ void first_room_onUpdate(void)
     {
         displayLoadTemplate(GOED_D, 5 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
     }
-
-
 
     FSM_addEvent(E_ROOM_COMPLETED);
 }
@@ -257,7 +255,11 @@ void last_room_onExit(void)
 void commonRoom_onEntry()
 {
     emptyInputBuffer();
-    printf("In room: %d\n", roomIndex);
+
+    #if DEBUG_ON_PC
+        printf("In room: %d\n", roomIndex);
+    #endif
+
     setMapCoordinates(roomsSettings[roomIndex].coordinates);
 
     uint16_t now = millis();   
@@ -282,7 +284,10 @@ void commonRoom_onExit()
     uint16_t minutes = totalSec / 60;               // minuten
     uint16_t seconds = totalSec % 60;               // resterende seconden
 
-    printf("room %d: %02u:%02u\n", roomIndex, minutes, seconds);
+
+    #if DEBUG_ON_PC
+        printf("room %d: %02u:%02u\n", roomIndex, minutes, seconds);
+    #endif
 
 }
 

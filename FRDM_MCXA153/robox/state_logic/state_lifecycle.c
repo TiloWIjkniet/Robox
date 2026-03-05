@@ -3,7 +3,6 @@
 #include <fsm.h>
 #include "game_logic.h"
 #include <stdint.h>
-#include <stdio.h>
 
 void completed_onEntry(void) 
 { 
@@ -50,19 +49,21 @@ void reset_onUpdate(void)
 }
 void reset_onExit(void) 
 { 
+    #if DEBUG_ON_PC
 
+    printf("[");
     for(uint8_t i = 0; i < getNumRooms(); i++) 
     {
         float minutes = runData.roomTimes[i];
         uint16_t totalSec = (uint16_t)(minutes * 60.0f);
         uint16_t min = totalSec / 60;
         uint16_t sec = totalSec % 60;
-        printf("room %d: %u:%02u\n", i, min, sec);
+        printf("%u:%02u, ", min, sec);
     }
+    printf("]\n");
    
     printf("Aantal fouten: %d\n",runData.wrongAnswerCount);
     
-   
     float minutes = runData.totalTime;
     uint16_t totalSec = (uint16_t)(minutes * 60.0f);
     uint16_t min = totalSec / 60;
@@ -71,5 +72,5 @@ void reset_onExit(void)
     printf("Moelijkhijd: %d\n",runData.difficulty);
     printf("Max Rooms: %d\n",runData.maxRooms);
 
-
+    #endif
 }

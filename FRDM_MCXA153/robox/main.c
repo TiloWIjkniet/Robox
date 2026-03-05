@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "buzzer.h"
 
 int32_t getTimeRemaining();
 void updateGameTimer();
@@ -18,6 +19,7 @@ int main(void)
   FSM_config();
   keyPad_init();
   millis_init();
+  buzzer_init();
   //Haal data uit epromp
 
   while(1)
@@ -27,6 +29,7 @@ int main(void)
     {
       updateTimeGamePanaltuMillis();
       updateGameTimer();
+      buzzer_loop();
     }
 
   }

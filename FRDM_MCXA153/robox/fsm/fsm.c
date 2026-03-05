@@ -1,6 +1,5 @@
 #include <string.h>
 #include <stdint.h>
-
 #include "fsm.h"
 
 #define DEBUG_FMS 1

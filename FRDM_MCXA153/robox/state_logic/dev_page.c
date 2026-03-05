@@ -5,14 +5,14 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "keypad.h"
-#include <stdio.h>
+
 
 #define EXIT_DEV_CODE "0000"
 #define OPEN_ALL_COMPARTMETS "9999"
 
 globalSettings_t globalSettings =
 {
-    4,
+    WRONG_ANSWER_HALF_REMAINING_STOP,
     10,
     true
 };
@@ -50,14 +50,17 @@ void dev_page_onUpdate(void)
     }
     if(isInputMatching(answerBuffer, OPEN_ALL_COMPARTMETS))
     {
+        //Opent all compartments
         openCompartment(NON_C);
     }
     for(int room = 0; room < getNumRooms(); room++)
     {
+        //Print unike rome setting
         if(isInputMatching(answerBuffer, ROOM_CODES[room]))
-        {
+        {    
             setMapCoordinates(roomsSettings[room].coordinates);
-
+            #if DEBUG_ON_PC
+    
             printf("[%d, %d]   ",roomsSettings[room].coordinates[0],roomsSettings[room].coordinates[0]);
             printf("%s   ",roomsSettings[room].beconIp);
             printf("[   ");
@@ -68,7 +71,10 @@ void dev_page_onUpdate(void)
             printf("]   ");
             printf("%d   ",roomsSettings[room].openCompartment);
             printf("%d\n",roomsSettings[room].specialActies);
+            #endif
+
             return;
+            
         }
     }
 

@@ -4,6 +4,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+
+#define DEBUG_ON_PC 1
+#if DEBUG_ON_PC
+#include <stdio.h>
+#endif
+
 #define INVALID_COORD 255
 #define MAX_RUNS 20
 #define MAX_ROOMS 20
@@ -46,7 +52,7 @@ typedef struct
 
 typedef struct 
 {
-    uint8_t difficulty;
+    wrongAnswerPenalty_t difficulty;
     float totalTime;
     bool audio;
 

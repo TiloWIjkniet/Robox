@@ -2,6 +2,10 @@
 	"folders": [
 		{
 			"path": "robox"
+		},
+		{
+			"name": "frdmmcxa153_buzzer",
+			"path": "../../../Prog2/frdmmcxa153_buzzer"
 		}
 	],
 	"settings": {}

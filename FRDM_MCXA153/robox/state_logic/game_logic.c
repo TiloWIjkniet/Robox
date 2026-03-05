@@ -4,20 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "time_millis.h"
-#include <stdio.h>
-
-#define DEBUG_DISPLAY 0
-#if DEBUG_DISPLAY
-#include <stdio.h>
-#endif
-#define DEBUG_USER_INPUT 0
-#if DEBUG_USER_INPUT
-#include <stdio.h>
-#endif
-#define DEBUG_TIME 0
-#if DEBUG_TIME
-#include <stdio.h>
-#endif
+#include "buzzer.h"
 
 #define MS_PER_TICK_PANALTY 250
 
@@ -85,21 +72,19 @@ bool displayLoadTemplate(displayTemplate_t displayTemplate, uint32_t minDisplayT
     static uint32_t lastUpdateDisplayMillis = 0;
     static displayTemplate_t lastDisplayTemplate = RESET_D;
 
-    #if DEBUG_DISPLAY
-        printf("[DEBUG_DISPLAY] Template %d displayed at t=%u\n", displayTemplate, now);
-    #endif
+
 
     uint32_t now = millis();
     if(forceDisplay && lastDisplayTemplate != displayTemplate)
     {
-        printf(displayTemplates[displayTemplate]); // moet nog
+        #if DEBUG_ON_PC
+        printf(displayTemplates[displayTemplate]);
+        #endif
         lastDisplayTemplate = displayTemplate;
         lastUpdateDisplayMillis = now;
         lastMinDisplayTime = minDisplayTime;
     }
 
-
- 
     if(now - lastUpdateDisplayMillis < lastMinDisplayTime) return false;
 
     lastUpdateDisplayMillis = now;
@@ -107,12 +92,12 @@ bool displayLoadTemplate(displayTemplate_t displayTemplate, uint32_t minDisplayT
     
     if(lastDisplayTemplate == displayTemplate) return true;
 
+    #if DEBUG_ON_PC
     printf(displayTemplates[displayTemplate]);
+    #endif
+
     lastDisplayTemplate = displayTemplate;
 
-    #if DEBUG_DISPLAY
-        printf("[DEBUG_DISPLAY] text on terminal: %s\n", displayTemplates[displayTemplate]); 
-    #endif
 
     return true;
 }
@@ -218,14 +203,7 @@ bool isAnswerCorrect(char *userInput)
 {
     hasNewAnswer  = false;
 
-    #if DEBUG_USER_INPUT
-    for(int i = 0; i < MAX_ANSWERS; i++)
-    {
-        printf("[DEBUG_USER_INPUT] %s %s %s\n", userInput strcmp(roomsSettings[roomIndex].answers[i], userInput) == 0? "==": "!=", roomsSettings[roomIndex].answers[i])
-    }
-    #endif
-
-
+  
     for(int i = 0; i < MAX_ANSWERS; i++)
     {
         
@@ -262,9 +240,6 @@ bool isInputMatching(const  char *input, const char *correctInput)
 bool isWithinTimeLimit(void)
 {
     uint32_t elapsedTime = getElapsedTime(); 
-    #if DEBUG_TIME
-        printf("[DEBUG_TIME] Er is: %d over", elapsedTime)
-    #endif
     return  (elapsedTime  <= globalSettings.totalTime * 60.0f * 1000.0f) || (globalSettings.difficulty <= 2);
 }
 
@@ -292,8 +267,12 @@ void updateGameTimer()
   uint16_t minutes = totalSec / 60;
   uint16_t seconds = totalSec % 60;
 
-  if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
-  else printf("Time: %02u:%02u\n",minutes, seconds);
+    buzzer_play(BUZZERT_DURATION); // Zet buzzer aan als tijd negatief is, uit als tijd positief is
+    #if DEBUG_ON_PC
+        if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
+        else printf("Time: %02u:%02u\n",minutes, seconds);
+    #endif
+
 }
 
 /**
@@ -365,9 +344,6 @@ uint32_t getWrongAnswerPenalty()
             return 0;
             break;
     }
-    #if DEBUG_TIME
-        printf("[DEBUG_TIME] De time panalty is %d", timePanalty)
-    #endif
     return timePanalty;
 
 }
