@@ -121,7 +121,7 @@ void updateInputBuffer()
     case '#':
         strncpy(answerBuffer, inputBuffer, sizeof(answerBuffer) - 1);
         answerBuffer[sizeof(answerBuffer) - 1] = '\0';
-
+        if(inputBufferIndex <= 0) return;
         hasNewAnswer = true;
 
         inputBufferIndex = 0;

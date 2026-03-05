@@ -12,7 +12,7 @@
 uint32_t startRoomMillis;
 
 bool hasAnwertCorrect = false;
-
+bool gameActiv = false;
 
 
 void commonRoom_onEntry();
@@ -21,6 +21,7 @@ void commonRoom_onExit();
 void first_room_onEntry(void)
 {
     //Reset run data
+    gameActiv = true;
     roomIndex = 0;
     memset(&runData, 0, sizeof(runData));
 
@@ -271,14 +272,18 @@ void commonRoom_onEntry()
  */
 void commonRoom_onExit()
 {
-    uint32_t roomElapsedMillis = (millis() - startRoomMillis) + timeRoomPanaltyMillis;  
-    runData.roomTimes[roomIndex] = ((float)roomElapsedMillis) / 1000.0f / 60.0f;
 
-    float minutes = runData.roomTimes[roomIndex];
-    uint16_t totalSec = (uint16_t)(minutes * 60.0f);
-    uint16_t min = totalSec / 60;
-    uint16_t sec = totalSec % 60;
-    printf("room %d: %u:%02u\n", roomIndex, min, sec);
+    uint32_t roomElapsedMillis = (millis() - startRoomMillis) + timeRoomPanaltyMillis;  
+    
+    float elapsedMinutes = ((float)roomElapsedMillis) / 1000.0f / 60.0f;
+    runData.roomTimes[roomIndex] = elapsedMinutes;
+
+    uint32_t totalSec = roomElapsedMillis / 1000;   // alles naar seconden
+    uint16_t minutes = totalSec / 60;               // minuten
+    uint16_t seconds = totalSec % 60;               // resterende seconden
+
+    printf("room %d: %02u:%02u\n", roomIndex, minutes, seconds);
+
 }
 
 

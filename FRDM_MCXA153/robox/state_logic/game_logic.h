@@ -30,4 +30,9 @@ void setMapCoordinates(uint8_t coordinates[2]);
 bool isInputMatching(const  char *input, const char *correctInput);
 
 uint8_t getNumRooms(void) ;
+
+void updateGameTimer();
+
+int32_t getTimeRemaining();
+
 #endif

@@ -7,7 +7,7 @@
 
 void completed_onEntry(void) 
 { 
-
+    gameActiv = false;
 }
 void completed_onUpdate(void) 
 { 
@@ -23,6 +23,7 @@ void completed_onExit(void)
 
 void timeout_onEntry(void) 
 { 
+    gameActiv = false;
 }
 void timeout_onUpdate(void) 
 { 
@@ -39,6 +40,7 @@ void timeout_onExit(void)
 
 void reset_onEntry(void) 
 { 
+    
     //Save data to eprmp
 }
 void reset_onUpdate(void) 
@@ -59,6 +61,7 @@ void reset_onExit(void)
     }
    
     printf("Aantal fouten: %d\n",runData.wrongAnswerCount);
+    
    
     float minutes = runData.totalTime;
     uint16_t totalSec = (uint16_t)(minutes * 60.0f);

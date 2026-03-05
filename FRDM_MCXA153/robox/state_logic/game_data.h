@@ -73,6 +73,6 @@ extern  uint8_t roomIndex;
 
 extern  char answerBuffer[MAX_CHAR_IN_STRING];
 extern  bool hasNewAnswer;
-
+extern bool gameActiv;
 
 #endif

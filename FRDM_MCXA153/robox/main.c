@@ -6,8 +6,11 @@
 #include "time_millis.h"
 #include "keypad.h"
 #include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
 
-
+int32_t getTimeRemaining();
+void updateGameTimer();
 int main(void)
 {
 
@@ -20,7 +23,12 @@ int main(void)
   while(1)
   {
     FSM_runStateMachine();
-    updateTimeGamePanaltuMillis();
+    if(gameActiv)
+    {
+      updateTimeGamePanaltuMillis();
+      updateGameTimer();
+    }
+
   }
 }
 

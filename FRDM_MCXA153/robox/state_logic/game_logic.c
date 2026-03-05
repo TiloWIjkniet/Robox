@@ -19,16 +19,17 @@
 #include <stdio.h>
 #endif
 
+#define MS_PER_TICK_PANALTY 250
 
-
-uint32_t timeGamePanaltyBuffer;
-uint32_t timeGamePenaltyMillis;
-uint32_t timeRoomPanaltyMillis;
-uint32_t startGameMillis;
-uint8_t roomIndex;
+uint32_t timeGamePanaltyBuffer=0;
+uint32_t timeGamePenaltyMillis=0;
+uint32_t timeRoomPanaltyMillis=0;
+uint32_t startGameMillis=0;
+uint8_t roomIndex=0;
 
 uint32_t getWrongAnswerPenalty();
 bool isInputMatching(const  char *input, const char *correctInput);
+int32_t getTimeRemaining();
 
 void setMapCoordinates(uint8_t coordinates[2])
 {
@@ -100,8 +101,10 @@ bool displayLoadTemplate(displayTemplate_t displayTemplate, uint32_t minDisplayT
 
  
     if(now - lastUpdateDisplayMillis < lastMinDisplayTime) return false;
+
     lastUpdateDisplayMillis = now;
     lastMinDisplayTime = minDisplayTime;
+    
     if(lastDisplayTemplate == displayTemplate) return true;
 
     printf(displayTemplates[displayTemplate]);
@@ -174,8 +177,17 @@ uint32_t getElapsedTime()
 void updateTimeGamePanaltuMillis()
 {
     if(timeGamePanaltyBuffer <= 0) return;
-    timeGamePanaltyBuffer--;
-    timeGamePenaltyMillis++;
+    if(timeGamePanaltyBuffer >= MS_PER_TICK_PANALTY)
+    {
+        timeGamePanaltyBuffer -= MS_PER_TICK_PANALTY;
+        timeGamePenaltyMillis += MS_PER_TICK_PANALTY;
+    }
+    else
+    {
+        timeGamePenaltyMillis += timeGamePanaltyBuffer;
+        timeGamePanaltyBuffer = 0;
+    }
+    
     //UpdaeTimeDisplay();
 }
 
@@ -219,7 +231,7 @@ bool isAnswerCorrect(char *userInput)
         
         if(isInputMatching(roomsSettings[roomIndex].answers[i], userInput)) return true;
     }
-    runData.wrongAnswerCount ++;
+   
     return false;
 }
 
@@ -256,6 +268,49 @@ bool isWithinTimeLimit(void)
     return  (elapsedTime  <= globalSettings.totalTime * 60.0f * 1000.0f) || (globalSettings.difficulty <= 2);
 }
 
+/**
+ * @brief Updates and prints the remaining game time once per second.
+ *
+ */
+void updateGameTimer()
+{
+
+  static int16_t lastSec =0;
+  int32_t timeRemaining = getTimeRemaining();
+
+  int32_t totalSec = timeRemaining / 1000;
+  if(totalSec == lastSec) return;
+  lastSec = totalSec;
+
+  bool negative = false;
+  if(totalSec < 0)
+  {
+      negative = true;
+      totalSec = -totalSec;  // maak positief voor berekening
+  }
+
+  uint16_t minutes = totalSec / 60;
+  uint16_t seconds = totalSec % 60;
+
+  if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
+  else printf("Time: %02u:%02u\n",minutes, seconds);
+}
+
+/**
+ * @brief Calculates the remaining game time in milliseconds.
+ *
+ * This function determines how much time is left before the global game
+ * timer expires. The value can become negative when the elapsed time
+ * exceeds the configured total game time.
+ *
+ * @return int32_t Remaining time in milliseconds.
+ */
+int32_t getTimeRemaining()
+{
+  uint32_t elapsedTime = getElapsedTime();
+  int32_t timeRemaining = (globalSettings.totalTime * 60 * 1000) - elapsedTime;
+  return timeRemaining;
+}
 
 /**
  * @brief Geeft het aantal geconfigureerde kamers terug.
@@ -302,7 +357,7 @@ uint32_t getWrongAnswerPenalty()
         case WRONG_ANSWER_HALF_REMAINING_STOP:
         
             uint32_t elapsedTime = millis() - startGameMillis; 
-            uint32_t remainingTime = (globalSettings.totalTime) - (elapsedTime + timeGamePenaltyMillis);
+            uint32_t remainingTime = (globalSettings.totalTime * 60 * 1000) - (elapsedTime + timeGamePenaltyMillis);
             timePanalty = remainingTime / 2;
             break;
 
