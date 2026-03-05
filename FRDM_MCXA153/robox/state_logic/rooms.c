@@ -43,6 +43,7 @@ void first_room_onUpdate(void)
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
     bool inCorrectRoom = isInCorrectRoom("BECON IP VAN DICHTSBIJZIJNDE BEACON");
 
+
     if(!inCorrectRoom) 
     {
         displayLoadTemplate(KAMER_D,0 , false);
@@ -73,7 +74,7 @@ void first_room_onUpdate(void)
     if(required != NON_S)
     {
         //Spechale actie nodig
-        displayLoadTemplate(GOED_S_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_S_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
         specialActies_t performed = getSpecialActies();
         if(performed == NON_S) return;
         if(performed != required)
@@ -113,6 +114,9 @@ void room_loop_onUpdate(void)
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
 
     bool inCorrectRoom = isInCorrectRoom("BECON IP VAN DICHTSBIJZIJNDE BEACON");
+
+
+
     if(!inCorrectRoom) 
     {
         displayLoadTemplate(KAMER_D,0 , false);
@@ -143,7 +147,7 @@ void room_loop_onUpdate(void)
     if(required != NON_S)
     {
         //Spechale actie nodig
-        displayLoadTemplate(GOED_S_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_S_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
         specialActies_t performed = getSpecialActies();
         if(performed == NON_S) return;
         if(performed != required)
@@ -187,6 +191,9 @@ void last_room_onUpdate(void)
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
 
     bool inCorrectRoom = isInCorrectRoom("BECON IP VAN DICHTSBIJZIJNDE BEACON");
+
+
+
     if(!inCorrectRoom) 
     {
         displayLoadTemplate(KAMER_D,0 , false);
@@ -217,7 +224,7 @@ void last_room_onUpdate(void)
     if(required != NON_S)
     {
         //Spechale actie nodig
-        displayLoadTemplate(GOED_S_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        displayLoadTemplate(GOED_S_D,3 * 1000, false); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
         specialActies_t performed = getSpecialActies();
         if(performed == NON_S) return;
         if(performed != required)

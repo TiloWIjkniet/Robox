@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 cmake_minimum_required(VERSION 3.22.0)
-
+set(board frdmmcxa153)
 cmake_path(APPEND conf_file_path ${CMAKE_CURRENT_LIST_DIR} ${board} prj.conf)
 set(CONF_FILE ${conf_file_path} ${CONF_FILE})
 include(${SdkRootDirPath}/cmake/extension/mcux.cmake)
@@ -44,6 +44,10 @@ mcux_add_source(
             util/keypad.h
             util/time_millis.c
             util/time_millis.h
+            util/buzzer.c
+            util/buzzer.h
+            util/touch_sensor.c
+            util/touch_sensor.h
 
             board/board.h
 )

@@ -36,7 +36,7 @@ typedef enum
 typedef enum
 {
     NON_S,
-    ONE_S,
+    TOUCH_SENSOR,
     TWO_S
 }specialActies_t;
 
@@ -50,14 +50,6 @@ typedef struct
     
 }roomSettings_t;
 
-typedef struct 
-{
-    wrongAnswerPenalty_t difficulty;
-    float totalTime;
-    bool audio;
-
-}globalSettings_t;
-
 typedef enum
 {
     WRONG_ANSWER_MINUS_1MIN_CONTINUE,     // 1 minuut aftrek, spel gaat door
@@ -66,6 +58,22 @@ typedef enum
     WRONG_ANSWER_MINUS_15MIN_STOP,   // Tijd aftrekken (bijv. 5 min), stop als tijd 0
     WRONG_ANSWER_HALF_REMAINING_STOP 
 }wrongAnswerPenalty_t;
+
+typedef enum
+{
+    AUDIO_ON,    
+    AUDIO_CENSORED,    
+    AUDIO_OFF
+}audio_t;
+
+typedef struct 
+{
+    wrongAnswerPenalty_t difficulty;
+    float totalTime;
+    audio_t audio;
+
+}globalSettings_t;
+
 
 extern  globalSettings_t globalSettings;
 extern  runData_t runData;

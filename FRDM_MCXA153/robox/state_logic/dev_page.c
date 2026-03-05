@@ -5,23 +5,23 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "keypad.h"
-
+#include "touch_sensor.h"
 
 #define EXIT_DEV_CODE "0000"
 #define OPEN_ALL_COMPARTMETS "9999"
 
 globalSettings_t globalSettings =
 {
-    WRONG_ANSWER_HALF_REMAINING_STOP,
-    10,
-    true
+    WRONG_ANSWER_MINUS_15MIN_STOP,
+    120,
+    AUDIO_ON
 };
 runData_t runData;
 roomSettings_t roomsSettings[MAX_ROOMS] =
 {
     {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"0000"},NON_C, NON_S},
-    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"1111"},NON_C, NON_S},
-    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"2222"},NON_C, NON_S}
+    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"1111"},NON_C, TOUCH_SENSOR},
+    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"2222"},NON_C, TOUCH_SENSOR}
 
 };
 

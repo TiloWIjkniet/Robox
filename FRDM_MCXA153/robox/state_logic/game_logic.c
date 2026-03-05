@@ -1,12 +1,13 @@
 #include "display_template.h"
 #include "game_data.h"
-#include <stdint.h>
-#include <stdbool.h>
 #include <string.h>
 #include "time_millis.h"
 #include "buzzer.h"
+#include <stdint.h>
+#include <stdbool.h>
+#include "touch_sensor.h"
 
-#define MS_PER_TICK_PANALTY 250
+#define MS_PER_TICK_PANALTY 10
 
 uint32_t timeGamePanaltyBuffer=0;
 uint32_t timeGamePenaltyMillis=0;
@@ -118,10 +119,14 @@ specialActies_t getSpecialActies()
     static specialActies_t lastSpecialActies = NON_S;
     specialActies_t newAction = NON_S;
 
-    if     (true) newAction = ONE_S;
-    else if(true) newAction = TWO_S;
+    if     (isTouchLongPressed()) newAction = TOUCH_SENSOR;
+    else if(false) newAction = TWO_S;
     
-    if(newAction != lastSpecialActies) return newAction;
+    if(newAction != lastSpecialActies)
+    { 
+        lastSpecialActies = newAction;
+        return newAction;
+    }
     
     return NON_S;
 }
@@ -266,11 +271,15 @@ void updateGameTimer()
 
   uint16_t minutes = totalSec / 60;
   uint16_t seconds = totalSec % 60;
-
+    if(negative)
+    {
+        minutes = seconds;
+        seconds  = minutes;
+    }
     buzzer_play(BUZZERT_DURATION); // Zet buzzer aan als tijd negatief is, uit als tijd positief is
     #if DEBUG_ON_PC
-        if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
-        else printf("Time: %02u:%02u\n",minutes, seconds);
+        //  if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
+        //  else printf("Time: %02u:%02u\n",minutes, seconds);
     #endif
 
 }
