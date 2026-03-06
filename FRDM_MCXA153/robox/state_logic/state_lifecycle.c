@@ -73,4 +73,12 @@ void reset_onExit(void)
     printf("Max Rooms: %d\n",runData.maxRooms);
 
     #endif
+
+
+    for(int i = MAX_RUNS - 1; i > 0; i--)
+    {
+        runDatas[i] = runDatas[i - 1];
+    }
+    runDatas[0] = runData;
+
 }

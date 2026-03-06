@@ -17,6 +17,9 @@ globalSettings_t globalSettings =
     AUDIO_ON
 };
 runData_t runData;
+
+runData_t runDatas[MAX_RUNS];
+
 roomSettings_t roomsSettings[MAX_ROOMS] =
 {
     {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"0000"},NON_C, NON_S},

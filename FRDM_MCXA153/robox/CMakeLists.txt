@@ -37,6 +37,7 @@ mcux_add_source(
             state_logic/game_logic.c
             state_logic/state_logic.h
             state_logic/game_logic.h
+            state_logic/game_data.h
             state_logic/display_template.h
             state_logic/display_template.c
 
