@@ -9,5 +9,6 @@
 void buzzer_init(void);
 void buzzer_play(uint32_t my_durationMs);
 void buzzer_loop();
+void buzzer_set(bool state);
 
 #endif

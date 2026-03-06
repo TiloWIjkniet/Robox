@@ -3,6 +3,7 @@
 #include <fsm.h>
 #include "game_logic.h"
 #include <stdint.h>
+#include "buzzer.h"
 
 void completed_onEntry(void) 
 { 
@@ -39,7 +40,7 @@ void timeout_onExit(void)
 
 void reset_onEntry(void) 
 { 
-    
+    buzzer_set(false);
     //Save data to eprmp
 }
 void reset_onUpdate(void) 

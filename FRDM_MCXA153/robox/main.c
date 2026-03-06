@@ -1,5 +1,4 @@
 #include "board.h"
-
 #include "fsm.h"
 #include "serial.h"
 #include "game_logic.h"
@@ -11,8 +10,6 @@
 #include "buzzer.h"
 #include "touch_sensor.h"
 
-int32_t getTimeRemaining();
-void updateGameTimer();
 int main(void)
 {
 
@@ -22,7 +19,7 @@ int main(void)
   millis_init();
   buzzer_init();
   touchSensor_init();
-  //Haal data uit epromp
+
 
   while(1)
   {
@@ -30,6 +27,7 @@ int main(void)
     FSM_runStateMachine();
     if(gameActiv)
     {
+      touchUpdate();
       updateTimeGamePanaltuMillis();
       updateGameTimer();
       buzzer_loop();

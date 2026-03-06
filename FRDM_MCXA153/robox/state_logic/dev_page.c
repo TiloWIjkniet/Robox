@@ -13,7 +13,7 @@
 globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_15MIN_STOP,
-    120,
+    31,
     AUDIO_ON
 };
 runData_t runData;
@@ -22,9 +22,9 @@ runData_t runDatas[MAX_RUNS];
 
 roomSettings_t roomsSettings[MAX_ROOMS] =
 {
-    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"0000"},NON_C, NON_S},
-    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"1111"},NON_C, TOUCH_SENSOR},
-    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"2222"},NON_C, TOUCH_SENSOR}
+    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"0000"},NON_C, TOUCH_SENSOR},
+    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"1111"},NON_C, NON_S},
+    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"2222"},NON_C, NON_S}
 
 };
 
@@ -88,4 +88,3 @@ void dev_page_onExit(void)
     setMapCoordinates((uint8_t[]){INVALID_COORD, INVALID_COORD});
     //Sla ontvange data op in epromp
 }
-

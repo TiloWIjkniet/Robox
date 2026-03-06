@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include "time_millis.h"
 #include "keypad.h"
+#include "touch_sensor.h"
 
 uint32_t startRoomMillis;
 
@@ -80,7 +81,6 @@ void first_room_onUpdate(void)
         if(performed != required)
         {
             displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
-            applyWrongAnswerPenalty();
             return; 
         } 
     }
@@ -153,7 +153,6 @@ void room_loop_onUpdate(void)
         if(performed != required)
         {
             displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
-            applyWrongAnswerPenalty();
             return; 
         } 
     }
@@ -230,7 +229,6 @@ void last_room_onUpdate(void)
         if(performed != required)
         {
             displayLoadTemplate(FOUD_D,3 * 1000, true); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
-            applyWrongAnswerPenalty();
             return; 
         } 
     }
@@ -281,7 +279,6 @@ void commonRoom_onEntry()
  */
 void commonRoom_onExit()
 {
-
     uint32_t roomElapsedMillis = (millis() - startRoomMillis) + timeRoomPanaltyMillis;  
     
     float elapsedMinutes = ((float)roomElapsedMillis) / 1000.0f / 60.0f;

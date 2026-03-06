@@ -278,7 +278,7 @@ void updateGameTimer()
     }
     buzzer_play(BUZZERT_DURATION); // Zet buzzer aan als tijd negatief is, uit als tijd positief is
     #if DEBUG_ON_PC
-        //  if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
+        if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
         //  else printf("Time: %02u:%02u\n",minutes, seconds);
     #endif
 
