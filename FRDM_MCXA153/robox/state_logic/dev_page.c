@@ -9,7 +9,7 @@
 #include "lupuart2.h"
 #define EXIT_DEV_CODE "0000"
 #define OPEN_ALL_COMPARTMETS "9999"
-
+#define TIME_OUT_TICKS 1000000
 globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_CONTINUE,
@@ -93,22 +93,33 @@ void dev_page_onExit(void)
 
 void receive_room_settings_from_esp(void)
 {
-    
-    
     uint8_t *data = (uint8_t*)roomsSettings;
     size_t size = sizeof(roomsSettings);
 
     lpuart2_putchar(0xBB);
 
-    uint32_t tick = 0;
+    uint16_t tick = 0;
     while (lpuart2_getchar() != 0xAA) 
     {
         tick++;
-        if(tick > 1000000) lpuart2_putchar(0xBB);
-    } // Wacht tot start byte ontvangen wordt, time out na 1 miljoen ticks
+        if(tick > TIME_OUT_TICKS) {lpuart2_putchar(0xBB); tick = 0;}
+    } 
 
     for (size_t i = 0; i < size; i++)
     {
+        tick = 0;
+        while(lpuart2_rxcnt() == 0) {tick++; if(tick > TIME_OUT_TICKS) return;}; // Wacht tot er data beschikbaar is
+        data[i] = lpuart2_getchar();
+    }
+
+    uint8_t *data = (uint8_t*)globalSettings;
+    size_t size = sizeof(globalSettings);
+    tick = 0;
+
+    for (size_t i = 0; i < size; i++)
+    {
+        tick = 0;
+        while(lpuart2_rxcnt() == 0) {tick++; if(tick > TIME_OUT_TICKS) return;};
         data[i] = lpuart2_getchar();
     }
 }
@@ -119,8 +130,10 @@ void send_run_data_to_esp(void)
     size_t size = sizeof(runDatas);
 
     lpuart2_putchar(0xAA);
+
     for (size_t i = 0; i < size; i++)
     {
         lpuart2_putchar(data[i]);
     }
+    
 }

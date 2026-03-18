@@ -18,37 +18,54 @@ IPAddress myIP;
 #define MAXS_TIMES 15
 #define MAXS_RECORDINGS 10
 #define MAXS_ROOMS 20
+#define MAX_CHAR_IN_STRING 50
+#define MAX_ANSWERS 5
 
-struct Recording 
+typedef struct 
 {
-    float times[MAXS_TIMES];    // array voor tijdwaardes (pas grootte aan indien nodig)
-    int errors;          // aantal fouten
-    float startTime;     // starttijd in seconden
-    int difficulty;      // moeilijkheidsgraad
-    int amountOfRooms;           // aantal kamers
-};
+    float roomTimes[MAXS_ROOMS];
+    uint8_t wrongAnswerCount;
+    uint8_t totalTime;
+    uint8_t difficulty;
+    uint8_t maxRooms;
+}runData_t;
 
-struct Room
+typedef struct __attribute__((packed))
 {
-  //null
-  int pos [2];
-  char name[MAXS_CHAR];
-  char answers[MAXS_CHAR];
-  char beaconIp[MAXS_CHAR];
-  int compartment;
-  int actie;
-};
+    uint8_t coordinates[2];
+    char beconIp[MAX_CHAR_IN_STRING];
+    char answers[MAX_ANSWERS][MAX_CHAR_IN_STRING];
+    uint8_t openCompartment;
+    uint8_t specialActies;
+} roomSettings_t;
 
-struct GlobalSettings
+typedef enum
 {
-  int difficulty;
-  int startTime;
-  int audio;
-};
+    WRONG_ANSWER_MINUS_1MIN_CONTINUE,     // 1 minuut aftrek, spel gaat door
+    WRONG_ANSWER_MINUS_5MIN_CONTINUE,     // 5 minuten aftrek, spel gaat door
+    WRONG_ANSWER_MINUS_5MIN_STOP,
+    WRONG_ANSWER_MINUS_15MIN_STOP,   // Tijd aftrekken (bijv. 5 min), stop als tijd 0
+    WRONG_ANSWER_HALF_REMAINING_STOP 
+}wrongAnswerPenalty_t;
 
-Recording recordings[MAXS_RECORDINGS];
-Room rooms[MAXS_ROOMS];
-GlobalSettings globalSettings;
+typedef enum
+{
+    AUDIO_ON,    
+    AUDIO_CENSORED,    
+    AUDIO_OFF
+}audio_t;
+
+typedef struct 
+{
+    wrongAnswerPenalty_t difficulty;
+    float totalTime;
+    audio_t audio;
+
+}globalSettings_t;
+
+runData_t recordings[MAXS_RECORDINGS];
+roomSettings_t rooms[MAXS_ROOMS];
+globalSettings_t globalSettings;
 String plattegrond = "";  
 
 
@@ -338,11 +355,11 @@ void loadFromFlash() {
 
     // Rooms inlezen
     JsonArray jsonRooms = doc["rooms"];
-    for (int i = 0; i < jsonRooms.size() && i < MAXS_ROOMS; i++) {
+    for (int i = 0; i < jsonRooms.size() && i < MAX_CHAR_IN_STRING; i++) {
         JsonObject r = jsonRooms[i];
-        strlcpy(rooms[i].name, r["name"] | "", MAXS_CHAR);
-        strlcpy(rooms[i].answers, r["answers"] | "", MAXS_CHAR);
-        strlcpy(rooms[i].beaconIp, r["beaconIp"] | "", MAXS_CHAR);
+        strlcpy(rooms[i].name, r["name"] | "", MAX_CHAR_IN_STRING);
+        strlcpy(rooms[i].answers, r["answers"] | "", MAX_CHAR_IN_STRING);
+        strlcpy(rooms[i].beaconIp, r["beaconIp"] | "", MAX_CHAR_IN_STRING);
         rooms[i].compartment = r["compartment"] | 0;
         rooms[i].actie = r["actie"] | 0;
 
@@ -367,6 +384,34 @@ void loop()
 {
   dnsServer.processNextRequest();
   server.handleClient();
+  getRunData();
+  sentSettingData();
+}
+void sentSettingData()
+{
+
+  if(!Serial.available()) return;
+  uint8_t cmd = Serial.read();
+  if (cmd != 0xBB) return;
+
+  Serial.write((uint8_t*)rooms, sizeof(rooms));
+  String.write((uint8_t*)globalSettings, sizeof(globalSettings));
+}
+void getRunData()
+{
+  if(!Serial.available()) return;
+  uint8_t cmd = Serial.read();
+  if (cmd != 0xAA) return;
+  
+  size_t size = sizeof(runDatas);
+  uint8_t* data = (uint8_t*)runDatas;
+
+  for (size_t i = 0; i < size; i++)
+  {
+      while (!Serial.available());
+      data[i] = Serial.read();
+  }
+
 }
 
      
