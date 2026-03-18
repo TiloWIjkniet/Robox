@@ -41,7 +41,7 @@ void timeout_onExit(void)
 void reset_onEntry(void) 
 { 
     buzzer_set(false);
-    //Save data to eprmp
+    send_run_data_to_esp();
 }
 void reset_onUpdate(void) 
 { 

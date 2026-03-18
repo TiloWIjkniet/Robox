@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "touch_sensor.h"
-
+#include "hexDisplay.h"
 #define MS_PER_TICK_PANALTY 10
 
 uint32_t timeGamePanaltyBuffer=0;
@@ -195,7 +195,7 @@ bool isInCorrectRoom(char *beconIp)
 {
     if(strcmp(roomsSettings[roomIndex].beconIp, beconIp) == 0) return true;
     return false;
-}
+}  
 
 /**
  * @brief Controleert of het opgegeven antwoord overeenkomt met één van de juiste antwoorden van de huidige kamer.
@@ -210,11 +210,9 @@ bool isAnswerCorrect(char *userInput)
 
   
     for(int i = 0; i < MAX_ANSWERS; i++)
-    {
-        
+    {   
         if(isInputMatching(roomsSettings[roomIndex].answers[i], userInput)) return true;
     }
-   
     return false;
 }
 
@@ -271,14 +269,10 @@ void updateGameTimer()
 
   uint16_t minutes = totalSec / 60;
   uint16_t seconds = totalSec % 60;
-    if(negative)
-    {
-        minutes = seconds;
-        seconds  = minutes;
-    }
+  hexDisplay_setTime(minutes, seconds);
     buzzer_play(BUZZERT_DURATION); // Zet buzzer aan als tijd negatief is, uit als tijd positief is
     #if DEBUG_ON_PC
-        if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
+        //if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
         //  else printf("Time: %02u:%02u\n",minutes, seconds);
     #endif
 

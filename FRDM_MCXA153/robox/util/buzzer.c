@@ -3,7 +3,7 @@
 #include "game_data.h"
 
 #define BUZZERT_PIN 7
-#define BUZZER_DELAY 1.1
+#define BUZZER_DELAY 1.05
 uint32_t durationMs = 0;
 uint32_t startBuzzer = 0;
 bool buzzerState = false;

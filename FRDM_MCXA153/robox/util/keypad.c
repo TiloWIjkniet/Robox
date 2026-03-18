@@ -2,7 +2,7 @@
 #include "board.h"
 #include <stdio.h>
 #include "time_millis.h"
-
+#include "buzzer.h"
 #define ROWS 4
 #define COLS 3
 
@@ -50,21 +50,21 @@ void keyPad_init()
     MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_GPIO3(1);
 
     MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_PORT3(1);
-    MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_GPIO3(1);
-
-       
+    MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_GPIO3(1); 
 
     PORT3->PCR[PIN_COLOM_0] = PORT_PCR_LK(1);
     PORT3->PCR[PIN_COLOM_1] = PORT_PCR_LK(1);
     PORT3->PCR[PIN_COLOM_2] = PORT_PCR_LK(1);
+
+    GPIO3->PDOR |= (1<<PIN_COLOM_0) | (1<<PIN_COLOM_1) | (1<<PIN_COLOM_2);
+    GPIO3->PDDR |= (1<<PIN_COLOM_0) | (1<<PIN_COLOM_1) | (1<<PIN_COLOM_2);
 
     PORT3->PCR[PIN_ROW_0] = PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_MUX(0) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
     PORT3->PCR[PIN_ROW_1] = PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_MUX(0) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
     PORT3->PCR[PIN_ROW_2] = PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_MUX(0) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
     PORT3->PCR[PIN_ROW_3] = PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_MUX(0) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
 
-    GPIO3->PDOR |= (1<<PIN_COLOM_0) | (1<<PIN_COLOM_1) | (1<<PIN_COLOM_2);
-    GPIO3->PDDR |= (1<<PIN_COLOM_0) | (1<<PIN_COLOM_1) | (1<<PIN_COLOM_2);
+
 }
 
 bool getPinState(uint8_t pin)
@@ -141,6 +141,7 @@ void updateInputBuffer()
       inputBuffer[inputBufferIndex] = '\0';
     break;
   }
+  buzzer_play(BUZZERT_DURATION);
   printf("Input buffer: %s\n", inputBuffer);
 }
 

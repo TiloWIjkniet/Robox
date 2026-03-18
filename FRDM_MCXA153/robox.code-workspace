@@ -4,8 +4,8 @@
 			"path": "robox"
 		},
 		{
-			"name": "frdmmcxa153_buzzer",
-			"path": "../../../Prog2/frdmmcxa153_buzzer"
+			"name": "frdmmcxa153_serial2lpuart",
+			"path": "../../../Prog2/frdmmcxa153_serial2lpuart"
 		}
 	],
 	"settings": {}

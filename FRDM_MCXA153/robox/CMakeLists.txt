@@ -26,6 +26,9 @@ mcux_add_source(
             fsm/fsm.h
             fsm/events.h
             
+            serial2lupuart/lpuart2.c
+            lupuaserial2lupuartrt2/lpuart2.h
+
             serial/retarget.c
             serial/serial.c
             serial/serial.h
@@ -49,7 +52,9 @@ mcux_add_source(
             util/buzzer.h
             util/touch_sensor.c
             util/touch_sensor.h
-
+            util/hexDisplay.c
+            util/hexDisplay.h
+            
             board/board.h
 )
 
@@ -61,6 +66,7 @@ mcux_add_include(
             serial
             state_logic
             util
+            serial2lupuart
    
 )
 
