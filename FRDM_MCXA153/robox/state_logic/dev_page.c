@@ -6,10 +6,12 @@
 #include <stdint.h>
 #include "keypad.h"
 #include "touch_sensor.h"
-#include "lupuart2.h"
+#include "lpuart2.h"
+#include "time_millis.h"
+
 #define EXIT_DEV_CODE "0000"
 #define OPEN_ALL_COMPARTMETS "9999"
-#define TIME_OUT_TICKS 1000000
+#define TIMEOUT_MS 500  
 globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_CONTINUE,
@@ -22,9 +24,9 @@ runData_t runDatas[MAX_RUNS];
 
 roomSettings_t roomsSettings[MAX_ROOMS] =
 {
-    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"0000"},NON_C, TOUCH_SENSOR},
-    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"1111"},NON_C, NON_S},
-    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"2222"},NON_C, NON_S}
+    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"0000"},NON_C, TOUCH_SENSOR, "NAAM"},
+    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"1111"},NON_C, NON_S,  "NAAM"},
+    {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"2222"},NON_C, NON_S,  "NAAM"}
 
 };
 
@@ -91,37 +93,113 @@ void dev_page_onExit(void)
     receive_room_settings_from_esp();
 }
 
+
+bool receive_room_settings(void)
+{
+    static enum {WAIT_GLOBAL_START, READ_GLOBAL, WAIT_ROOM_START, READ_ROOM} state = WAIT_GLOBAL_START;
+    static size_t byteIndex = 0;
+    static uint8_t room = 0;
+    static uint8_t* p;
+
+    uint32_t timeoutStart = millis();
+
+    while(lpuart2_rxcnt() > 0)
+    {
+        uint8_t b = lpuart2_getchar();
+
+        switch(state)
+        {
+            case WAIT_GLOBAL_START:
+                if(b == 0xAA)
+                {
+                    p = (uint8_t*)&globalSettings;
+                    byteIndex = 0;
+                    state = READ_GLOBAL;
+                    timeoutStart = millis();
+                    printf("Start globals\n");
+                }
+                break;
+
+            case READ_GLOBAL:
+                p[byteIndex++] = b;
+                timeoutStart = millis(); // reset timeout per byte
+                if(byteIndex >= sizeof(globalSettings))
+                {
+                    state = WAIT_ROOM_START;
+                    byteIndex = 0;
+                    room = 0;
+                    printf("Globals ontvangen\n");
+                }
+                break;
+
+            case WAIT_ROOM_START:
+                if(b == 0xAB)
+                {
+                    p = (uint8_t*)&roomsSettings[room];
+                    byteIndex = 0;
+                    state = READ_ROOM;
+                    timeoutStart = millis();
+                }
+                break;
+
+            case READ_ROOM:
+                p[byteIndex++] = b;
+                timeoutStart = millis();
+                if(byteIndex >= sizeof(roomSettings_t))
+                {
+                    room++;
+                    if(room >= MAX_ROOMS)
+                    {
+                        state = WAIT_GLOBAL_START; // klaar
+                        printf("Alle rooms ontvangen\n");
+                        return true; 
+                    }
+                    else
+                    {
+                        state = WAIT_ROOM_START; // wacht op startbyte volgende room
+                    }
+                }
+                break;
+        }
+
+        // check timeout
+        if(millis() - timeoutStart > TIMEOUT_MS)
+        {
+            printf("Timeout!\n");
+            state = WAIT_GLOBAL_START;
+            return false;
+        }
+    }
+
+    return false; // nog niet klaar
+}
+
 void receive_room_settings_from_esp(void)
 {
-    uint8_t *data = (uint8_t*)roomsSettings;
-    size_t size = sizeof(roomsSettings);
 
+    return;
+    printf("get data\n");
     lpuart2_putchar(0xBB);
+    while(!receive_room_settings());
 
-    uint16_t tick = 0;
-    while (lpuart2_getchar() != 0xAA) 
-    {
-        tick++;
-        if(tick > TIME_OUT_TICKS) {lpuart2_putchar(0xBB); tick = 0;}
-    } 
+    printf("Moelijkhijd: %d\n", globalSettings.difficulty);
+    printf("tijd: %d\n",        globalSettings.totalTime);
+    printf("audio: %d\n", globalSettings.audio);
 
-    for (size_t i = 0; i < size; i++)
+    printf("\nroomSettings\n");
+    for(int i = 0; i < getNumRooms(); i++)
     {
-        tick = 0;
-        while(lpuart2_rxcnt() == 0) {tick++; if(tick > TIME_OUT_TICKS) return;}; // Wacht tot er data beschikbaar is
-        data[i] = lpuart2_getchar();
+        printf("coordinates: %d, %d\n", roomsSettings[i].coordinates[0], roomsSettings[i].coordinates[1]);
+        printf("beconIp: %s\n",        roomsSettings[i].beconIp);
+        printf("answers: ");
+        for(int x = 0; x < MAX_ANSWERS; x++) printf("%s, ",roomsSettings[i].answers[x]);
+        printf("\n");
+        printf("openCompartment: %d\n", roomsSettings[i].openCompartment);
+        printf("specialActies: %d\n", roomsSettings[i].specialActies);
+        printf("kamer naam: %s\n", roomsSettings[i].naam);
+        printf("\n");
     }
 
-    uint8_t *data = (uint8_t*)globalSettings;
-    size_t size = sizeof(globalSettings);
-    tick = 0;
-
-    for (size_t i = 0; i < size; i++)
-    {
-        tick = 0;
-        while(lpuart2_rxcnt() == 0) {tick++; if(tick > TIME_OUT_TICKS) return;};
-        data[i] = lpuart2_getchar();
-    }
 }
 
 void send_run_data_to_esp(void)

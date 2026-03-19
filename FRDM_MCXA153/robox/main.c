@@ -24,7 +24,7 @@ int main(void)
   buzzer_init();
   touchSensor_init();
   hexDisplay_init();
-
+  receive_room_settings_from_esp();
 
   while(1)
   {

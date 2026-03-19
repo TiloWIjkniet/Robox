@@ -14,6 +14,7 @@
 #define MAX_RUNS 20
 #define MAX_ROOMS 20
 #define MAX_CHAR_IN_STRING 50
+#define MAX_CHAR_IN_STRING_S 50
 #define MAX_ANSWERS 5
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
@@ -25,15 +26,16 @@ typedef struct
     uint8_t totalTime;
     uint8_t difficulty;
     uint8_t maxRooms;
+
 }runData_t;
 
-typedef enum
+typedef enum // let op ook op esp aanpassen
 {
     NON_C,
     ONE_C,
     TWO_C
 }compartment_t;
-typedef enum
+typedef enum  // let op ook op esp aanpassen
 {
     NON_S,
     TOUCH_SENSOR,
@@ -47,6 +49,7 @@ typedef struct
     char answers[MAX_ANSWERS][MAX_CHAR_IN_STRING];
     compartment_t openCompartment;
     specialActies_t specialActies;
+    char naam[MAX_CHAR_IN_STRING];
     
 }roomSettings_t;
 
@@ -69,7 +72,7 @@ typedef enum
 typedef struct 
 {
     wrongAnswerPenalty_t difficulty;
-    float totalTime;
+    uint16_t totalTime;
     audio_t audio;
 
 }globalSettings_t;

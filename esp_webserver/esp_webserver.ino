@@ -9,7 +9,6 @@ const char* password = "12345678";
 
 ESP8266WebServer server(80);
 
-
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
 IPAddress myIP;
@@ -19,6 +18,7 @@ IPAddress myIP;
 #define MAXS_RECORDINGS 10
 #define MAXS_ROOMS 20
 #define MAX_CHAR_IN_STRING 50
+
 #define MAX_ANSWERS 5
 
 typedef struct 
@@ -28,48 +28,60 @@ typedef struct
     uint8_t totalTime;
     uint8_t difficulty;
     uint8_t maxRooms;
-}runData_t;
+} runData_t;
+enum __attribute__((packed)) compartment_t : uint8_t
+{
+    NON_C,
+    ONE_C,
+    TWO_C
+};
+
+enum __attribute__((packed)) specialActies_t : uint8_t
+{
+    NON_S,
+    TOUCH_SENSOR,
+    TWO_S
+};
 
 typedef struct __attribute__((packed))
 {
     uint8_t coordinates[2];
     char beconIp[MAX_CHAR_IN_STRING];
     char answers[MAX_ANSWERS][MAX_CHAR_IN_STRING];
-    uint8_t openCompartment;
-    uint8_t specialActies;
+    compartment_t openCompartment;
+    specialActies_t specialActies;
+    char naam[MAX_CHAR_IN_STRING];
 } roomSettings_t;
 
-typedef enum
-{
-    WRONG_ANSWER_MINUS_1MIN_CONTINUE,     // 1 minuut aftrek, spel gaat door
-    WRONG_ANSWER_MINUS_5MIN_CONTINUE,     // 5 minuten aftrek, spel gaat door
-    WRONG_ANSWER_MINUS_5MIN_STOP,
-    WRONG_ANSWER_MINUS_15MIN_STOP,   // Tijd aftrekken (bijv. 5 min), stop als tijd 0
-    WRONG_ANSWER_HALF_REMAINING_STOP 
-}wrongAnswerPenalty_t;
 
-typedef enum
+
+enum __attribute__((packed)) wrongAnswerPenalty_t : uint8_t
+{
+    WRONG_ANSWER_MINUS_1MIN_CONTINUE,
+    WRONG_ANSWER_MINUS_5MIN_CONTINUE,
+    WRONG_ANSWER_MINUS_5MIN_STOP,
+    WRONG_ANSWER_MINUS_15MIN_STOP,
+    WRONG_ANSWER_HALF_REMAINING_STOP 
+} ;
+
+enum __attribute__((packed)) audio_t : uint8_t
 {
     AUDIO_ON,    
     AUDIO_CENSORED,    
     AUDIO_OFF
-}audio_t;
+} ;
 
 typedef struct 
 {
     wrongAnswerPenalty_t difficulty;
-    float totalTime;
+    uint16_t totalTime;
     audio_t audio;
-
-}globalSettings_t;
+} globalSettings_t;
 
 runData_t recordings[MAXS_RECORDINGS];
 roomSettings_t rooms[MAXS_ROOMS];
 globalSettings_t globalSettings;
 String plattegrond = "";  
-
-
-
 
 void setup() 
 {
@@ -77,18 +89,18 @@ void setup()
 
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);
-
   WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
   myIP = WiFi.softAPIP();
+
   dnsServer.start(DNS_PORT, "*", myIP);
+
   Serial.println("Access Point gestart");
   Serial.print("Web adres: http://");
   Serial.println(myIP);
 
-  if(!LittleFS.begin()) { Serial.println("Fout bij LittleFS mount"); return;}
+  if(!LittleFS.begin()) { Serial.println("Fout bij LittleFS mount"); return; }
   loadFromFlash();
   beginServer();
-  
 }
 
 void beginServer()
@@ -119,7 +131,6 @@ void beginServer()
 
   server.onNotFound(handleNotFound);
   server.begin();
-
   Serial.println("Webserver gestart");
 }
 
@@ -127,71 +138,74 @@ void handleLoad()
 {
   DynamicJsonDocument doc(20000);
 
-
   JsonArray jsonRecordings = doc.createNestedArray("Recordings");
   for (int i = 0; i < MAXS_RECORDINGS; i++) 
   {
-    if(recordings[i].times[0] > 0)
+    if(recordings[i].roomTimes[0] > 0)
     {
-      bool hasData = recordings[i].amountOfRooms > 0; // bijvoorbeeld
+      bool hasData = recordings[i].maxRooms > 0;
       if(!hasData) continue;
 
       JsonArray r = jsonRecordings.createNestedArray();
-      // tijden array
       JsonArray times = r.createNestedArray();
       for(int t = 0; t < MAXS_TIMES; t++)
       {
-          if(recordings[i].times[t] != 0) // alleen echte tijden
-              times.add(recordings[i].times[t]);
+          if(recordings[i].roomTimes[t] != 0)
+              times.add(recordings[i].roomTimes[t]);
       }
 
-      // overige velden
       r.add(false);
-      r.add(recordings[i].errors);
-      r.add(recordings[i].startTime);
+      r.add(recordings[i].wrongAnswerCount);
+      r.add(recordings[i].totalTime);
       r.add(recordings[i].difficulty);
-      r.add(recordings[i].amountOfRooms);
+      r.add(recordings[i].maxRooms);
     }
   }
 
-  // Kamerlijst terugzetten
   JsonArray jsonKamerList = doc.createNestedArray("kamerList");
   for (int i = 0; i < MAXS_ROOMS; i++) 
   {
-    if (rooms[i].name[0] != '\0') // check of de kamer een naam heeft
+    if (rooms[i].naam[0] != '\0') 
     {
       JsonArray k = jsonKamerList.createNestedArray();
-      k.add(nullptr); // placeholder
+      k.add(nullptr);
 
-      // Voeg de positie toe als array [x, y] of leeg array als niet ingesteld
-      JsonArray posArray = k.createNestedArray(); // dit wordt k[1]
-      if (rooms[i].pos[0] >= 0 && rooms[i].pos[1] >= 0) 
+      JsonArray posArray = k.createNestedArray(); 
+      if (rooms[i].coordinates[0] >= 0 && rooms[i].coordinates[1] >= 0) 
       {
-        posArray.add(rooms[i].pos[0]);
-        posArray.add(rooms[i].pos[1]);
+        posArray.add(rooms[i].coordinates[0]);
+        posArray.add(rooms[i].coordinates[1]);
       }
 
-      // Kamerdata
-      JsonObject ksd = k.createNestedObject(); // k[2]
-      ksd["naam-kamer"] = rooms[i].name;
-      ksd["becon-ip"] = rooms[i].beaconIp;
-      ksd["antwoord"] = rooms[i].answers;
-      ksd["open-compartment"] = rooms[i].compartment;
-      ksd["special-acties"] = rooms[i].actie;
+      JsonObject ksd = k.createNestedObject(); 
+      ksd["naam-kamer"] = rooms[i].naam;
+      ksd["becon-ip"] = rooms[i].beconIp;
+   
+      // Maak één string van alle antwoorden gescheiden door komma
+      String answersCombined = "";
+    for (int a = 0; a < MAX_ANSWERS; a++) 
+    {
+    if (rooms[i].answers[a][0] != '\0') { // niet-lege antwoorden
+        if (answersCombined.length() > 0) answersCombined += ","; // voeg komma toe
+        answersCombined += String(rooms[i].answers[a]);
+      }
+  }
+
+      ksd["antwoord"] = answersCombined;
+
+
+      ksd["open-compartment"] = rooms[i].openCompartment;
+      ksd["special-acties"] = rooms[i].specialActies;
     }
   }
 
-  // Global settings
   JsonObject gs = doc.createNestedObject("globalSettings");
   gs["moeilijkheid"] = globalSettings.difficulty;
-  gs["start-tijd"] = globalSettings.startTime;
+  gs["start-tijd"] = globalSettings.totalTime;
   gs["audio"] = globalSettings.audio;
 
-
   if (plattegrond.length() > 0) 
-  {
     doc["uploadedImageData"] = plattegrond;
-  } 
 
   String output;
   serializeJson(doc, output);
@@ -200,9 +214,9 @@ void handleLoad()
 
 void handleSave() 
 {
-  Serial.println("POST ontvangen!");  // check of de route geraakt wordt
+  Serial.println("POST ontvangen!");
 
-  if (server.hasArg("plain") == false) 
+  if (!server.hasArg("plain")) 
   {
     server.send(400, "text/plain", "Body ontbreekt");
     return;
@@ -212,216 +226,266 @@ void handleSave()
 
   DynamicJsonDocument doc(20000);
   DeserializationError error = deserializeJson(doc, body);
-
   if (error) 
   {
-    Serial.print("JSON fout: ");
-    Serial.println(error.c_str());
+    Serial.print("JSON fout: "); Serial.println(error.c_str());
     server.send(400, "text/plain", "Fout bij JSON parsing");
     return;
   }
-
-  // Kamerlijst opslaan
-  if (doc.containsKey("kamerList")) 
+ if (doc.containsKey("kamerList")) 
   {
     memset(rooms, 0, sizeof(rooms));
     JsonArray kl = doc["kamerList"];
-    Serial.println(kl.size());
     for (int i = 0; i < kl.size() && i < MAXS_ROOMS; i++) 
     {
-      // Kamer object
-      JsonObject k = kl[i][2]; // object
+      JsonObject k = kl[i][2];
       if (!k.isNull()) 
       {
-          strlcpy(rooms[i].name, k["naam-kamer"] | "", MAXS_CHAR);
-          strlcpy(rooms[i].beaconIp, k["becon-ip"] | "", MAXS_CHAR);
-          strlcpy(rooms[i].answers, k["antwoord"] | "", MAXS_CHAR);
-          rooms[i].compartment = k["open-compartment"].as<int>() | 0;
-          rooms[i].actie = k["special-acties"].as<int>() | 0;
+          strlcpy(rooms[i].naam, k["naam-kamer"] | "", MAX_CHAR_IN_STRING);
+          strlcpy(rooms[i].beconIp, k["becon-ip"] | "", MAX_CHAR_IN_STRING);
+          rooms[i].openCompartment = (compartment_t)k["open-compartment"].as<int>();
+          rooms[i].specialActies  = (specialActies_t)k["special-acties"].as<int>();
+
+          Serial.println(rooms[i].openCompartment);
+          if (k["antwoord"].is<const char*>())  // "antwoord" is één string
+          {
+              String allAnswers = k["antwoord"].as<const char*>(); // bvb "1,2,3"
+              int answerIndex = 0;
+
+              int start = 0;
+              int commaPos = allAnswers.indexOf(',');
+              
+              while (commaPos != -1 && answerIndex < MAX_ANSWERS) 
+              {
+                  String part = allAnswers.substring(start, commaPos);
+                  part.trim();  // verwijder spaties
+                  strlcpy(rooms[i].answers[answerIndex], part.c_str(), MAX_CHAR_IN_STRING);
+                  answerIndex++;
+                  start = commaPos + 1;
+                  commaPos = allAnswers.indexOf(',', start);
+              }
+
+              // laatste stuk na de laatste komma
+              if (answerIndex < MAX_ANSWERS) 
+              {
+                  String part = allAnswers.substring(start);
+                  part.trim();
+                  strlcpy(rooms[i].answers[answerIndex], part.c_str(), MAX_CHAR_IN_STRING);
+                  answerIndex++;
+              }
+
+              // leeg de rest
+              for(int a = answerIndex; a < MAX_ANSWERS; a++)
+                rooms[i].answers[a][0] = '\0';
+          }
+
+
       }
 
-      // Kamer positie
       if (kl[i][1].is<JsonArray>())
       {
           JsonArray pos = kl[i][1].as<JsonArray>();
-          rooms[i].pos[0] = pos.size() > 0 ? pos[0] | 0 : -1;
-          rooms[i].pos[1] = pos.size() > 1 ? pos[1] | 0 : -1;
+          rooms[i].coordinates[0] = pos.size() > 0 ? pos[0] | 0 : -1;
+          rooms[i].coordinates[1] = pos.size() > 1 ? pos[1] | 0 : -1;
       }
       else
       {
-          rooms[i].pos[0] = -1;
-          rooms[i].pos[1] = -1;
+          rooms[i].coordinates[0] = -1;
+          rooms[i].coordinates[1] = -1;
       }
     }
   }
-
   if (doc.containsKey("globalSettings")) 
   {
     JsonObject gs = doc["globalSettings"];
-
-    globalSettings.difficulty =gs["moeilijkheid"] | 0;
-
-    globalSettings.startTime =gs["start-tijd"] | 0;
-
-    globalSettings.audio =gs["audio"].as<int>() | 0;
+  globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
+  globalSettings.totalTime = gs["start-tijd"] | 0;
+  globalSettings.audio = (audio_t)(gs["audio"] | AUDIO_OFF);
   }
 
-  // Plattegrond opslaan
   if (doc.containsKey("uploadedImageData")) 
   {
-      const char* tmp = doc["uploadedImageData"]; // leest de string
-      if (tmp != nullptr && strlen(tmp) > 0) // check op null en lege string
-      {
+      const char* tmp = doc["uploadedImageData"];
+      if (tmp != nullptr && strlen(tmp) > 0) 
           plattegrond = String(tmp);
-      }
   }
+
   server.send(200, "text/plain", "Data opgeslagen!");
   Serial.println("Data opgeslagen!");
+
   saveToFlash();
 }
 
+void charArrayToJson(JsonArray& arr, char a[][MAX_CHAR_IN_STRING], int count) {
+    for (int i = 0; i < count; i++) arr.add(String(a[i]));
+}
+
+void jsonToCharArray(JsonArray& arr, char a[][MAX_CHAR_IN_STRING], int count) {
+    for (int i = 0; i < count && i < arr.size(); i++)
+        strlcpy(a[i], arr[i] | "", MAX_CHAR_IN_STRING);
+}
+
 void saveToFlash() {
-    if (!LittleFS.begin()) {
-        Serial.println("Fout bij mounten LittleFS");
-        return;
-    }
+    if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
 
     DynamicJsonDocument doc(20000);
 
-    // Rooms opslaan
+    // Rooms
     JsonArray jsonRooms = doc.createNestedArray("rooms");
     for (int i = 0; i < MAXS_ROOMS; i++) {
-        JsonObject r = jsonRooms.createNestedObject();
-        r["name"] = rooms[i].name;
-        r["answers"] = rooms[i].answers;
-        r["beaconIp"] = rooms[i].beaconIp;
-        r["compartment"] = rooms[i].compartment;
-        r["actie"] = rooms[i].actie;
+        if (rooms[i].naam[0] == '\0') continue;
 
-        // Positie als array
-        JsonArray pos = r.createNestedArray("pos");
-        pos.add(rooms[i].pos[0]);
-        pos.add(rooms[i].pos[1]);
+        JsonObject r = jsonRooms.createNestedObject();
+        r["naam"] = rooms[i].naam;
+        r["beconIp"] = rooms[i].beconIp;
+        r["open-compartment"] = rooms[i].openCompartment;
+        r["special-acties"] = rooms[i].specialActies;
+
+        JsonArray pos = r.createNestedArray("coordinates");
+        pos.add(rooms[i].coordinates[0]);
+        pos.add(rooms[i].coordinates[1]);
+
+        JsonArray antwoorden = r.createNestedArray("antwoord");
+        charArrayToJson(antwoorden, rooms[i].answers, MAX_ANSWERS);
     }
 
     // Global settings
     JsonObject gs = doc.createNestedObject("globalSettings");
-    gs["difficulty"] = globalSettings.difficulty;
-    gs["startTime"] = globalSettings.startTime;
+    gs["moeilijkheid"] = globalSettings.difficulty;
+    gs["start-tijd"] = globalSettings.totalTime;
     gs["audio"] = globalSettings.audio;
 
-    // Plattegrond
     doc["plattegrond"] = plattegrond;
 
-    // Opslaan naar LittleFS
     File f = LittleFS.open("/data.json", "w");
-    if (!f) {
-        Serial.println("Fout bij openen bestand voor schrijven");
-        return;
-    }
-
+    if (!f) { Serial.println("Fout bij openen bestand voor schrijven"); return; }
     serializeJson(doc, f);
     f.close();
-
     Serial.println("Data opgeslagen in flash!");
 }
 
-void loadFromFlash() {
-    if (!LittleFS.begin()) {
-        Serial.println("Fout bij mounten LittleFS");
-        return;
-    }
 
-    if (!LittleFS.exists("/data.json")) {
-        Serial.println("Geen opgeslagen data gevonden");
-        return;
-    }
+// Laden van flash
+void loadFromFlash() {
+    if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
+    if (!LittleFS.exists("/data.json")) { Serial.println("Geen opgeslagen data gevonden"); return; }
 
     File f = LittleFS.open("/data.json", "r");
-    if (!f) {
-        Serial.println("Kon bestand niet openen");
-        return;
-    }
+    if (!f) { Serial.println("Kon bestand niet openen"); return; }
 
     DynamicJsonDocument doc(20000);
     DeserializationError error = deserializeJson(doc, f);
     f.close();
 
-    if (error) {
-        Serial.print("Fout bij JSON lezen: ");
-        Serial.println(error.c_str());
-        return;
-    }
+    if (error) { Serial.print("Fout bij JSON lezen: "); Serial.println(error.c_str()); return; }
 
-    // Rooms inlezen
+    // Rooms
     JsonArray jsonRooms = doc["rooms"];
-    for (int i = 0; i < jsonRooms.size() && i < MAX_CHAR_IN_STRING; i++) {
+    for (int i = 0; i < jsonRooms.size() && i < MAXS_ROOMS; i++) 
+    {
         JsonObject r = jsonRooms[i];
-        strlcpy(rooms[i].name, r["name"] | "", MAX_CHAR_IN_STRING);
-        strlcpy(rooms[i].answers, r["answers"] | "", MAX_CHAR_IN_STRING);
-        strlcpy(rooms[i].beaconIp, r["beaconIp"] | "", MAX_CHAR_IN_STRING);
-        rooms[i].compartment = r["compartment"] | 0;
-        rooms[i].actie = r["actie"] | 0;
+        strlcpy(rooms[i].naam, r["naam"] | "", MAX_CHAR_IN_STRING);
+        strlcpy(rooms[i].beconIp, r["beconIp"] | "", MAX_CHAR_IN_STRING);
+        rooms[i].openCompartment = (compartment_t)r["open-compartment"].as<int>();
+        rooms[i].specialActies  =  (specialActies_t)r["special-acties"].as<int>();
 
-        JsonArray pos = r["pos"];
-        rooms[i].pos[0] = pos.size() > 0 ? pos[0] | 0 : -1;
-        rooms[i].pos[1] = pos.size() > 1 ? pos[1] | 0 : -1;
+        JsonArray pos = r["coordinates"];
+        rooms[i].coordinates[0] = pos.size() > 0 ? pos[0] | 0 : -1;
+        rooms[i].coordinates[1] = pos.size() > 1 ? pos[1] | 0 : -1;
+
+            JsonArray answersArray = r["antwoord"];
+      for(int j = 0; j < MAX_ANSWERS; j++) 
+      {
+          if(j < answersArray.size())
+              strlcpy(rooms[i].answers[j], answersArray[j] | "", MAX_CHAR_IN_STRING);
+          else
+              rooms[i].answers[j][0] = '\0';
+      }
     }
+    
 
     // Global settings
     JsonObject gs = doc["globalSettings"];
-    globalSettings.difficulty = gs["difficulty"] | 0;
-    globalSettings.startTime = gs["startTime"] | 0;
-    globalSettings.audio = gs["audio"] | 0;
+    globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
+    globalSettings.totalTime = gs["start-tijd"] | 0;
+    globalSettings.audio = (audio_t)(gs["audio"] | AUDIO_OFF);
 
-    // Plattegrond
     plattegrond = doc["plattegrond"] | "";
 
     Serial.println("Data geladen uit flash!");
 }
-
+bool receiving = false;
 void loop() 
 {
   dnsServer.processNextRequest();
   server.handleClient();
-  getRunData();
-  sentSettingData();
-}
-void sentSettingData()
-{
 
-  if(!Serial.available()) return;
-  uint8_t cmd = Serial.read();
-  if (cmd != 0xBB) return;
-
-  Serial.write((uint8_t*)rooms, sizeof(rooms));
-  String.write((uint8_t*)globalSettings, sizeof(globalSettings));
-}
-void getRunData()
-{
-  if(!Serial.available()) return;
-  uint8_t cmd = Serial.read();
-  if (cmd != 0xAA) return;
-  
-  size_t size = sizeof(runDatas);
-  uint8_t* data = (uint8_t*)runDatas;
-
-  for (size_t i = 0; i < size; i++)
+  while(Serial.available())
   {
-      while (!Serial.available());
-      data[i] = Serial.read();
+    uint8_t byteIn = Serial.read();
+    getRunData(byteIn);
+    if(!receiving)sentSettingData(byteIn);
   }
 
+
 }
 
-     
+void sentSettingData(uint8_t byteIn)
+{
+
+  if (byteIn == 0xBB) 
+  {
+
+      Serial.println(globalSettings.totalTime);
+      Serial.write(0xAA);
+      Serial.write((uint8_t*)&globalSettings, sizeof(globalSettings));
+
+      for(uint8_t i = 0; i < MAXS_ROOMS; i++)
+      {
+        uint32_t delay= 0;
+        while(delay < 10000) delay++;
+        
+        Serial.write(0xAB);
+        Serial.write((uint8_t*)&rooms[i], sizeof(roomSettings_t));
+      }
+    
+  }
+}
+
+void getRunData(uint8_t byteIn) 
+{
+    static size_t index = 0;
+    static runData_t runDataBuffer;
+    static uint8_t* data = (uint8_t*)&runDataBuffer; // treat struct array as byte array
+    size_t size = sizeof(runDataBuffer);            // totaal aantal bytes
+
+ 
+      if (!receiving) 
+      {
+          if (byteIn == 0xAA) { // start command
+              receiving = true;
+              index = 0;
+          }
+          return;
+      }
+
+      data[index++] = byteIn; // schrijf byte naar juiste plek
+      if (index >= size) 
+      {
+          receiving = false;  // alles ontvangen
+          index = 0;
+          Serial.println("RunData volledig ontvangen!");
+        for(int i = MAXS_RECORDINGS - 1; i > 0; i--)
+        {
+          recordings[i] = recordings[i-1];
+        }
+        recordings[0] = runDataBuffer; // nieuwste record vooraan
+      }
+}
+
 void handleNotFound() {
-    // Open index.html voor ALLE requests
     File f = LittleFS.open("/index.html", "r");
-    if(!f) {
-        server.send(500, "text/plain", "LittleFS fout");
-        return;
-    }
+    if(!f) { server.send(500, "text/plain", "LittleFS fout"); return; }
     server.streamFile(f, "text/html");
     f.close();
 }

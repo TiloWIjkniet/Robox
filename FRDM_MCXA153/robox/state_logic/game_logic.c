@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include "touch_sensor.h"
 #include "hexDisplay.h"
+
 #define MS_PER_TICK_PANALTY 10
 
 uint32_t timeGamePanaltyBuffer=0;
@@ -260,10 +261,10 @@ void updateGameTimer()
   if(totalSec == lastSec) return;
   lastSec = totalSec;
 
-  bool negative = false;
+  //bool negative = false;
   if(totalSec < 0)
   {
-      negative = true;
+     // negative = true;
       totalSec = -totalSec;  // maak positief voor berekening
   }
 
