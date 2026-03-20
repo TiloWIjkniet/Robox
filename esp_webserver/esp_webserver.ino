@@ -21,6 +21,13 @@ IPAddress myIP;
 
 #define MAX_ANSWERS 5
 
+runData_t recordings[MAXS_RECORDINGS];
+roomSettings_t rooms[MAXS_ROOMS];
+globalSettings_t globalSettings;
+String plattegrond = "";  
+
+bool receiving = false;
+
 typedef struct 
 {
     float roomTimes[MAXS_ROOMS];
@@ -53,8 +60,6 @@ typedef struct __attribute__((packed))
     char naam[MAX_CHAR_IN_STRING];
 } roomSettings_t;
 
-
-
 enum __attribute__((packed)) wrongAnswerPenalty_t : uint8_t
 {
     WRONG_ANSWER_MINUS_1MIN_CONTINUE,
@@ -77,11 +82,6 @@ typedef struct
     uint16_t totalTime;
     audio_t audio;
 } globalSettings_t;
-
-runData_t recordings[MAXS_RECORDINGS];
-roomSettings_t rooms[MAXS_ROOMS];
-globalSettings_t globalSettings;
-String plattegrond = "";  
 
 void setup() 
 {
@@ -316,55 +316,57 @@ void handleSave()
   saveToFlash();
 }
 
-void charArrayToJson(JsonArray& arr, char a[][MAX_CHAR_IN_STRING], int count) {
+void charArrayToJson(JsonArray& arr, char a[][MAX_CHAR_IN_STRING], int count) 
+{
     for (int i = 0; i < count; i++) arr.add(String(a[i]));
 }
 
-void jsonToCharArray(JsonArray& arr, char a[][MAX_CHAR_IN_STRING], int count) {
+void jsonToCharArray(JsonArray& arr, char a[][MAX_CHAR_IN_STRING], int count) 
+{
     for (int i = 0; i < count && i < arr.size(); i++)
         strlcpy(a[i], arr[i] | "", MAX_CHAR_IN_STRING);
 }
 
-void saveToFlash() {
-    if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
+void saveToFlash() 
+{
+  if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
 
-    DynamicJsonDocument doc(20000);
+  DynamicJsonDocument doc(20000);
 
-    // Rooms
-    JsonArray jsonRooms = doc.createNestedArray("rooms");
-    for (int i = 0; i < MAXS_ROOMS; i++) {
-        if (rooms[i].naam[0] == '\0') continue;
+  // Rooms
+  JsonArray jsonRooms = doc.createNestedArray("rooms");
+  for (int i = 0; i < MAXS_ROOMS; i++) 
+  {
+    if (rooms[i].naam[0] == '\0') continue;
 
-        JsonObject r = jsonRooms.createNestedObject();
-        r["naam"] = rooms[i].naam;
-        r["beconIp"] = rooms[i].beconIp;
-        r["open-compartment"] = rooms[i].openCompartment;
-        r["special-acties"] = rooms[i].specialActies;
+    JsonObject r = jsonRooms.createNestedObject();
+    r["naam"] = rooms[i].naam;
+    r["beconIp"] = rooms[i].beconIp;
+    r["open-compartment"] = rooms[i].openCompartment;
+    r["special-acties"] = rooms[i].specialActies;
 
-        JsonArray pos = r.createNestedArray("coordinates");
-        pos.add(rooms[i].coordinates[0]);
-        pos.add(rooms[i].coordinates[1]);
+    JsonArray pos = r.createNestedArray("coordinates");
+    pos.add(rooms[i].coordinates[0]);
+    pos.add(rooms[i].coordinates[1]);
 
-        JsonArray antwoorden = r.createNestedArray("antwoord");
-        charArrayToJson(antwoorden, rooms[i].answers, MAX_ANSWERS);
-    }
+    JsonArray antwoorden = r.createNestedArray("antwoord");
+    charArrayToJson(antwoorden, rooms[i].answers, MAX_ANSWERS);
+  }
 
-    // Global settings
-    JsonObject gs = doc.createNestedObject("globalSettings");
-    gs["moeilijkheid"] = globalSettings.difficulty;
-    gs["start-tijd"] = globalSettings.totalTime;
-    gs["audio"] = globalSettings.audio;
+  // Global settings
+  JsonObject gs = doc.createNestedObject("globalSettings");
+  gs["moeilijkheid"] = globalSettings.difficulty;
+  gs["start-tijd"] = globalSettings.totalTime;
+  gs["audio"] = globalSettings.audio;
 
-    doc["plattegrond"] = plattegrond;
+  doc["plattegrond"] = plattegrond;
 
-    File f = LittleFS.open("/data.json", "w");
-    if (!f) { Serial.println("Fout bij openen bestand voor schrijven"); return; }
-    serializeJson(doc, f);
-    f.close();
-    Serial.println("Data opgeslagen in flash!");
+  File f = LittleFS.open("/data.json", "w");
+  if (!f) { Serial.println("Fout bij openen bestand voor schrijven"); return; }
+  serializeJson(doc, f);
+  f.close();
+  Serial.println("Data opgeslagen in flash!");
 }
-
-
 // Laden van flash
 void loadFromFlash() {
     if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
@@ -414,7 +416,7 @@ void loadFromFlash() {
 
     Serial.println("Data geladen uit flash!");
 }
-bool receiving = false;
+
 void loop() 
 {
   dnsServer.processNextRequest();
@@ -454,36 +456,40 @@ void sentSettingData(uint8_t byteIn)
 
 void getRunData(uint8_t byteIn) 
 {
-    static size_t index = 0;
-    static runData_t runDataBuffer;
-    static uint8_t* data = (uint8_t*)&runDataBuffer; // treat struct array as byte array
-    size_t size = sizeof(runDataBuffer);            // totaal aantal bytes
+  static size_t index = 0;
+  static runData_t runDataBuffer;
+  static uint8_t* data = (uint8_t*)&runDataBuffer; 
+  size_t size = sizeof(runDataBuffer);            
 
  
-      if (!receiving) 
-      {
-          if (byteIn == 0xAA) { // start command
-              receiving = true;
-              index = 0;
-          }
-          return;
-      }
+  if (!receiving) 
+  {
+    if (byteIn == 0xAA) 
+    { 
+      receiving = true;
+      index = 0;
+    }
+    return;
+  }
 
-      data[index++] = byteIn; // schrijf byte naar juiste plek
-      if (index >= size) 
-      {
-          receiving = false;  // alles ontvangen
-          index = 0;
-          Serial.println("RunData volledig ontvangen!");
-        for(int i = MAXS_RECORDINGS - 1; i > 0; i--)
-        {
-          recordings[i] = recordings[i-1];
-        }
-        recordings[0] = runDataBuffer; // nieuwste record vooraan
-      }
+  data[index++] = byteIn; 
+  if (index >= size) 
+  {
+    receiving = false;  
+    index = 0;
+    Serial.println("RunData volledig ontvangen!");
+    for(int i = MAXS_RECORDINGS - 1; i > 0; i--)
+    {
+      recordings[i] = recordings[i-1];
+    }
+    recordings[0] = runDataBuffer; 
+  }
+  
+  //Save recording to flash
 }
 
-void handleNotFound() {
+void handleNotFound() 
+{
     File f = LittleFS.open("/index.html", "r");
     if(!f) { server.send(500, "text/plain", "LittleFS fout"); return; }
     server.streamFile(f, "text/html");

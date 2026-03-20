@@ -20,8 +20,6 @@ globalSettings_t globalSettings =
 };
 runData_t runData;
 
-runData_t runDatas[MAX_RUNS];
-
 roomSettings_t roomsSettings[MAX_ROOMS] =
 {
     {{0,0}, "BECON IP VAN DICHTSBIJZIJNDE BEACON", {"0000"},NON_C, TOUCH_SENSOR, "NAAM"},
@@ -204,8 +202,8 @@ void receive_room_settings_from_esp(void)
 
 void send_run_data_to_esp(void)
 {
-    uint8_t *data = (uint8_t*)runDatas;
-    size_t size = sizeof(runDatas);
+    uint8_t *data = (uint8_t*)&runData;
+    size_t size = sizeof(runData);
 
     lpuart2_putchar(0xAA);
 
