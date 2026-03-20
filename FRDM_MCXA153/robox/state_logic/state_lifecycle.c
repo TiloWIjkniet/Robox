@@ -74,8 +74,4 @@ void reset_onExit(void)
     printf("Max Rooms: %d\n",runData.maxRooms);
 
     #endif
-
-
-
-
 }

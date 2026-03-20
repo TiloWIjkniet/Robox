@@ -15,7 +15,7 @@ void idle_onEntry(void)
     emptyInputBuffer();
     setMapCoordinates((uint8_t[]){INVALID_COORD, INVALID_COORD});
     displayLoadTemplate(IDLE_D, 0, true);
-    hexDisplay_setTime(00,00);
+    
 }
 void idle_onUpdate(void)
 {

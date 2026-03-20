@@ -14,8 +14,8 @@
 #define TIMEOUT_MS 500  
 globalSettings_t globalSettings =
 {
-    WRONG_ANSWER_MINUS_5MIN_CONTINUE,
-    31,
+    WRONG_ANSWER_MINUS_15MIN_STOP,
+    60,
     AUDIO_ON
 };
 runData_t runData;
@@ -90,7 +90,6 @@ void dev_page_onExit(void)
     displayLoadTemplate(GET_DATA_D, 0, true);
     receive_room_settings_from_esp();
 }
-
 
 bool receive_room_settings(void)
 {
@@ -202,6 +201,7 @@ void receive_room_settings_from_esp(void)
 
 void send_run_data_to_esp(void)
 {
+    return;
     uint8_t *data = (uint8_t*)&runData;
     size_t size = sizeof(runData);
 
