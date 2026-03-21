@@ -18,7 +18,14 @@ globalSettings_t globalSettings =
     60,
     AUDIO_ON
 };
-runData_t runData;
+runData_t runData = 
+{
+    .roomTimes = {20.5, 10.5, 10,8,2},
+    .wrongAnswerCount = 5,
+    .totalTime = 60,
+    .difficulty = 3,
+    .maxRooms = 5
+};
 
 roomSettings_t roomsSettings[MAX_ROOMS] =
 {
@@ -32,6 +39,7 @@ const char ROOM_CODES[20][2] = {"0","1","2","3","4","5","6","7","8","9","10","11
 
 void dev_page_onEntry(void)
 {
+    lpuart2_putchar(0xCC); // zet webserver aan
     emptyInputBuffer();
     displayLoadTemplate(DEF_D, 0, true);
     //Zet esp aan
@@ -89,6 +97,7 @@ void dev_page_onExit(void)
 
     displayLoadTemplate(GET_DATA_D, 0, true);
     receive_room_settings_from_esp();
+    lpuart2_putchar(0xEE); // zet web servber uit 
 }
 
 bool receive_room_settings(void)
@@ -174,7 +183,6 @@ bool receive_room_settings(void)
 void receive_room_settings_from_esp(void)
 {
 
-    return;
     printf("get data\n");
     lpuart2_putchar(0xBB);
     while(!receive_room_settings());
@@ -201,7 +209,6 @@ void receive_room_settings_from_esp(void)
 
 void send_run_data_to_esp(void)
 {
-    return;
     uint8_t *data = (uint8_t*)&runData;
     size_t size = sizeof(runData);
 
@@ -211,5 +218,7 @@ void send_run_data_to_esp(void)
     {
         lpuart2_putchar(data[i]);
     }
+
+    printf("Al data sent\n");
     
 }

@@ -25,12 +25,44 @@ buttons.forEach(button =>
 });
 
 
+let lastStatus = "online";      // laatste bekende status
+let failCount = 0;               // hoeveel checks achter elkaar gefaald
+const FAIL_THRESHOLD = 3;        // aantal mislukte checks voordat we offline melden
+const INTERVAL = 3000;           // 3 seconden interval
+
+async function checkServerStatus() {
+    try {
+        const res = await fetch("/status", { cache: "no-store" });
+        const status = await res.text();
+
+        if (status === "online") {
+            failCount = 0; // reset
+            if (lastStatus !== "online") {
+                alert("Server is weer online!");
+                lastStatus = "online";
+            }
+        } else {
+            failCount++;
+            if (failCount >= FAIL_THRESHOLD && lastStatus !== "offline") {
+                alert("Server is uitgeschakeld!");
+                lastStatus = "offline";
+            }
+        }
+    } catch (e) {
+        failCount++;
+        if (failCount >= FAIL_THRESHOLD && lastStatus !== "offline") {
+            alert("Server niet bereikbaar! Mogelijk uitgevallen.");
+            lastStatus = "offline";
+        }
+    }
+}
+
+setInterval(checkServerStatus, INTERVAL);
+
 // --- Data: tijd per kamer, gehaald?, fouten, totaal, moeilijkheid, max kamers ---
 
 let Recordings =
 [
-    [[2,3,4,5,6],false,2,60,2,5],
-    [[2,3,4],false,2,60,2,5]
 ];
 let currentIndex = 0;
 
@@ -161,8 +193,11 @@ function formatTime(minutenFloat) {
 
 // --- Knoppen ---
 const btnContainer = document.getElementById("recordingButtons");
+
 function drawRecordingsButtons()
-{
+
+{ 
+    
     console.log(Recordings);
     Recordings.forEach((_, idx) => 
     {
@@ -179,7 +214,7 @@ function drawRecordingsButtons()
             currentIndex = idx;
             drawChart();
             updateStats();
-
+            console.log(currentIndex);
             btnContainer.querySelectorAll("button").forEach(b=>b.classList.remove("active"));
             btn.classList.add("active");
         });
@@ -985,6 +1020,8 @@ window.addEventListener("DOMContentLoaded", async () =>
     const data = await loadData();
 });
 
+
+
 async function loadData() 
 {
     try 
@@ -1059,7 +1096,10 @@ async function loadData()
     }
     initKamerList();
 }
-
+       drawRecordingsButtons();
+        currentIndex = 0;
+        drawChart();
+        updateStats();
 function showLoadedImage(base64) {
     if (!base64) return;
 
@@ -1072,10 +1112,7 @@ function showLoadedImage(base64) {
 }
 
 
-        drawRecordingsButtons();
-        currentIndex = 0;
-        drawChart();
-        updateStats();
+
 async function saveToESP() 
 {
         let resizedImage = null;
@@ -1262,3 +1299,6 @@ function importSettingsNoLib(file)
     reader.readAsText(file);
 
 }
+
+
+

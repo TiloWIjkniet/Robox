@@ -21,9 +21,7 @@ IPAddress myIP;
 
 #define MAX_ANSWERS 5
 
-runData_t recordings[MAXS_RECORDINGS];
-roomSettings_t rooms[MAXS_ROOMS];
-globalSettings_t globalSettings;
+
 String plattegrond = "";  
 
 bool receiving = false;
@@ -83,6 +81,13 @@ typedef struct
     audio_t audio;
 } globalSettings_t;
 
+bool serverRunning = false;
+bool networkRunning = false;
+
+runData_t recordings[MAXS_RECORDINGS];
+roomSettings_t rooms[MAXS_ROOMS];
+globalSettings_t globalSettings;
+
 void setup() 
 {
   Serial.begin(115200);
@@ -101,6 +106,8 @@ void setup()
   if(!LittleFS.begin()) { Serial.println("Fout bij LittleFS mount"); return; }
   loadFromFlash();
   beginServer();
+
+  loadRecordingsFromFlash();
 }
 
 void beginServer()
@@ -126,12 +133,18 @@ void beginServer()
     f.close();
   });
 
+  server.on("/status", HTTP_GET, []() {
+    String status = serverRunning ? "online" : "offline";
+    server.send(200, "text/plain", status);
+});
+
   server.on("/save", HTTP_POST, handleSave);
   server.on("/load", HTTP_GET, handleLoad);
 
   server.onNotFound(handleNotFound);
-  server.begin();
   Serial.println("Webserver gestart");
+
+  
 }
 
 void handleLoad() 
@@ -210,6 +223,23 @@ void handleLoad()
   String output;
   serializeJson(doc, output);
   server.send(200, "application/json", output);
+}
+
+
+void setServerOnline(bool online) 
+{
+    if (online && !serverRunning) 
+    {
+        server.begin();
+        serverRunning = true;
+        Serial.println("Webserver gestart via UART");
+    } 
+    else if (!online && serverRunning) 
+    {
+        server.stop();
+        serverRunning = false;
+        Serial.println("Webserver gestopt via UART");
+    }
 }
 
 void handleSave() 
@@ -299,8 +329,8 @@ void handleSave()
   {
     JsonObject gs = doc["globalSettings"];
   globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
-  globalSettings.totalTime = gs["start-tijd"] | 0;
-  globalSettings.audio = (audio_t)(gs["audio"] | AUDIO_OFF);
+  globalSettings.totalTime = gs["start-tijd"].as<int>();
+  globalSettings.audio = (audio_t)gs["audio"].as<int>();
   }
 
   if (doc.containsKey("uploadedImageData")) 
@@ -420,14 +450,56 @@ void loadFromFlash() {
 void loop() 
 {
   dnsServer.processNextRequest();
-  server.handleClient();
+  if(serverRunning) server.handleClient();
 
-  while(Serial.available())
-  {
+while(Serial.available())
+{
     uint8_t byteIn = Serial.read();
-    getRunData(byteIn);
-    if(!receiving)sentSettingData(byteIn);
+
+    // Specifieke commando's
+  if(!receiving) 
+  {
+    if (byteIn == 0xCC) 
+    {  // Alles online
+        if (!networkRunning) 
+        {
+          WiFi.softAP(ssid, password);
+          WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
+          dnsServer.start(DNS_PORT, "*", myIP);
+          networkRunning = true;
+          Serial.println("Netwerk ingeschakeld");
+          }
+        if (!serverRunning) 
+        {
+          server.begin();
+          serverRunning = true;
+          Serial.println("Server gestart");
+        }
+    } 
+    else if (byteIn == 0xEE) 
+    { // Alles offline
+      if (serverRunning) 
+      {
+        server.close();
+        serverRunning = false;
+        Serial.println("Server gestopt");
+      }
+      if (networkRunning) 
+      {
+        dnsServer.stop();
+        WiFi.softAPdisconnect(true);
+        WiFi.disconnect(true);
+        networkRunning = false;
+        Serial.println("Netwerk uitgeschakeld");
+      }
+      
+    }
+    else sentSettingData(byteIn); // bestaande functie
   }
+
+    // Data ontvangen voor recordings
+    getRunData(byteIn);
+}
 
 
 }
@@ -466,6 +538,7 @@ void getRunData(uint8_t byteIn)
   {
     if (byteIn == 0xAA) 
     { 
+      Serial.println("start byte ontvangen");
       receiving = true;
       index = 0;
     }
@@ -483,9 +556,76 @@ void getRunData(uint8_t byteIn)
       recordings[i] = recordings[i-1];
     }
     recordings[0] = runDataBuffer; 
+    saveRecordingsToFlash() ;
+
   }
   
   //Save recording to flash
+}
+
+void saveRecordingsToFlash() 
+{
+    if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
+
+    DynamicJsonDocument doc(20000);
+    JsonArray jsonRecordings = doc.createNestedArray("Recordings");
+
+    for (int i = 0; i < MAXS_RECORDINGS; i++) 
+    {
+        bool hasData = recordings[i].maxRooms > 0; // check of deze recording geldig is
+        if (!hasData) continue;
+
+        JsonObject r = jsonRecordings.createNestedObject();
+        
+        JsonArray times = r.createNestedArray("roomTimes");
+        for (int t = 0; t < MAXS_TIMES; t++) 
+        {
+            if (recordings[i].roomTimes[t] != 0)
+                times.add(recordings[i].roomTimes[t]);
+        }
+
+        r["wrongAnswerCount"] = recordings[i].wrongAnswerCount;
+        r["totalTime"] = recordings[i].totalTime;
+        r["difficulty"] = recordings[i].difficulty;
+        r["maxRooms"] = recordings[i].maxRooms;
+    }
+
+    File f = LittleFS.open("/recordings.json", "w");
+    if (!f) { Serial.println("Fout bij openen bestand voor schrijven"); return; }
+
+    serializeJson(doc, f);
+    f.close();
+    Serial.println("Recordings opgeslagen in flash!");
+}
+void loadRecordingsFromFlash()
+{
+    if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
+    if (!LittleFS.exists("/recordings.json")) { Serial.println("Geen recordings gevonden"); return; }
+
+    File f = LittleFS.open("/recordings.json", "r");
+    if (!f) { Serial.println("Kon recordings niet openen"); return; }
+
+    DynamicJsonDocument doc(20000);
+    DeserializationError error = deserializeJson(doc, f);
+    f.close();
+
+    if (error) { Serial.print("Fout bij JSON lezen: "); Serial.println(error.c_str()); return; }
+
+    JsonArray arr = doc["Recordings"];
+    for(int i = 0; i < arr.size() && i < MAXS_RECORDINGS; i++)
+    {
+        JsonObject r = arr[i];
+        JsonArray times = r["roomTimes"];
+        for(int t = 0; t < MAXS_TIMES; t++)
+            recordings[i].roomTimes[t] = t < times.size() ? times[t].as<float>() : 0;
+
+        recordings[i].wrongAnswerCount = r["wrongAnswerCount"] | 0;
+        recordings[i].totalTime = r["totalTime"] | 0;
+        recordings[i].difficulty = r["difficulty"] | 0;
+        recordings[i].maxRooms = r["maxRooms"] | 0;
+    }
+
+    Serial.println("Recordings geladen uit flash!");
 }
 
 void handleNotFound() 
