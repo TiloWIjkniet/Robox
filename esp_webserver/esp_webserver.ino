@@ -92,12 +92,12 @@ void setup()
 {
   Serial.begin(115200);
 
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP(ssid, password);
-  WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
-  myIP = WiFi.softAPIP();
+  // WiFi.mode(WIFI_AP);
+  // WiFi.softAP(ssid, password);
+  // WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
+  // myIP = WiFi.softAPIP();
 
-  dnsServer.start(DNS_PORT, "*", myIP);
+  // dnsServer.start(DNS_PORT, "*", myIP);
 
   Serial.println("Access Point gestart");
   Serial.print("Web adres: http://");
