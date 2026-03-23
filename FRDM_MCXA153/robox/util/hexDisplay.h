@@ -3,4 +3,6 @@
 
 void hexDisplay_init();
 void hexDisplay_setTime(uint8_t minutes, uint8_t seconds);
+
+#define OFF 10
 #endif

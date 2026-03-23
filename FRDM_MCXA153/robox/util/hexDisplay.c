@@ -8,6 +8,7 @@
 #define PIN_DIO 31
 
 
+
 void displayDigits(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t dot);
 
 void hexDisplay_init()
@@ -71,11 +72,12 @@ void writeByte(uint8_t b) {
   setPintate_hexDisplay(PIN_CLK, true);
 }
 
-void displayDigits(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t dot) {
+void displayDigits(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t dot) 
+{
   uint8_t segments[] = {
     0b00111111, 0b00000110, 0b01011011, 0b01001111,
     0b01100110, 0b01101101, 0b01111101, 0b00000111,
-    0b01111111, 0b01101111
+    0b01111111, 0b01101111, 0b00000000
   };
 
   uint8_t seg0 = segments[d0];

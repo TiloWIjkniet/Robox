@@ -4,6 +4,10 @@
 #include "game_logic.h"
 #include <stdint.h>
 #include "buzzer.h"
+#include "hexDisplay.h"
+#include "time_millis.h"
+#define BLINK_DURATION_DISARMT 250
+#define BLINK_DURATION_TIMEOUT 150
 
 void completed_onEntry(void) 
 { 
@@ -11,8 +15,20 @@ void completed_onEntry(void)
 }
 void completed_onUpdate(void) 
 { 
+    static uint32_t lastBlink = 0;
+
     bool displayFinished = false;
-    displayFinished = displayLoadTemplate(GEHAALT_D, 5 * 1000, false);
+    displayFinished = displayLoadTemplate(TIJD_D, 5 * 1000, false);
+
+
+    uint32_t now = millis();
+    if(now - lastBlink > BLINK_DURATION_DISARMT) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
+    {
+        lastBlink = now;
+        if(displayFinished) hexDisplay_setTime(OFF, OFF);
+        else updateGameTimer();
+        displayFinished = !displayFinished;   
+    }
 
     if(!displayFinished) return;
     FSM_addEvent(E_GAME_COMPLETED);
@@ -27,8 +43,22 @@ void timeout_onEntry(void)
 }
 void timeout_onUpdate(void) 
 { 
+    static uint32_t lastBlink = 0;
+    static bool displayStatus = false;
+
     bool displayFinished = false;
     displayFinished = displayLoadTemplate(TIJD_D, 5 * 1000, false);
+
+
+    uint32_t now = millis();
+    if(now - lastBlink > BLINK_DURATION_TIMEOUT) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
+    {
+        lastBlink = now;
+        buzzer_play(BUZZERT_DURATION);
+        hexDisplay_setTime(displayStatus ? OFF : 0, displayStatus ? OFF : 0);
+        
+    }
+
 
     if(!displayFinished) return;
     FSM_addEvent(E_GAME_TIMEOUT);

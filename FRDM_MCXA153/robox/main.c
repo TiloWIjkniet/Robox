@@ -11,6 +11,7 @@
 #include "touch_sensor.h"
 #include "hexDisplay.h"
 #include "lpuart1.h"
+
 int main(void)
 {
 
@@ -37,6 +38,8 @@ int main(void)
       touchUpdate();
       updateTimeGamePanaltuMillis();
       updateGameTimer();
+      if(globalSettings.difficulty == WRONG_ANSWER_HALF_REMAINING_STOP) updateVirtualTime();
+
 
     }
 

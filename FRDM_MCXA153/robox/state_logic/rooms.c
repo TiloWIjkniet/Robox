@@ -21,6 +21,8 @@ void commonRoom_onExit();
 void first_room_onEntry(void)
 {
     //Reset run data
+    resetVirtualTime();
+    
     gameActiv = true;
     roomIndex = 0;
     memset(&runData, 0, sizeof(runData));

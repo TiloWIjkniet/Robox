@@ -14,7 +14,7 @@
 #define TIMEOUT_MS 500  
 globalSettings_t globalSettings =
 {
-    WRONG_ANSWER_MINUS_15MIN_STOP,
+    WRONG_ANSWER_MINUS_5MIN_STOP,
     60,
     AUDIO_ON
 };
@@ -24,7 +24,7 @@ runData_t runData =
     .wrongAnswerCount = 5,
     .totalTime = 60,
     .difficulty = 3,
-    .maxRooms = 5
+    .maxRooms = 51
 };
 
 roomSettings_t roomsSettings[MAX_ROOMS] =
@@ -102,9 +102,18 @@ bool receive_room_settings(void)
     static uint8_t* p;
 
     uint32_t timeoutStart = millis();
-
-    while(lpuart1_rxcnt() > 0)
+    while(true)
     {
+
+         // check timeout
+        if(millis() - timeoutStart > TIMEOUT_MS)
+        {
+            printf("Timeout!\n");
+            state = WAIT_GLOBAL_START;
+            return false;
+        }
+
+        if(lpuart1_rxcnt() <= 0) continue; // wacht op data
         uint8_t b = lpuart1_getchar();
 
         switch(state)
@@ -162,24 +171,30 @@ bool receive_room_settings(void)
                 break;
         }
 
-        // check timeout
-        if(millis() - timeoutStart > TIMEOUT_MS)
-        {
-            printf("Timeout!\n");
-            state = WAIT_GLOBAL_START;
-            return false;
-        }
+
     }
 
-    return false; // nog niet klaar
+    return false; // nooit bereikt
 }
 
 void receive_room_settings_from_esp(void)
 {
 
     printf("get data\n");
-    lpuart1_putchar(0xBB);
-    while(!receive_room_settings());
+    
+    uint8_t attempts = 0;
+    do
+    {
+        attempts ++;
+        if(attempts > 5)
+        {
+            printf("Failed to receive data after 5 attempts\n");
+            printf("Uses defalt values\n");
+            return;
+        }
+        lpuart1_putchar(0xBB);
+
+    }while(!receive_room_settings());
 
     printf("Moelijkhijd: %d\n", globalSettings.difficulty);
     printf("tijd: %d\n",        globalSettings.totalTime);

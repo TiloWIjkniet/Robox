@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include "touch_sensor.h"
 #include "hexDisplay.h"
+#include "game_logic.h"
 
 #define MS_PER_TICK_PANALTY 10
 
@@ -16,20 +17,33 @@ uint32_t timeRoomPanaltyMillis=0;
 uint32_t startGameMillis=0;
 uint8_t roomIndex=0;
 
+uint8_t virtualTimeMultiplier = 1;
+uint32_t virtualTime = 0;
+uint32_t lastRealTime = 0;
+
 uint32_t getWrongAnswerPenalty();
 bool isInputMatching(const  char *input, const char *correctInput);
 int32_t getTimeRemaining();
 
+
+typedef struct 
+{
+    uint8_t x;
+    uint8_t y;
+}coordinates_t;
+
 void setMapCoordinates(uint8_t coordinates[2])
 {
-    static uint8_t lastCoordinates[2] = {INVALID_COORD, INVALID_COORD};
-    if(coordinates[0] == lastCoordinates[0] && coordinates[1] == lastCoordinates[1]) return; 
+    static coordinates_t lastCoordinates = {.x = INVALID_COORD, .y = INVALID_COORD};
+    coordinates_t my_coordinates = {.x = coordinates[0], .y = coordinates[1]};
+
+    if(my_coordinates.x == lastCoordinates.x && my_coordinates.y == lastCoordinates.y) return; 
     
-    lastCoordinates[0] = coordinates[0];
-    lastCoordinates[1] = coordinates[1];
+    lastCoordinates.x = my_coordinates.x;
+    lastCoordinates.y = my_coordinates.y;
 
 
-    if(coordinates[0] == INVALID_COORD || coordinates[1] == INVALID_COORD) 
+    if(my_coordinates.x == INVALID_COORD || my_coordinates.y == INVALID_COORD) 
     {
         return;
     }
@@ -152,7 +166,8 @@ void applyWrongAnswerPenalty()
  */
 uint32_t getElapsedTime()
 {
-    return (millis() - startGameMillis) + timeGamePenaltyMillis; 
+    uint32_t elapsedTime =  (globalSettings.difficulty == WRONG_ANSWER_HALF_REMAINING_STOP)? getVirtualElapsedTime() : (millis() - startGameMillis);
+    return elapsedTime + timeGamePenaltyMillis; 
 }
 
 /**
@@ -271,7 +286,7 @@ void updateGameTimer()
   uint16_t minutes = totalSec / 60;
   uint16_t seconds = totalSec % 60;
   hexDisplay_setTime(minutes, seconds);
-    buzzer_play(BUZZERT_DURATION); // Zet buzzer aan als tijd negatief is, uit als tijd positief is
+  if(gameActiv) buzzer_play(BUZZERT_DURATION); // Zet buzzer aan als tijd negatief is, uit als tijd positief is
     #if DEBUG_ON_PC
         //if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
         //  else printf("Time: %02u:%02u\n",minutes, seconds);
@@ -304,7 +319,7 @@ int32_t getTimeRemaining()
 uint8_t getNumRooms(void) 
 {
     uint8_t count = 0;
-    for(uint8_t i = 0; i < ARRAY_SIZE(roomsSettings); i++) {
+    for(uint8_t i = 0; i <MAX_ROOMS; i++) {
         if(roomsSettings[i].beconIp[0] == '\0') break;
         count++;
     }
@@ -339,9 +354,7 @@ uint32_t getWrongAnswerPenalty()
 
         case WRONG_ANSWER_HALF_REMAINING_STOP:
         
-            uint32_t elapsedTime = millis() - startGameMillis; 
-            uint32_t remainingTime = (globalSettings.totalTime * 60 * 1000) - (elapsedTime + timeGamePenaltyMillis);
-            timePanalty = remainingTime / 2;
+             virtualTimeMultiplier ++;
             break;
 
         default:
@@ -350,4 +363,25 @@ uint32_t getWrongAnswerPenalty()
     }
     return timePanalty;
 
+}
+
+
+
+void resetVirtualTime()
+{
+    virtualTime = 0;
+    lastRealTime = millis();
+    virtualTimeMultiplier = 1;
+    
+}
+void updateVirtualTime()
+{
+    uint32_t now = millis() ;
+    virtualTime += (uint32_t)((now - lastRealTime) * virtualTimeMultiplier);
+    lastRealTime = now;
+}
+
+uint32_t getVirtualElapsedTime()
+{
+    return virtualTime;
 }

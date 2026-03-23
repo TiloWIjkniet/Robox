@@ -11,7 +11,8 @@
 #define B_PIN 13
 #define TOUCH_GLITCH_FILTER_MS  500
 #define TOUCH_HOLD_TIME_MS  2000
-#define BLINNK_DELAY 200
+#define MAX_BLINK_DELAY 200
+#define MIN_BLINK_DELAY 50
 
 
 void setCollor(collors_t collor);
@@ -56,8 +57,10 @@ void touchUpdate()
   static uint32_t pressStart = 0;
   static uint32_t lastValidPress = 0;
   static uint32_t blinkTime = 0;
+  static uint32_t blinkDelay = MAX_BLINK_DELAY;
   static bool letState = false; 
   static bool newPres = false;
+
   bool state = getPinState_touchSensor(TOUCH_SENSOR_PIN);
 
   uint32_t now = millis();
@@ -69,13 +72,19 @@ void touchUpdate()
       isPressing = true;
       pressStart = now;
       newPres = true;
+      letState = true;
+  
     }
     lastValidPress = now;
-    if(now - blinkTime > BLINNK_DELAY && !longPres)
+    if(now - blinkTime > blinkDelay && !longPres)
     {
       blinkTime = now;
-      letState =!letState;
+      
+      float ratio = (float)(now - pressStart) / (float)TOUCH_HOLD_TIME_MS;
+      if (ratio > 1.0f) ratio = 1.0f;
+      blinkDelay = MIN_BLINK_DELAY - (MAX_BLINK_DELAY - MIN_BLINK_DELAY) * ratio * ratio;
       setCollor(letState? (mustPres? GREEN : RED) : (mustPres? WHITE : OFF));
+      letState =!letState;
     }
   }
   else if(isPressing)

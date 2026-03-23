@@ -12,7 +12,8 @@
 #define PIN_COLOM_0 10
 #define PIN_COLOM_1 6
 #define PIN_COLOM_2 8
-s
+
+#define PIN_ROW_0 7 // Controleren of goed
 #define PIN_ROW_1 31
 #define PIN_ROW_2 11
 #define PIN_ROW_3 9
