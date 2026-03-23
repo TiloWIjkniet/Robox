@@ -10,12 +10,12 @@
 #include "buzzer.h"
 #include "touch_sensor.h"
 #include "hexDisplay.h"
-#include "lpuart2.h"
+#include "lpuart1.h"
 int main(void)
 {
 
   serial_init(115200);
-  lpuart2_init(115200);
+  lpuart1_init(115200);
   printf("Starting game...\n");
     
   FSM_config();

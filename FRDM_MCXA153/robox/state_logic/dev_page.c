@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include "keypad.h"
 #include "touch_sensor.h"
-#include "lpuart2.h"
+#include "lpuart1.h"
 #include "time_millis.h"
 
 #define EXIT_DEV_CODE "0000"
@@ -39,17 +39,13 @@ const char ROOM_CODES[20][2] = {"0","1","2","3","4","5","6","7","8","9","10","11
 
 void dev_page_onEntry(void)
 {
-    lpuart2_putchar(0xCC); // zet webserver aan
+    lpuart1_putchar(0xCC); // zet webserver aan
     emptyInputBuffer();
     displayLoadTemplate(DEF_D, 0, true);
-    //Zet esp aan
-    //Stuur run data naar esp
 }
 
 void dev_page_onUpdate(void)
 {
-    //Ontvang data van esp
-    //Kijk of je uit dev mode gaat
     updateInputBuffer();
     if(!hasNewAnswer) return;
     hasNewAnswer = false;
@@ -61,14 +57,14 @@ void dev_page_onUpdate(void)
     }
     if(isInputMatching(answerBuffer, OPEN_ALL_COMPARTMETS))
     {
-        //Opent all compartments
+
         openCompartment(NON_C);
     }
     for(int room = 0; room < getNumRooms(); room++)
     {
-        //Print unike rome setting
         if(isInputMatching(answerBuffer, ROOM_CODES[room]))
-        {    
+        {   
+            receive_room_settings_from_esp();
             setMapCoordinates(roomsSettings[room].coordinates);
             #if DEBUG_ON_PC
     
@@ -83,7 +79,6 @@ void dev_page_onUpdate(void)
             printf("%d   ",roomsSettings[room].openCompartment);
             printf("%d\n",roomsSettings[room].specialActies);
             #endif
-
             return;
             
         }
@@ -95,9 +90,8 @@ void dev_page_onExit(void)
 {
     setMapCoordinates((uint8_t[]){INVALID_COORD, INVALID_COORD});
 
-    displayLoadTemplate(GET_DATA_D, 0, true);
     receive_room_settings_from_esp();
-    lpuart2_putchar(0xEE); // zet web servber uit 
+    lpuart1_putchar(0xEE); // zet web servber uit 
 }
 
 bool receive_room_settings(void)
@@ -109,9 +103,9 @@ bool receive_room_settings(void)
 
     uint32_t timeoutStart = millis();
 
-    while(lpuart2_rxcnt() > 0)
+    while(lpuart1_rxcnt() > 0)
     {
-        uint8_t b = lpuart2_getchar();
+        uint8_t b = lpuart1_getchar();
 
         switch(state)
         {
@@ -184,7 +178,7 @@ void receive_room_settings_from_esp(void)
 {
 
     printf("get data\n");
-    lpuart2_putchar(0xBB);
+    lpuart1_putchar(0xBB);
     while(!receive_room_settings());
 
     printf("Moelijkhijd: %d\n", globalSettings.difficulty);
@@ -212,13 +206,10 @@ void send_run_data_to_esp(void)
     uint8_t *data = (uint8_t*)&runData;
     size_t size = sizeof(runData);
 
-    lpuart2_putchar(0xAA);
+    lpuart1_putchar(0xAA);
 
     for (size_t i = 0; i < size; i++)
     {
-        lpuart2_putchar(data[i]);
+        lpuart1_putchar(data[i]);
     }
-
-    printf("Al data sent\n");
-    
 }

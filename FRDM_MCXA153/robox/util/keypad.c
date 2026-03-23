@@ -6,19 +6,18 @@
 #define ROWS 4
 #define COLS 3
 
-#define DEBOUNCE_TIME 20
+#define DEBOUNCE_TIME 50
 
 
 #define PIN_COLOM_0 10
 #define PIN_COLOM_1 6
 #define PIN_COLOM_2 8
-
-#define PIN_ROW_0 7
+s
 #define PIN_ROW_1 31
 #define PIN_ROW_2 11
 #define PIN_ROW_3 9
 
-const char keymap[ROWS][COLS] =
+const uint8_t keymap[ROWS][COLS] =
 {
   {'3','2','1'},
   {'6','5','4'},
@@ -29,6 +28,7 @@ const char keymap[ROWS][COLS] =
 typedef struct 
 {
     bool pressed;
+    bool lastRawState;
     uint32_t lastChange;
 } keyState_t;
 
@@ -180,21 +180,27 @@ char getKey()
     for (uint8_t row =0; row < ROWS; row++)
     {
       bool pinState = getPinState(pin_rows[row]);
-    
-      if(pinState != keys[row][col].pressed) 
+       uint32_t now  = millis();
+      if(pinState != keys[row][col].lastRawState) 
       {
-                 
-        uint32_t now  = millis();
-        if(now - keys[row][col].lastChange >= DEBOUNCE_TIME)
+         keys[row][col].lastRawState = pinState;
+         keys[row][col].lastChange = now;
+      }
+
+      if(now - keys[row][col].lastChange >= DEBOUNCE_TIME)
+      {
+        
+        if(keys[row][col].pressed != pinState)
         {
-          keys[row][col].lastChange = now;
-          keys[row][col].pressed = pinState;
-          if(pinState == true) 
-          { 
-            return keymap[row][col];
-          }
+            keys[row][col].pressed = pinState;
+
+            if(pinState)
+            {
+                return keymap[row][col];
+            }
         }
       }
+      
     }
   }
   return ' ';

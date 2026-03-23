@@ -29,6 +29,9 @@ mcux_add_source(
             serial2lpuart/lpuart2.c
             serial2lpuart/lpuart2.h
 
+            serial1lpuart/lpuart1.c
+            serial1lpuart/lpuart1.h
+
             serial/retarget.c
             serial/serial.c
             serial/serial.h
@@ -67,6 +70,7 @@ mcux_add_include(
             state_logic
             util
             serial2lpuart
+            serial1lpuart
    
 )
 

@@ -4,7 +4,7 @@
 #include "game_logic.h"
 #include <stdint.h>
 #include "buzzer.h"
-#include "lpuart2.h"
+
 void completed_onEntry(void) 
 { 
     gameActiv = false;
