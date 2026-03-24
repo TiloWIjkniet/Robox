@@ -166,7 +166,7 @@ void applyWrongAnswerPenalty()
  */
 uint32_t getElapsedTime()
 {
-    uint32_t elapsedTime =  (globalSettings.difficulty == WRONG_ANSWER_HALF_REMAINING_STOP)? getVirtualElapsedTime() : (millis() - startGameMillis);
+    uint32_t elapsedTime =  (globalSettings.difficulty == WRONG_ANSWER_TIME_X2)? getVirtualElapsedTime() : (millis() - startGameMillis);
     return elapsedTime + timeGamePenaltyMillis; 
 }
 
@@ -352,7 +352,7 @@ uint32_t getWrongAnswerPenalty()
             timePanalty = 15 * 60 * 1000; // 15 minuten, spel stopt bij 0
             break;
 
-        case WRONG_ANSWER_HALF_REMAINING_STOP:
+        case WRONG_ANSWER_TIME_X2:
         
              virtualTimeMultiplier ++;
             break;

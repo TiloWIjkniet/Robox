@@ -23,7 +23,7 @@ typedef enum
     TIJD_D,
     GEHAALT_D,
     RESET_D,
-    GET_DATA_D
+    EROR_D
 }displayTemplate_t;
 
 extern  const char *displayTemplates[MAX_TEMPLATES];

@@ -86,7 +86,7 @@ const char* displayTemplates[MAX_TEMPLATES] = {
     "|--------------------------------------------------------|\n", // RESET_D
 
     "|--------------------------------------------------------|\n"
-    "|WACHT: data aan het ontvangen                           |\n"
+    "|Er is een kritiche error, prose kan niet veder gaan     |\n"
     "|                                                        |\n"
     "|                                                        |\n"
     "|--------------------------------------------------------|\n", // GET_DATA_D

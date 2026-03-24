@@ -38,7 +38,7 @@ int main(void)
       touchUpdate();
       updateTimeGamePanaltuMillis();
       updateGameTimer();
-      if(globalSettings.difficulty == WRONG_ANSWER_HALF_REMAINING_STOP) updateVirtualTime();
+      if(globalSettings.difficulty == WRONG_ANSWER_TIME_X2) updateVirtualTime();
 
 
     }

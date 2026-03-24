@@ -197,7 +197,7 @@ char getKey()
 
             if(pinState)
             {
-                return keymap[row][col];
+              return keymap[row][col];
             }
         }
       }

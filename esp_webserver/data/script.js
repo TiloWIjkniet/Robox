@@ -972,7 +972,7 @@ generateSettingsTable([
         <b>2</b>: -5 min, spel gaat door<br>\
         <b>3</b>: -5 min, spel stopt bij 0<br>\
         <b>4</b>: -15 min, spel stopt bij 0<br>\
-        <b>5</b>: resterende tijd /2, spel stopt bij 0"
+        <b>5</b>: tijd gaat 2x zo snel"
         },
     { key: "start-tijd",label: "Starttijd", type:  "text", value: 60 , help:"Hoeveel tijd er is om het spel op te lossen"},
     { key: "audio",label: "Audio ", type: "select", value: 0, options: [

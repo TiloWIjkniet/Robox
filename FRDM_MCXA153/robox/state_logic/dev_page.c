@@ -188,9 +188,8 @@ void receive_room_settings_from_esp(void)
         attempts ++;
         if(attempts > 5)
         {
-            printf("Failed to receive data after 5 attempts\n");
-            printf("Uses defalt values\n");
-            return;
+            displayLoadTemplate(EROR_D, 0, true);
+            while(true);
         }
         lpuart1_putchar(0xBB);
 

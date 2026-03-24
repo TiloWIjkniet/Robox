@@ -59,7 +59,7 @@ typedef enum
     WRONG_ANSWER_MINUS_5MIN_CONTINUE,     // 5 minuten aftrek, spel gaat door
     WRONG_ANSWER_MINUS_5MIN_STOP,
     WRONG_ANSWER_MINUS_15MIN_STOP,   // Tijd aftrekken (bijv. 5 min), stop als tijd 0
-    WRONG_ANSWER_HALF_REMAINING_STOP 
+    WRONG_ANSWER_TIME_X2 
 }wrongAnswerPenalty_t;
 
 typedef enum
