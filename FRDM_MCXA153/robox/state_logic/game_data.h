@@ -85,7 +85,6 @@ extern  runData_t runDatas[MAX_RUNS];
 
 extern  uint32_t timeGamePanaltyBuffer;
 extern  uint32_t timeGamePenaltyMillis;
-extern  uint32_t timeRoomPanaltyMillis;
 extern  uint32_t startGameMillis;
 extern  uint8_t roomIndex;
 

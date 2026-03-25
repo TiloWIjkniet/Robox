@@ -58,7 +58,7 @@ void timeout_onUpdate(void)
     if(now - lastBlink > blinkDuration) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
     {
 
-        float ratio = (float)(now - startRoomTimeMillis) /(float)(((5 * 1000) - 1000));
+        float ratio = (float)(now - startRoomTimeMillis) /(float)((4 * 1000));
         if (ratio > 1.0f) ratio = 1.0f;
         blinkDuration = MAX_BLINK_DURATION_TIMEOUT - (MAX_BLINK_DURATION_TIMEOUT - MIN_BLINK_DURATION_TIMEOUT) * (ratio * ratio);
         lastBlink = now;
@@ -79,7 +79,6 @@ void timeout_onExit(void)
 
 void reset_onEntry(void) 
 { 
-    buzzer_set(false);
    
 }
 void reset_onUpdate(void) 

@@ -28,13 +28,40 @@ typedef struct
 beacon_t becons[20];
 uint8_t beconIndex = 0;
 
-void askForBeacons()
+
+void sentDataToHM10(const char *mesag)
 {
-    const char mesag[10] = "AT+DISI?\r\n";
+      
     for (uint8_t i = 0; i < 10; i++)
     {
         lpuart2_putchar(mesag[i]);
     }
+    lpuart2_putchar('\r');
+    lpuart2_putchar('\n');
+}
+void HM10_init()
+{
+    lpuart2_init(9600);
+    sentDataToHM10("AT+BAUD4");
+    lpuart2_init(115200);
+
+    uint32_t start = millis();
+    while((millis() - start) < 100);  // wacht ~100 ms
+    
+    sentDataToHM10("AT+ROLE1"); // master mode
+    sentDataToHM10("AT+IMME0"); // scan gelijk 
+
+    sentDataToHM10("AT+POWE3"); // zet power hooger dus sneler detection en reaction
+    sentDataToHM10("AT+IBEA1"); // zorgt er voor dat je allen iBcons ziet 
+
+    
+    askForBeacons();
+}
+
+
+void askForBeacons()
+{
+    sentDataToHM10("AT+DISA?"); // AT+DISI?
     
 }
 void getBeconData()
@@ -69,7 +96,6 @@ void getBeconData()
                     beaconIp[8] = '\0';
 
                     bool found = false;
-
                     for (uint8_t i = 0; i < beconIndex; i++)
                     {
                         if(strcmp(becons[i].beaconIp, beaconIp) == 0)
@@ -77,7 +103,6 @@ void getBeconData()
                             becons[i].beconStrengt = (uint8_t)atoi(strength);
                             becons[i].lastSeen = millis();
                             found = true;
-
                             // printf("ip: %s    Strengt:", becons[i].beaconIp);
                             //  printf("%d\n", becons[i].beconStrengt);
                             break;
@@ -89,10 +114,8 @@ void getBeconData()
                         strcpy(becons[beconIndex].beaconIp, beaconIp);
                         becons[beconIndex].beconStrengt = (uint8_t)atoi(strength);
                         becons[beconIndex].lastSeen = millis();
-                        
                         // printf("found: %s    Strengt:", becons[beconIndex].beaconIp);
                         // printf("%d\n", becons[beconIndex].beconStrengt);
-
                         beconIndex++;
                     }
                     
@@ -102,10 +125,6 @@ void getBeconData()
                 {
                     scanInProgress = false;
                 }
-
-
-
-
                 line_index = 0;
             }
         }
@@ -114,26 +133,23 @@ void getBeconData()
 
 void updateHM10()
 {
-    getBeconData();
+    
    
-    if(millis() - lastReseaftMasige > 5000) scanInProgress = false;
+    if(millis() - lastReseaftMasige > 1000) scanInProgress = false; // meschein sneller mis langzaamer
+    if(!scanInProgress) 
+    {
+        lastReseaftMasige = millis();
+        scanInProgress = true;
+        askForBeacons();
+    }
 
 
-    if(scanInProgress) return;
-    lastReseaftMasige = millis();
-    scanInProgress = true;
-    
-
-    askForBeacons();
-    
-
+    getBeconData();
 
     for (int i = 0; i < beconIndex; i++)
     {
         if (millis() - becons[i].lastSeen > BEACON_TIMEOUT)
         {
-            // shift alles naar links]
-            //printf("pop: %s\n", becons[i].beaconIp);
             for (int j = i + 1; j < beconIndex; j++)
             {
                 becons[j - 1] = becons[j];
@@ -166,5 +182,4 @@ void updateHM10()
     }
 
     printf("Lowest: %s\n", beconIp);
-    //printf("%d\n", becons[lowestBeaconIndex].beconStrengt);
 }

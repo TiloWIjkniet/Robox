@@ -154,7 +154,6 @@ void applyWrongAnswerPenalty()
     runData.wrongAnswerCount++;
 
     uint32_t penalty = getWrongAnswerPenalty();
-    timeRoomPanaltyMillis += penalty;
     timeGamePanaltyBuffer += penalty;
 }
 

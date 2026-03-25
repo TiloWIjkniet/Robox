@@ -10,7 +10,7 @@
 typedef enum
 {
     IDLE_D,
-    DEF_D,
+    D_DEV_PAGE,
     START_D,
     KAMER_D,
     ANTWOORD_D,
@@ -23,7 +23,7 @@ typedef enum
     TIJD_D,
     GEHAALT_D,
     RESET_D,
-    EROR_D
+    D_ERROR_RECEIVE_SETTINGS
 }displayTemplate_t;
 
 extern  const char *displayTemplates[MAX_TEMPLATES];

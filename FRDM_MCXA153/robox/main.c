@@ -19,7 +19,7 @@ int main(void)
 
   serial_init(115200);
   lpuart1_init(115200);
-  lpuart2_init(9600);
+  // lpuart2_init word in void HM10_init() ingesteld 
   printf("Starting game...\n");
     
   FSM_config();
@@ -28,7 +28,8 @@ int main(void)
   buzzer_init();
   touchSensor_init();
   hexDisplay_init();
-
+  HM10_init();
+  
   receive_room_settings_from_esp();
   
   while(1)

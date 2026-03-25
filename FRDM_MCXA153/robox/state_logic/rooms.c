@@ -269,9 +269,8 @@ void commonRoom_onEntry()
 
     setMapCoordinates(roomsSettings[roomIndex].coordinates);
 
-    uint16_t now = millis();   
-    startRoomMillis = now; 
-    timeRoomPanaltyMillis = 0;
+    
+    startRoomMillis = startGameMillis; 
     hasAnwertCorrect = false;
     hasNewAnswer = false;
 }
@@ -281,7 +280,7 @@ void commonRoom_onEntry()
  */
 void commonRoom_onExit()
 {
-    uint32_t roomElapsedMillis = (millis() - startRoomMillis) + timeRoomPanaltyMillis;  
+    uint32_t roomElapsedMillis = (startGameMillis - startRoomMillis);  
     
     float elapsedMinutes = ((float)roomElapsedMillis) / 1000.0f / 60.0f;
     runData.roomTimes[roomIndex] = elapsedMinutes;
