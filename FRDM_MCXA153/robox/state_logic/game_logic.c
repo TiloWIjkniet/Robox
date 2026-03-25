@@ -13,7 +13,6 @@
 
 uint32_t timeGamePanaltyBuffer=0;
 uint32_t timeGamePenaltyMillis=0;
-uint32_t timeRoomPanaltyMillis=0;
 uint32_t startGameMillis=0;
 uint8_t roomIndex=0;
 
@@ -25,6 +24,19 @@ uint32_t getWrongAnswerPenalty();
 bool isInputMatching(const  char *input, const char *correctInput);
 int32_t getTimeRemaining();
 
+typedef struct 
+{
+   displayTemplate_t displayLoadTemplate;
+   uint32_t displayDurationMillis;
+   uint32_t displayStartMillis;
+} displayQueueItem_t;
+
+const displayQueueItem_t emptyDisplayItem = 
+{
+        .displayLoadTemplate = D_NON,
+        .displayDurationMillis = 0,
+        .displayStartMillis = 0
+};
 
 typedef struct 
 {
@@ -32,16 +44,29 @@ typedef struct
     uint8_t y;
 }coordinates_t;
 
+/**
+ * @brief Updateert de kaartcoördinaten indien ze veranderd zijn.
+ *
+ *
+ * @param coordinates Een array van 2 uint8_t waarden: [x, y].
+ *
+ * @note De functie houdt een statische kopie van de laatst gebruikte coördinaten
+ *       bij om onnodige updates te voorkomen.
+ *
+ * @note Als je INVALID_COORD gebruikt als waarde voor x of y, zal de functie de update overslaan en geen actie ondernemen. 
+ */
 void setMapCoordinates(uint8_t coordinates[2])
 {
     static coordinates_t lastCoordinates = {.x = INVALID_COORD, .y = INVALID_COORD};
     coordinates_t my_coordinates = {.x = coordinates[0], .y = coordinates[1]};
 
+    // Controleer of de codinaten binne berijk van schemr zijn
+
+
     if(my_coordinates.x == lastCoordinates.x && my_coordinates.y == lastCoordinates.y) return; 
     
     lastCoordinates.x = my_coordinates.x;
     lastCoordinates.y = my_coordinates.y;
-
 
     if(my_coordinates.x == INVALID_COORD || my_coordinates.y == INVALID_COORD) 
     {
@@ -67,57 +92,151 @@ compartment_t openCompartment(compartment_t compartment)
     return NON_C;
 }
 
+displayQueueItem_t displayQueue[2] = {emptyDisplayItem, emptyDisplayItem};
 /**
- * @brief Laadt en toont een displaytemplate op het scherm.
+ * @brief Laadt een display template.
  *
- * Deze functie zorgt ervoor dat een displaytemplate alleen wordt
- * weergegeven als:
- * - Het template anders is dan het laatst getoonde template.
- * - De minimale weergavetijd van het vorige template verstreken is.
+ * Roept de display driver (of printf voor debug) aan om het
+ * opgegeven display template zichtbaar te maken.
  *
- * @param displayTemplate   Het template dat weergegeven moet worden.
- * @param minDisplayTime    Minimale tijd (in milliseconden) dat het
- *                          huidige template zichtbaar moet blijven
- *                          voordat een nieuw template geladen mag worden.
- * @return                  True als het template succesvol is geladen anders false.
-
+ * @param displayTemplate Het template dat geladen moet worden.
+ *
+ * @note Deze functie wordt normaal alleen intern gebruikt door
+ *       de display queue mechanismen.
  */
-bool displayLoadTemplate(displayTemplate_t displayTemplate, uint32_t minDisplayTime, bool forceDisplay)
+void loadDisplayTemplate(displayTemplate_t displayTemplate)
 {
-    static uint32_t lastMinDisplayTime = 0;
-    static uint32_t lastUpdateDisplayMillis = 0;
-    static displayTemplate_t lastDisplayTemplate = RESET_D;
+    printf(displayTemplates[displayTemplate]);
+}
+/**
+ * @brief Update de display queue en verwerkt de timers.
+ *
+ * Deze functie moet periodiek (bijvoorbeeld in de main loop) worden aangeroepen.
+ * 
+ * Werking:
+ * - Controleert of er een actief display is.
+ * - Als het huidige display net toegevoegd is (displayStartMillis == 0),
+ *   wordt het geladen via loadDisplayTemplate().
+ * - Als het huidige display klaar is (minimale displayduur verstreken),
+ *   schuift het volgende display in de queue door naar de actieve positie.
+ *
+ * @note Alleen de eerste twee slots van de queue worden ondersteund.
+ */
+void updateDisplayQueue()
+{
+    
+    if(displayQueue[0].displayLoadTemplate == D_NON) return;
+    
+    uint32_t now = millis();
+    if(displayQueue[0].displayStartMillis == 0) 
+    {
+        displayQueue[0].displayStartMillis = now;
+        loadDisplayTemplate(displayQueue[0].displayLoadTemplate);
+    }
+    else if(now - displayQueue[0].displayStartMillis >= displayQueue[0].displayDurationMillis)
+    {
+        if(displayQueue[1].displayLoadTemplate == D_NON) return;
 
+        displayQueue[0] = displayQueue[1];
+        displayQueue[1] = emptyDisplayItem;
+    }
+}
+/**
+ * @brief Forceert het direct tonen van een display template.
+ *
+ * Vervangt het huidige display in slot 0 door het opgegeven template
+ * en reset de timer.
+ *
+ * @param displayTemplate Het template dat direct geladen moet worden.
+ * @param durationMillis De minimale duur dat het template moet worden getoond.
+ *
+ * @note Het tweede display slot wordt geleegd bij een forceDisplay.
+ * @warning Het huidige display wordt abrupt vervangen.
+ */
+void forceDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis)
+{
+    if(displayQueue[0].displayLoadTemplate == displayTemplate) return;
 
+    displayQueueItem_t newItem = 
+    {
+        .displayLoadTemplate = displayTemplate,
+        .displayDurationMillis = durationMillis,
+        .displayStartMillis = 0
+    };
+    displayQueue[0] = newItem;
+    displayQueue[1] = emptyDisplayItem;
+}
+/**
+ * @brief Voegt een display template toe aan de queue.
+ *
+ * Als er een leeg slot is, wordt het nieuwe template toegevoegd.
+ * Controleert dat dezelfde template niet dubbel in de queue komt.
+ *
+ * @param displayTemplate Het template dat toegevoegd moet worden.
+ * @param durationMillis De minimale duur dat het template moet worden getoond.
+ *
+ * @note Ondersteunt slechts twee slots in de queue.
+ */
+void addDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis)
+{
+    if(displayQueue[0].displayLoadTemplate == displayTemplate) return; // Template is al actief, geen update nodig
+    if(displayQueue[1].displayLoadTemplate == displayTemplate) return; // Template is al actief, geen update nodig
+
+    displayQueueItem_t newItem = 
+    {
+        .displayLoadTemplate = displayTemplate,
+        .displayDurationMillis = durationMillis,
+        .displayStartMillis = 0
+    };
+
+    if(displayQueue[0].displayLoadTemplate == D_NON)
+    {
+        displayQueue[0] = newItem;
+    }
+    else
+    {
+        displayQueue[1] = newItem;
+    }
+}
+/**
+ * @brief Controleert of een display template momenteel actief is.
+ *
+ * Returnt true als het template nog bezig is met tonen, false als het klaar is
+ * of niet in de queue staat.
+ *
+ * @param displayTemplate Het template dat gecontroleerd moet worden.
+ * @return true als het template nog getoond wordt, false anders.
+ */
+bool isDisplayTemplatePlaying(displayTemplate_t displayTemplate)
+{
+    if(displayQueue[0].displayLoadTemplate != displayTemplate && displayQueue[1].displayLoadTemplate != displayTemplate) return true; // Template niet in buffer
 
     uint32_t now = millis();
-    if(forceDisplay && lastDisplayTemplate != displayTemplate)
-    {
-        #if DEBUG_ON_PC
-        printf(displayTemplates[displayTemplate]);
-        #endif
-        lastDisplayTemplate = displayTemplate;
-        lastUpdateDisplayMillis = now;
-        lastMinDisplayTime = minDisplayTime;
-    }
-
-    if(now - lastUpdateDisplayMillis < lastMinDisplayTime) return false;
-
-    lastUpdateDisplayMillis = now;
-    lastMinDisplayTime = minDisplayTime;
-    
-    if(lastDisplayTemplate == displayTemplate) return true;
-
-    #if DEBUG_ON_PC
-    printf(displayTemplates[displayTemplate]);
-    #endif
-
-    lastDisplayTemplate = displayTemplate;
-
-
-    return true;
+    if(now - displayQueue[0].displayStartMillis < displayQueue[0].displayDurationMillis) return true; // Template still dusy
+    return false; // Template is don playing
 }
 
+
+/**
+ * @brief Stelt wlke speciale actie gedaan moet worde
+ *
+ *
+ * @param required De speciale actie die ingesteld moet worden (uit specialActies_t).
+ * @param state    de waarde die de actie moet krijgen (true = actie actief, false = actie niet actief).
+ *  *
+ */
+void serRequiredSpecialActies(specialActies_t required, bool state)
+{
+    switch (required)
+    {
+    case TOUCH_SENSOR:
+        setMustTouchSensor(state);
+        break;
+    
+    default:
+        break;
+    }
+}
 /**
  * @brief Bepaalt welke speciale actie uitgevoerd moet worden.
  *
@@ -128,14 +247,16 @@ bool displayLoadTemplate(displayTemplate_t displayTemplate, uint32_t minDisplayT
  * @return NON  Als er geen nieuwe speciale actie is.
  * 
  * @warning Moet nog logica toe gevoegt worden
+ * 
+ * @warning mogelijk lokia toe voegen voor als 2 actions tegelijktijd uitgevoert worden
  */
 specialActies_t getSpecialActies()
 {
     static specialActies_t lastSpecialActies = NON_S;
     specialActies_t newAction = NON_S;
 
-    if     (isTouchLongPressed()) newAction = TOUCH_SENSOR;
-    else if(false) newAction = TWO_S;
+    if     (isTouchLongPressed())   newAction = TOUCH_SENSOR;
+    else if(false)                  newAction = TWO_S;
     
     if(newAction != lastSpecialActies)
     { 
@@ -152,7 +273,6 @@ specialActies_t getSpecialActies()
 void applyWrongAnswerPenalty()
 {
     runData.wrongAnswerCount++;
-
     uint32_t penalty = getWrongAnswerPenalty();
     timeGamePanaltyBuffer += penalty;
 }
@@ -165,8 +285,8 @@ void applyWrongAnswerPenalty()
  */
 uint32_t getElapsedTime()
 {
-    uint32_t elapsedTime =  (globalSettings.difficulty == WRONG_ANSWER_TIME_X2)? getVirtualElapsedTime() : (millis() - startGameMillis);
-    return elapsedTime + timeGamePenaltyMillis; 
+    uint32_t elapsedTime = (millis() - startGameMillis) + timeGamePenaltyMillis;
+    return globalSettings.difficulty == WRONG_ANSWER_TIME_X2 ? getVirtualElapsedTime() : elapsedTime;
 }
 
 /**
@@ -179,7 +299,7 @@ uint32_t getElapsedTime()
  *
  * @note Intended to be called in the main loop
  */
-void updateTimeGamePanaltuMillis()
+void updateTimeGamePenaltyMillis()
 {
     if(timeGamePanaltyBuffer <= 0) return;
     if(timeGamePanaltyBuffer >= MS_PER_TICK_PANALTY)
@@ -192,8 +312,6 @@ void updateTimeGamePanaltuMillis()
         timeGamePenaltyMillis += timeGamePanaltyBuffer;
         timeGamePanaltyBuffer = 0;
     }
-    
-    //UpdaeTimeDisplay();
 }
 
 /**
@@ -222,8 +340,6 @@ bool isInCorrectRoom(char *beconIp)
 bool isAnswerCorrect(char *userInput)
 {
     hasNewAnswer  = false;
-
-  
     for(int i = 0; i < MAX_ANSWERS; i++)
     {   
         if(isInputMatching(roomsSettings[roomIndex].answers[i], userInput)) return true;
@@ -243,6 +359,7 @@ bool isAnswerCorrect(char *userInput)
  */
 bool isInputMatching(const  char *input, const char *correctInput)
 {
+    hasNewAnswer  = false;
     return (strcmp(correctInput, input) == 0);
 }
 
@@ -268,30 +385,27 @@ bool isWithinTimeLimit(void)
 void updateGameTimer()
 {
 
-  static int16_t lastSec =0;
-  static int32_t timeRemaining;
-  if(gameActiv) timeRemaining = getTimeRemaining();
+    static int16_t lastSec =0;
+    int32_t timeRemaining = getTimeRemaining();
 
-  int32_t totalSec = timeRemaining / 1000;
-  if(totalSec == lastSec && gameActiv) return;
-  lastSec = totalSec;
+    int32_t totalSec = timeRemaining / 1000;
+    if(totalSec == lastSec && gameActiv) return;
+    lastSec = totalSec;
 
-  //bool negative = false;
-  if(totalSec < 0)
-  {
-     // negative = true;
-      totalSec = -totalSec;  // maak positief voor berekening
-  }
+    setGameTimer(lastSec);
+    buzzer_play(BUZZERT_DURATION);
+}
 
-  uint16_t minutes = totalSec / 60;
-  uint16_t seconds = totalSec % 60;
-  hexDisplay_setTime(minutes, seconds);
-  if(gameActiv) buzzer_play(BUZZERT_DURATION); // Zet buzzer aan als tijd negatief is, uit als tijd positief is
-    #if DEBUG_ON_PC
-        //printf("Time: -%02u:%02u\n",minutes, seconds);
-    //    printf("Time: %02u:%02u\n",minutes, seconds);
-    #endif
+void setGameTimer(int32_t sec)
+{
+    if(sec < 0)
+    {
+        sec = -sec;  // maak positief voor berekening
+    }
 
+    uint16_t minutes = sec / 60;
+    uint16_t seconds = sec % 60;
+    hexDisplay_setTime(minutes, seconds);
 }
 
 /**
@@ -319,7 +433,8 @@ int32_t getTimeRemaining()
 uint8_t getNumRooms(void) 
 {
     uint8_t count = 0;
-    for(uint8_t i = 0; i <MAX_ROOMS; i++) {
+    for(uint8_t i = 0; i <MAX_ROOMS; i++) 
+    {
         if(roomsSettings[i].beconIp[0] == '\0') break;
         count++;
     }
@@ -353,8 +468,7 @@ uint32_t getWrongAnswerPenalty()
             break;
 
         case WRONG_ANSWER_TIME_X2:
-        
-             virtualTimeMultiplier ++;
+            virtualTimeMultiplier ++;
             break;
 
         default:
@@ -366,7 +480,14 @@ uint32_t getWrongAnswerPenalty()
 }
 
 
-
+/**
+ * @brief Reset de virtuele tijd naar beginwaarde.
+ *
+ * Zet de virtuele tijd terug naar 0 en synchroniseert deze met de huidige
+ * echte tijd (`millis()`). Ook wordt de tijdsvermenigvuldiger teruggezet naar 1.
+ *
+ * @note Na deze functie loopt de virtuele tijd weer synchroon met de echte tijd.
+ */
 void resetVirtualTime()
 {
     virtualTime = 0;
@@ -374,6 +495,19 @@ void resetVirtualTime()
     virtualTimeMultiplier = 1;
     
 }
+
+/**
+ * @brief Update de virtuele tijd op basis van verstreken echte tijd.
+ *
+ * Berekent hoeveel echte tijd is verstreken sinds de laatste update en telt
+ * deze op bij de virtuele tijd, vermenigvuldigd met `virtualTimeMultiplier`.
+ *
+ * @note Deze functie moet periodiek worden aangeroepen (bijvoorbeeld in de main loop)
+ *       om de virtuele tijd correct te laten lopen.
+ *
+ * @warning Als deze functie niet regelmatig wordt aangeroepen, zal de virtuele tijd
+ *          onnauwkeurig worden.
+ */
 void updateVirtualTime()
 {
     uint32_t now = millis() ;
@@ -381,6 +515,14 @@ void updateVirtualTime()
     lastRealTime = now;
 }
 
+/**
+ * @brief Haalt de verstreken virtuele tijd op.
+ *
+ * @return De huidige virtuele tijd in milliseconden.
+ *
+ * @note De waarde is afhankelijk van hoe vaak `updateVirtualTime()` wordt aangeroepen
+ *       en de ingestelde `virtualTimeMultiplier`.
+ */
 uint32_t getVirtualElapsedTime()
 {
     return virtualTime;

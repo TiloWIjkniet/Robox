@@ -148,14 +148,14 @@ function drawChart()
             ctx.fillStyle = '#b2aca2';
         ctx.textAlign = 'center';
         ctx.fillText("Kamer "+ (i + 1), x + barWidth/2, height - 11);
-        if(Recordings[currentIndex][0][i] != null)
+
+        let time = Recordings[currentIndex][0][i];
+        if(time != null)
         {
-            ctx.fillText(Recordings[currentIndex][0][i] + " min",  x + barWidth/2, y - 8);
+            let minutes = Math.floor(time); // gehele minuten
+            let seconds = Math.round((time - minutes) * 60); // seconden afronden
+            ctx.fillText(minutes + " min " + seconds + " sec", x + barWidth/2, y - 8);
         }
-        else 
-            {
-        
-            }
     }
 }
 

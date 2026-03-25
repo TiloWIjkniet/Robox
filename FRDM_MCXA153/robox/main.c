@@ -36,12 +36,13 @@ int main(void)
   {
   
     FSM_runStateMachine();
+    updateDisplayQueue();
     buzzer_loop();
     if(gameActiv)
     {
       updateHM10();
       touchUpdate();
-      updateTimeGamePanaltuMillis();
+      updateTimeGamePenaltyMillis();
       updateGameTimer();
       if(globalSettings.difficulty == WRONG_ANSWER_TIME_X2) updateVirtualTime();
 

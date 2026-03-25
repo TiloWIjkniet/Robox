@@ -29,6 +29,7 @@ beacon_t becons[20];
 uint8_t beconIndex = 0;
 
 
+
 void sentDataToHM10(const char *mesag)
 {
       
@@ -39,6 +40,13 @@ void sentDataToHM10(const char *mesag)
     lpuart2_putchar('\r');
     lpuart2_putchar('\n');
 }
+
+void askForBeacons()
+{
+    sentDataToHM10("AT+DISA?"); // AT+DISI?
+    
+}
+
 void HM10_init()
 {
     lpuart2_init(9600);
@@ -58,12 +66,6 @@ void HM10_init()
     askForBeacons();
 }
 
-
-void askForBeacons()
-{
-    sentDataToHM10("AT+DISA?"); // AT+DISI?
-    
-}
 void getBeconData()
 {
         while(lpuart2_rxcnt() > 0)

@@ -7,23 +7,22 @@
 #include "keypad.h"
 #include <stdio.h>
 #include "hexDisplay.h"
-#define EXIT_DEV_CODE "0000"
+
+#define ENTER_DEV_CODE "0000"
 
 void idle_onEntry(void)
 {
-       
     emptyInputBuffer();
     setMapCoordinates((uint8_t[]){INVALID_COORD, INVALID_COORD});
-    displayLoadTemplate(IDLE_D, 0, true);
+    forceDisplayTemplate(D_IDLE, 0);
     hexDisplay_setTime(0,0);
 }
 void idle_onUpdate(void)
 {
     updateInputBuffer();
     if(!hasNewAnswer) return;
-    hasNewAnswer = false;
 
-    if(isInputMatching(answerBuffer, EXIT_DEV_CODE)) FSM_addEvent(E_START_DEV); 
+    if(isInputMatching(answerBuffer, ENTER_DEV_CODE)) {FSM_addEvent(E_START_DEV); return;} 
     
     FSM_addEvent(E_START_GAME); 
 }

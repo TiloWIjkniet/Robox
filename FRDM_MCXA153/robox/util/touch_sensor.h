@@ -13,4 +13,5 @@ void touchSensor_init();
 bool isTouchLongPressed(); 
 void setCollor(collors_t collor);
 void touchUpdate();
+void setMustTouchSensor(bool must);
 #endif

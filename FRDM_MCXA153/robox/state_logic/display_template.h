@@ -9,7 +9,8 @@
 
 typedef enum
 {
-    IDLE_D,
+    D_NON,
+    D_IDLE,
     D_DEV_PAGE,
     START_D,
     KAMER_D,

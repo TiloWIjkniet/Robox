@@ -11,6 +11,7 @@
 #define B_PIN 13
 #define TOUCH_GLITCH_FILTER_MS  500
 #define TOUCH_HOLD_TIME_MS  5000
+#define FAST_BLINK_TIME 2000
 #define MAX_BLINK_DELAY 200
 #define MIN_BLINK_DELAY 50
 
@@ -51,67 +52,72 @@ void touchSensor_init()
 
 bool longPres = false;
 bool mustPres = false;
+
 void touchUpdate()
 {
-  static bool isPressing = false;
+
+  typedef enum {FIRST_PRES, PRESSING, RELEASE, FIRST_LONG_PRESSED, LONG_PRESSED} touchState_t;
+  static touchState_t touchState = RELEASE;
   static uint32_t pressStart = 0;
   static uint32_t lastValidPress = 0;
   static uint32_t blinkTime = 0;
-  static uint32_t blinkDelay = MAX_BLINK_DELAY;
-  static bool letState = false; 
-  static bool newPres = false;
+  static bool blinkeState = false;
 
-  bool state = getPinState_touchSensor(TOUCH_SENSOR_PIN);
+  bool isPressing = getPinState_touchSensor(TOUCH_SENSOR_PIN);
+
+
 
   uint32_t now = millis();
-
-  if(state)
+  if(isPressing)
   {
-    if(!isPressing)
-    {
-      isPressing = true;
-      pressStart = now;
-      newPres = true;
-      letState = true;
-  
-    }
     lastValidPress = now;
-    if(now - blinkTime > blinkDelay && !longPres)
+  }
+  switch (touchState)
+  {
+  case RELEASE:
+    if(isPressing) touchState = FIRST_PRES;
+    setCollor(mustPres? WHITE : OFF);
+    longPres = false;
+    break;
+  case FIRST_PRES:
+    touchState = PRESSING;
+    pressStart = now;
+    setCollor(mustPres? GREEN : RED);
+
+    break;
+  case PRESSING:
+    if(now - lastValidPress > TOUCH_GLITCH_FILTER_MS) touchState = RELEASE;
+    if(now - pressStart > TOUCH_HOLD_TIME_MS) touchState = FIRST_LONG_PRESSED;
+
+    float ratio = (float)(now - pressStart) / (float)(TOUCH_HOLD_TIME_MS - FAST_BLINK_TIME);
+    if (ratio > 1.0f) ratio = 1.0f;
+    uint32_t blinkDelay = MAX_BLINK_DELAY - (MAX_BLINK_DELAY - MIN_BLINK_DELAY) * (ratio * ratio);
+    if(now - blinkTime > blinkDelay)
     {
       blinkTime = now;
+      blinkeState = !blinkeState;
+      if(mustPres) setCollor(blinkeState? WHITE : GREEN);
+      else         setCollor(blinkeState? OFF   : RED);
       
-      float ratio = (float)(now - pressStart) / (float)(TOUCH_HOLD_TIME_MS -2000);
-      if (ratio > 1.0f) ratio = 1.0f;
-      blinkDelay = MAX_BLINK_DELAY - (MAX_BLINK_DELAY - MIN_BLINK_DELAY) * (ratio * ratio);
-      setCollor(letState? (mustPres? GREEN : RED) : (mustPres? WHITE : OFF));
-      letState =!letState;
     }
-  }
-  else if(isPressing)
-  {
-    if(now - lastValidPress> TOUCH_GLITCH_FILTER_MS)
-    {
-      isPressing = false;
-      setCollor(mustPres? WHITE : OFF);
-      longPres = false;
-      newPres = false;
-    }
-  }
-
-  if(isPressing && now - pressStart > TOUCH_HOLD_TIME_MS)
-  {
-
-    if(newPres)
-    {
-      setCollor(mustPres? GREEN : RED);
-      if(!mustPres) applyWrongAnswerPenalty();
-      newPres = false;
-    }
-
+    break;
+  case FIRST_LONG_PRESSED:
+    setCollor(mustPres? GREEN : RED);
+    touchState = LONG_PRESSED;
     longPres = true;
+    break;
+  case LONG_PRESSED:
+    if(now - lastValidPress > TOUCH_GLITCH_FILTER_MS) touchState = RELEASE;
+    mustPres = false;
+    break;
   }
+
 }
 
+void setMustTouchSensor(bool must)
+{
+    mustPres = must;
+}
 
 /**
  * @brief Controleert of de touch sensor lang genoeg wordt ingedrukt.
@@ -128,8 +134,6 @@ void touchUpdate()
  */
 bool isTouchLongPressed() 
 {
-  if(longPres) mustPres = false;
-  else if(!mustPres) {mustPres = true; setCollor(WHITE);}
   return longPres;
 }
 

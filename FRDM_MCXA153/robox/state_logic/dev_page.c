@@ -22,6 +22,7 @@
 #define TIMEOUT_MS 500  
 
 #define RETRY_ATTEMPTS 5
+#define MAX_DIFFICULTY 5
 
 globalSettings_t globalSettings =
 {
@@ -44,7 +45,7 @@ const char ROOM_CODES[20][2] = {"0","1","2","3","4","5","6","7","8","9","10","11
 void dev_page_onEntry(void)
 {
     lpuart1_putchar(WEBSERVER_ON); //Zet webserver aan
-    displayLoadTemplate(D_DEV_PAGE, 0, true); 
+    forceDisplayTemplate(D_DEV_PAGE, 0);
     emptyInputBuffer();
 }
 
@@ -180,8 +181,6 @@ bool receive_room_settings(void)
     return false; // nooit bereikt
 }
 
-
-
 /**
  * @brief Ontvangt de room settings van de ESP via UART1.
  *
@@ -211,8 +210,7 @@ void receive_room_settings_from_esp(void)
         attempts ++;
         if(attempts > RETRY_ATTEMPTS)
         {
-            displayLoadTemplate(D_ERROR_RECEIVE_SETTINGS, 0, true);
-            while(true);
+            forceDisplayTemplate(D_ERROR_RECEIVE_SETTINGS, 10000); // Toon kritische error
         }
         lpuart1_putchar(START_BYTE_GET_SETTINGS_DATA);
 
