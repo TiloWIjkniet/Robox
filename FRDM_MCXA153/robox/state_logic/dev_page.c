@@ -137,6 +137,7 @@ bool receive_room_settings(void)
                     state = WAIT_ROOM_START;
                     byteIndex = 0;
                     room = 0;
+                    globalSettings.difficulty = (globalSettings.difficulty - 1) % 5; // zorg dat moeilijkheid tussen 0 en 4 is
                     printf("Globals ontvangen\n");
                 }
                 break;

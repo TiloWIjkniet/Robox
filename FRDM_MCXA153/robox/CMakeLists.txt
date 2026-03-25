@@ -57,7 +57,9 @@ mcux_add_source(
             util/touch_sensor.h
             util/hexDisplay.c
             util/hexDisplay.h
-            
+            util/HM10.c
+            util/HM10.h
+
             board/board.h
 )
 

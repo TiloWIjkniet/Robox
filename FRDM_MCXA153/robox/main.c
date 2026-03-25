@@ -11,12 +11,15 @@
 #include "touch_sensor.h"
 #include "hexDisplay.h"
 #include "lpuart1.h"
-
+#include "lpuart2.h"
+#include "HM10.h"
 int main(void)
 {
 
+
   serial_init(115200);
   lpuart1_init(115200);
+  lpuart2_init(9600);
   printf("Starting game...\n");
     
   FSM_config();
@@ -35,6 +38,7 @@ int main(void)
     buzzer_loop();
     if(gameActiv)
     {
+      updateHM10();
       touchUpdate();
       updateTimeGamePanaltuMillis();
       updateGameTimer();

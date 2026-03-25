@@ -270,10 +270,11 @@ void updateGameTimer()
 {
 
   static int16_t lastSec =0;
-  int32_t timeRemaining = getTimeRemaining();
+  static int32_t timeRemaining;
+  if(gameActiv) timeRemaining = getTimeRemaining();
 
   int32_t totalSec = timeRemaining / 1000;
-  if(totalSec == lastSec) return;
+  if(totalSec == lastSec && gameActiv) return;
   lastSec = totalSec;
 
   //bool negative = false;
@@ -288,8 +289,8 @@ void updateGameTimer()
   hexDisplay_setTime(minutes, seconds);
   if(gameActiv) buzzer_play(BUZZERT_DURATION); // Zet buzzer aan als tijd negatief is, uit als tijd positief is
     #if DEBUG_ON_PC
-        //if(negative) printf("Time: -%02u:%02u\n",minutes, seconds);
-        //  else printf("Time: %02u:%02u\n",minutes, seconds);
+        //printf("Time: -%02u:%02u\n",minutes, seconds);
+    //    printf("Time: %02u:%02u\n",minutes, seconds);
     #endif
 
 }

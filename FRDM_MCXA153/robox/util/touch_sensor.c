@@ -10,7 +10,7 @@
 #define R_PIN 12
 #define B_PIN 13
 #define TOUCH_GLITCH_FILTER_MS  500
-#define TOUCH_HOLD_TIME_MS  2000
+#define TOUCH_HOLD_TIME_MS  5000
 #define MAX_BLINK_DELAY 200
 #define MIN_BLINK_DELAY 50
 
@@ -80,9 +80,9 @@ void touchUpdate()
     {
       blinkTime = now;
       
-      float ratio = (float)(now - pressStart) / (float)TOUCH_HOLD_TIME_MS;
+      float ratio = (float)(now - pressStart) / (float)(TOUCH_HOLD_TIME_MS -2000);
       if (ratio > 1.0f) ratio = 1.0f;
-      blinkDelay = MIN_BLINK_DELAY - (MAX_BLINK_DELAY - MIN_BLINK_DELAY) * ratio * ratio;
+      blinkDelay = MAX_BLINK_DELAY - (MAX_BLINK_DELAY - MIN_BLINK_DELAY) * (ratio * ratio);
       setCollor(letState? (mustPres? GREEN : RED) : (mustPres? WHITE : OFF));
       letState =!letState;
     }

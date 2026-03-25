@@ -1,0 +1,170 @@
+#include <stdio.h>
+#include <string.h>
+
+#include "lpuart2.h"
+#include <stdlib.h>
+#include <stdbool.h>
+#include "time_millis.h"
+
+
+char beconIp[50];
+
+#define LINE_BUFFER_SIZE 128
+#define BEACON_TIMEOUT 20000
+char line_buffer[LINE_BUFFER_SIZE];
+uint32_t line_index = 0;
+uint32_t lastReseaftMasige = 0;
+bool scanInProgress = false;
+
+
+
+typedef struct
+{
+    uint32_t lastSeen;
+    char beaconIp[11];
+    uint8_t beconStrengt;   
+}beacon_t;
+
+beacon_t becons[20];
+uint8_t beconIndex = 0;
+
+void askForBeacons()
+{
+    const char mesag[10] = "AT+DISI?\r\n";
+    for (uint8_t i = 0; i < 10; i++)
+    {
+        lpuart2_putchar(mesag[i]);
+    }
+    
+}
+void getBeconData()
+{
+        while(lpuart2_rxcnt() > 0)
+        {
+            uint8_t data = lpuart2_getchar();
+            if (line_index < LINE_BUFFER_SIZE - 1)
+            {
+                line_buffer[line_index++] = data;
+                lastReseaftMasige = millis();
+            }
+
+            if (data == '\n')
+            {
+                line_buffer[line_index] = '\0';
+                
+                if (strstr(line_buffer, "4C000215") != NULL)
+                {
+                    char strength[4];
+                    strength[0] = line_buffer[75];
+                    strength[1] = line_buffer[76];
+                    strength[2] = line_buffer[77];
+                    strength[3] = '\0';
+
+
+                    char beaconIp[11] = "          ";
+                    for(int i = 0; i < 8; i++)
+                    {
+                        beaconIp[i] = line_buffer[50+ i];
+                    }
+                    beaconIp[8] = '\0';
+
+                    bool found = false;
+
+                    for (uint8_t i = 0; i < beconIndex; i++)
+                    {
+                        if(strcmp(becons[i].beaconIp, beaconIp) == 0)
+                        {
+                            becons[i].beconStrengt = (uint8_t)atoi(strength);
+                            becons[i].lastSeen = millis();
+                            found = true;
+
+                            // printf("ip: %s    Strengt:", becons[i].beaconIp);
+                            //  printf("%d\n", becons[i].beconStrengt);
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        strcpy(becons[beconIndex].beaconIp, beaconIp);
+                        becons[beconIndex].beconStrengt = (uint8_t)atoi(strength);
+                        becons[beconIndex].lastSeen = millis();
+                        
+                        // printf("found: %s    Strengt:", becons[beconIndex].beaconIp);
+                        // printf("%d\n", becons[beconIndex].beconStrengt);
+
+                        beconIndex++;
+                    }
+                    
+                }
+
+                if (strstr(line_buffer, "OK+DISCE") != NULL)
+                {
+                    scanInProgress = false;
+                }
+
+
+
+
+                line_index = 0;
+            }
+        }
+}
+
+
+void updateHM10()
+{
+    getBeconData();
+   
+    if(millis() - lastReseaftMasige > 5000) scanInProgress = false;
+
+
+    if(scanInProgress) return;
+    lastReseaftMasige = millis();
+    scanInProgress = true;
+    
+
+    askForBeacons();
+    
+
+
+    for (int i = 0; i < beconIndex; i++)
+    {
+        if (millis() - becons[i].lastSeen > BEACON_TIMEOUT)
+        {
+            // shift alles naar links]
+            //printf("pop: %s\n", becons[i].beaconIp);
+            for (int j = i + 1; j < beconIndex; j++)
+            {
+                becons[j - 1] = becons[j];
+            }
+            
+            beconIndex--;
+            i--; 
+        }
+    }
+
+    uint16_t lowesStrenght = 1000;
+    int8_t lowestBeaconIndex = -1;
+    for (uint8_t i = 0; i < beconIndex; i++)
+    {
+        if(becons[i].beconStrengt < lowesStrenght)
+        {
+            lowesStrenght = becons[i].beconStrengt;
+            lowestBeaconIndex = i;
+
+        }
+
+    }
+    if(lowestBeaconIndex == -1) 
+    {
+        strcpy(beconIp, " ");
+    }
+    else
+    {
+        strcpy(beconIp, becons[lowestBeaconIndex].beaconIp);
+    }
+
+    printf("Lowest: %s\n", beconIp);
+    //printf("%d\n", becons[lowestBeaconIndex].beconStrengt);
+}

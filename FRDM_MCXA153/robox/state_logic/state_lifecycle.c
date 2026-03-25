@@ -6,31 +6,34 @@
 #include "buzzer.h"
 #include "hexDisplay.h"
 #include "time_millis.h"
-#define BLINK_DURATION_DISARMT 250
-#define BLINK_DURATION_TIMEOUT 150
+#define BLINK_DURATION_DISARMT 500
+#define MAX_BLINK_DURATION_TIMEOUT 200
+#define MIN_BLINK_DURATION_TIMEOUT 25
+
+uint32_t startRoomTimeMillis = 0;
 
 void completed_onEntry(void) 
 { 
     gameActiv = false;
+    startRoomTimeMillis = millis();
+    displayLoadTemplate(TIJD_D, 0, true);
 }
 void completed_onUpdate(void) 
 { 
     static uint32_t lastBlink = 0;
-
-    bool displayFinished = false;
-    displayFinished = displayLoadTemplate(TIJD_D, 5 * 1000, false);
+    static bool displayStatus = false;
 
 
     uint32_t now = millis();
     if(now - lastBlink > BLINK_DURATION_DISARMT) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
     {
         lastBlink = now;
-        if(displayFinished) hexDisplay_setTime(OFF, OFF);
-        else updateGameTimer();
-        displayFinished = !displayFinished;   
+        if(displayStatus) updateGameTimer();
+        else displayDigits(OFF, OFF, OFF, OFF, OFF);
+        displayStatus = !displayStatus;   
     }
 
-    if(!displayFinished) return;
+    if(now - startRoomTimeMillis < 5 * 1000) return; // wacht nog even met naar volgende scherm gaan zodat de spelers de tijd kunnen zien
     FSM_addEvent(E_GAME_COMPLETED);
 }
 void completed_onExit(void) 
@@ -40,27 +43,33 @@ void completed_onExit(void)
 void timeout_onEntry(void) 
 { 
     gameActiv = false;
+    startRoomTimeMillis = millis();
+    displayLoadTemplate(TIJD_D,0, true);
+
 }
 void timeout_onUpdate(void) 
 { 
     static uint32_t lastBlink = 0;
     static bool displayStatus = false;
-
-    bool displayFinished = false;
-    displayFinished = displayLoadTemplate(TIJD_D, 5 * 1000, false);
+    static uint32_t blinkDuration = MAX_BLINK_DURATION_TIMEOUT;
 
 
     uint32_t now = millis();
-    if(now - lastBlink > BLINK_DURATION_TIMEOUT) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
+    if(now - lastBlink > blinkDuration) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
     {
+
+        float ratio = (float)(now - startRoomTimeMillis) /(float)(((5 * 1000) - 1000));
+        if (ratio > 1.0f) ratio = 1.0f;
+        blinkDuration = MAX_BLINK_DURATION_TIMEOUT - (MAX_BLINK_DURATION_TIMEOUT - MIN_BLINK_DURATION_TIMEOUT) * (ratio * ratio);
         lastBlink = now;
         buzzer_play(BUZZERT_DURATION);
-        hexDisplay_setTime(displayStatus ? OFF : 0, displayStatus ? OFF : 0);
+        if(displayStatus) hexDisplay_setTime(0, 0);
+        else displayDigits(OFF, OFF, OFF, OFF, OFF);
+        displayStatus = !displayStatus;
         
     }
 
-
-    if(!displayFinished) return;
+    if(now - startRoomTimeMillis < 5 * 1000) return; // wacht nog even met naar volgende scherm gaan zodat de spelers de tijd kunnen zien
     FSM_addEvent(E_GAME_TIMEOUT);
 }
 void timeout_onExit(void) 
@@ -71,7 +80,7 @@ void timeout_onExit(void)
 void reset_onEntry(void) 
 { 
     buzzer_set(false);
-    send_run_data_to_esp();
+   
 }
 void reset_onUpdate(void) 
 { 
@@ -80,6 +89,7 @@ void reset_onUpdate(void)
 }
 void reset_onExit(void) 
 { 
+    send_run_data_to_esp();
     #if DEBUG_ON_PC
 
     printf("[");

@@ -8,7 +8,7 @@
 #include "time_millis.h"
 #include "keypad.h"
 #include "touch_sensor.h"
-
+#include "HM10.h"
 uint32_t startRoomMillis;
 
 bool hasAnwertCorrect = false;
@@ -44,7 +44,7 @@ void first_room_onEntry(void)
 void first_room_onUpdate(void)
 {
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
-    bool inCorrectRoom = isInCorrectRoom("BECON IP VAN DICHTSBIJZIJNDE BEACON");
+    bool inCorrectRoom = isInCorrectRoom(beconIp);
 
 
     if(!inCorrectRoom) 
@@ -115,7 +115,7 @@ void room_loop_onUpdate(void)
 {
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
 
-    bool inCorrectRoom = isInCorrectRoom("BECON IP VAN DICHTSBIJZIJNDE BEACON");
+    bool inCorrectRoom = isInCorrectRoom(beconIp);
 
 
 
@@ -191,7 +191,7 @@ void last_room_onUpdate(void)
 {
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
 
-    bool inCorrectRoom = isInCorrectRoom("BECON IP VAN DICHTSBIJZIJNDE BEACON");
+    bool inCorrectRoom = isInCorrectRoom(beconIp);
 
 
 
