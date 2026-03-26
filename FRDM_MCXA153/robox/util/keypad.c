@@ -143,6 +143,8 @@ void updateInputBuffer()
     break;
   }
   buzzer_play(BUZZERT_DURATION);
+
+  //TEMP: Print de inhoud van de input buffer voor debug doeleinden
   printf("Input buffer: %s\n", inputBuffer);
 }
 

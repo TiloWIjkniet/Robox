@@ -1,5 +1,24 @@
 #include "display_template.h"
+    // TODO: Maak de startfunctie af
+    // NOTE: Dit is alleen een test-commentaar
+    // WARN: Let op, deze functie kan crashen
+    // IDEA: Misschien kunnen we dit optimaliseren
+    // BUG: Fout bij indexberekening
+    // DONE: Deze functie is afgerond
+    // DOING: Hier ben ik nu mee bezig
+    // TEMP: Tijdelijke code, verwijderen later
+    // TEST: Test deze functie grondig
+    // FIXME: Hier zit een bug die gefixt moet worden
+    // OPTIMIZE: Code kan sneller worden gemaakt
+    // REVIEW: Laat iemand anders dit controleren
+    // HACK: Snel opgelost, maar niet ideaal
+    // DEBUG: Print debug informatie
+    // QUESTION: Waarom doet dit niet wat verwacht?
 
+//TODO Beter naamen geven aan de templates en de tekst in de templates aanpassen
+//TODO Mogelijk maken dat rile time data in templates komen 
+//IDEA Mogelijk naam van kamer in kamers template en of antwoord template gebruiken
+ 
 const char* displayTemplates[MAX_TEMPLATES] = {
     "|--------------------------------------------------------|\n"
     "|                                                        |\n"

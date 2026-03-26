@@ -10,6 +10,8 @@
 #include "touch_sensor.h"
 #include "HM10.h"
 
+#define DISPLAY_5S 5000
+#define DISPLAY_3S 3000
 uint32_t startRoomMillis;
 bool hasAnwertCorrect = false;
 bool gameActiv = false;
@@ -35,17 +37,17 @@ void first_room_onEntry(void)
     uint32_t now = millis();   
 
     startGameMillis = now; 
-    timeGamePenaltyMillis = 0;
+    timeGamePanaltyMillis = 0;
 
     commonRoom_onEntry();
 
-    addDisplayTemplate(START_D, 5 * 1000);
+    addDisplayTemplate(START_D, DISPLAY_5S);
 }
 void first_room_onUpdate(void)
 {
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
     bool inCorrectRoom = isInCorrectRoom(beconIp);
-
+    //IDEA: messchien maar een keer chekken tot dat je een keer in de kamer bent geweest dat je in de goede kamer bent en dan niet meer chekken zodat je ook antwoorden kan geven als je neit in de kamer bent 
     if(!inCorrectRoom) 
     {
         addDisplayTemplate(KAMER_D, 0);
@@ -66,7 +68,7 @@ void first_room_onUpdate(void)
         {
             //Fout antwoord
             applyWrongAnswerPenalty();
-            addDisplayTemplate(FOUD_D, 3 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET zTEXT
+            addDisplayTemplate(FOUD_D, DISPLAY_3S); 
             return;  
         }
         hasAnwertCorrect = true;
@@ -77,12 +79,12 @@ void first_room_onUpdate(void)
     if(required != NON_S)
     {
         serRequiredSpecialActies(required, true);
-        addDisplayTemplate(GOED_S_D,3 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        addDisplayTemplate(GOED_S_D, DISPLAY_3S); /
         specialActies_t performed = getSpecialActies();
         if(performed == NON_S) return;
         if(performed != required)
         {
-            forceDisplayTemplate(FOUD_D,3 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            forceDisplayTemplate(FOUD_D, DISPLAY_3S);
             applyWrongAnswerPenalty();
             return; 
         } 
@@ -93,12 +95,12 @@ void first_room_onUpdate(void)
     compartment_t compartment = roomsSettings[roomIndex].openCompartment;
     if (compartment != NON_C)
     {
-        forceDisplayTemplate(GOED_C_D, 5 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        forceDisplayTemplate(GOED_C_D, DISPLAY_5S);
         openCompartment(compartment);
     }
     else
     {
-        forceDisplayTemplate(GOED_D, 5 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        forceDisplayTemplate(GOED_D, DISPLAY_5S);
     }
     FSM_addEvent(E_ROOM_COMPLETED);
 }
@@ -117,7 +119,7 @@ void room_loop_onUpdate(void)
     if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
 
     bool inCorrectRoom = isInCorrectRoom(beconIp);
-
+    //IDEA: messchien maar een keer chekken tot dat je een keer in de kamer bent geweest dat je in de goede kamer bent en dan niet meer chekken zodat je ook antwoorden kan geven als je neit in de kamer bent 
     if(!inCorrectRoom) 
     {
         addDisplayTemplate(KAMER_D, 0);
@@ -127,7 +129,7 @@ void room_loop_onUpdate(void)
 
     if(!hasAnwertCorrect)
     {
-        addDisplayTemplate(ANTWOORD_D, 0); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        addDisplayTemplate(ANTWOORD_D, 0);
 
         updateInputBuffer();
         if(!hasNewAnswer) return;
@@ -137,7 +139,7 @@ void room_loop_onUpdate(void)
         {
             //Fout antwoord
             applyWrongAnswerPenalty();
-            forceDisplayTemplate(FOUD_D,3 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            forceDisplayTemplate(FOUD_D,DISPLAY_3S);
             return;  
         }
         hasAnwertCorrect = true;
@@ -148,12 +150,12 @@ void room_loop_onUpdate(void)
     if(required != NON_S)
     {
         serRequiredSpecialActies(required, true);
-        addDisplayTemplate(GOED_S_D,3 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        addDisplayTemplate(GOED_S_D,DISPLAY_3S); 
         specialActies_t performed = getSpecialActies();
         if(performed == NON_S) return;
         if(performed != required)
         {
-            forceDisplayTemplate(FOUD_D,3 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            forceDisplayTemplate(FOUD_D,DISPLAY_3S);
             applyWrongAnswerPenalty();
             return; 
         } 
@@ -165,12 +167,12 @@ void room_loop_onUpdate(void)
 
     if (compartment != NON_C)
     {
-        forceDisplayTemplate(GOED_C_D, 5 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        forceDisplayTemplate(GOED_C_D, DISPLAY_5S); 
         openCompartment(compartment);
     }
     else
     {
-        forceDisplayTemplate(GOED_D, 5 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        forceDisplayTemplate(GOED_D, DISPLAY_5S);
     }
 
 
@@ -203,35 +205,19 @@ void last_room_onUpdate(void)
     }
 
 
-    if(!hasAnwertCorrect)
-    {
-        addDisplayTemplate(ANTWOORD_D, 0);
-
-        updateInputBuffer();
-        if(!hasNewAnswer) return;
-        bool correct = isAnswerCorrect(answerBuffer); 
-
-        if(!correct)
-        {
-            //Fout antwoord
-            applyWrongAnswerPenalty();
-            forceDisplayTemplate(FOUD_D,3 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
-            return;  
-        }
-        hasAnwertCorrect = true;
-    }
+    if(commonRoom_AnswerCheck()) return;
     //Corect antwoord
     
     specialActies_t required = roomsSettings[roomIndex].specialActies;
     if(required != NON_S)
     {
         serRequiredSpecialActies(required, true);
-        addDisplayTemplate(GOED_S_D,3 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        addDisplayTemplate(GOED_S_D,DISPLAY_3S);
         specialActies_t performed = getSpecialActies();
         if(performed == NON_S) return;
         if(performed != required)
         {
-            forceDisplayTemplate(FOUD_D,3 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+            forceDisplayTemplate(FOUD_D,DISPLAY_3S);
             applyWrongAnswerPenalty();
             return; 
         } 
@@ -242,12 +228,12 @@ void last_room_onUpdate(void)
     compartment_t compartment = roomsSettings[roomIndex].openCompartment;
     if (compartment != NON_C)
     {
-        forceDisplayTemplate(GOED_C_D, 5 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        forceDisplayTemplate(GOED_C_D, DISPLAY_5S); 
         openCompartment(compartment);
     }
     else
     {
-        forceDisplayTemplate(GOED_D, 5 * 1000); // TEMPLATE MOET NOG GEFULT WORDEN MET TEXT
+        forceDisplayTemplate(GOED_D, DISPLAY_5S); 
     }
 
     FSM_addEvent(E_LAST_ROOM_COMPLETED);
@@ -287,6 +273,24 @@ void commonRoom_onExit()
 
 }
 
+void commonRoom_AnswerCheck()
+{
+    if(!hasAnwertCorrect)
+    {
+        addDisplayTemplate(ANTWOORD_D, 0);
 
+        updateInputBuffer();
+        if(!hasNewAnswer) return;
+        bool correct = isAnswerCorrect(answerBuffer); 
 
+        if(!correct)
+        {
+            //Fout antwoord
+            applyWrongAnswerPenalty();
+            forceDisplayTemplate(FOUD_D,DISPLAY_3S); 
+            return;  
+        }
+        hasAnwertCorrect = true;
+    }
+}
   

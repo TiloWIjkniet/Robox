@@ -55,7 +55,7 @@ bool mustPres = false;
 
 void touchUpdate()
 {
-
+  // WARN: Heb dit niew toe gevoegt dus werkt mis niet goed
   typedef enum {FIRST_PRES, PRESSING, RELEASE, FIRST_LONG_PRESSED, LONG_PRESSED} touchState_t;
   static touchState_t touchState = RELEASE;
   static uint32_t pressStart = 0;
@@ -114,9 +114,14 @@ void touchUpdate()
 
 }
 
+/**
+ * @brief Stelt in of een "must press" toestand verplicht is voor de touch sensor.
+ * 
+ * @param must true om aanraking verplicht te maken, false om niet verplicht te maken
+ */
 void setMustTouchSensor(bool must)
 {
-    mustPres = must;
+  mustPres = must;
 }
 
 /**

@@ -12,7 +12,7 @@
 #define MS_PER_TICK_PANALTY 10
 
 uint32_t timeGamePanaltyBuffer=0;
-uint32_t timeGamePenaltyMillis=0;
+uint32_t timeGamePanaltyMillis=0;
 uint32_t startGameMillis=0;
 uint8_t roomIndex=0;
 
@@ -55,14 +55,27 @@ typedef struct
  *
  * @note Als je INVALID_COORD gebruikt als waarde voor x of y, zal de functie de update overslaan en geen actie ondernemen. 
  */
-void setMapCoordinates(uint8_t coordinates[2])
+void setMapCoordinates(const uint8_t coordinates[2])
 {
     static coordinates_t lastCoordinates = {.x = INVALID_COORD, .y = INVALID_COORD};
     coordinates_t my_coordinates = {.x = coordinates[0], .y = coordinates[1]};
 
-    // Controleer of de codinaten binne berijk van schemr zijn
-
-
+    // TODO: Maak de startfunctie af
+    // NOTE: Dit is alleen een test-commentaar
+    // WARN: Let op, deze functie kan crashen
+    // IDEA: Misschien kunnen we dit optimaliseren
+    // BUG: Fout bij indexberekening
+    // DONE: Deze functie is afgerond
+    // DOING: Hier ben ik nu mee bezig
+    // TEMP: Tijdelijke code, verwijderen later
+    // TEST: Test deze functie grondig
+    // FIXME: Hier zit een bug die gefixt moet worden
+    // OPTIMIZE: Code kan sneller worden gemaakt
+    // REVIEW: Laat iemand anders dit controleren
+    // HACK: Snel opgelost, maar niet ideaal
+    // DEBUG: Print debug informatie
+    // QUESTION: Waarom doet dit niet wat verwacht?
+    
     if(my_coordinates.x == lastCoordinates.x && my_coordinates.y == lastCoordinates.y) return; 
     
     lastCoordinates.x = my_coordinates.x;
@@ -74,7 +87,8 @@ void setMapCoordinates(uint8_t coordinates[2])
     }
 }
 
-compartment_t openCompartment(compartment_t compartment)
+//TODO: Moet nog logia aan toe gevoegt woden
+compartment_t openCompartment(const compartment_t compartment)
 {
     switch (compartment)
     {
@@ -106,6 +120,7 @@ displayQueueItem_t displayQueue[2] = {emptyDisplayItem, emptyDisplayItem};
  */
 void loadDisplayTemplate(displayTemplate_t displayTemplate)
 {
+    //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
     printf(displayTemplates[displayTemplate]);
 }
 /**
@@ -153,7 +168,7 @@ void updateDisplayQueue()
  * @note Het tweede display slot wordt geleegd bij een forceDisplay.
  * @warning Het huidige display wordt abrupt vervangen.
  */
-void forceDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis)
+void forceDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t durationMillis)
 {
     if(displayQueue[0].displayLoadTemplate == displayTemplate) return;
 
@@ -177,7 +192,7 @@ void forceDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMi
  *
  * @note Ondersteunt slechts twee slots in de queue.
  */
-void addDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis)
+void addDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t durationMillis)
 {
     if(displayQueue[0].displayLoadTemplate == displayTemplate) return; // Template is al actief, geen update nodig
     if(displayQueue[1].displayLoadTemplate == displayTemplate) return; // Template is al actief, geen update nodig
@@ -205,15 +220,15 @@ void addDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMill
  * of niet in de queue staat.
  *
  * @param displayTemplate Het template dat gecontroleerd moet worden.
- * @return true als het template nog getoond wordt, false anders.
+ * @return true als het template klaar met speelen is.
  */
-bool isDisplayTemplatePlaying(displayTemplate_t displayTemplate)
+bool isDisplayTemplateDonPlaying(const displayTemplate_t displayTemplate)
 {
-    if(displayQueue[0].displayLoadTemplate != displayTemplate && displayQueue[1].displayLoadTemplate != displayTemplate) return true; // Template niet in buffer
+    if(displayQueue[0].displayLoadTemplate != displayTemplate && displayQueue[1].displayLoadTemplate != displayTemplate) return false; // Template niet in buffer
 
     uint32_t now = millis();
-    if(now - displayQueue[0].displayStartMillis < displayQueue[0].displayDurationMillis) return true; // Template still dusy
-    return false; // Template is don playing
+    if(now - displayQueue[0].displayStartMillis < displayQueue[0].displayDurationMillis) return false; // Template still dusy
+    return true; // Template is don playing
 }
 
 
@@ -225,7 +240,7 @@ bool isDisplayTemplatePlaying(displayTemplate_t displayTemplate)
  * @param state    de waarde die de actie moet krijgen (true = actie actief, false = actie niet actief).
  *  *
  */
-void serRequiredSpecialActies(specialActies_t required, bool state)
+void serRequiredSpecialActies(const specialActies_t required, const bool state)
 {
     switch (required)
     {
@@ -285,7 +300,7 @@ void applyWrongAnswerPenalty()
  */
 uint32_t getElapsedTime()
 {
-    uint32_t elapsedTime = (millis() - startGameMillis) + timeGamePenaltyMillis;
+    uint32_t elapsedTime = (millis() - startGameMillis) + timeGamePanaltyMillis;
     return globalSettings.difficulty == WRONG_ANSWER_TIME_X2 ? getVirtualElapsedTime() : elapsedTime;
 }
 
@@ -305,11 +320,11 @@ void updateTimeGamePenaltyMillis()
     if(timeGamePanaltyBuffer >= MS_PER_TICK_PANALTY)
     {
         timeGamePanaltyBuffer -= MS_PER_TICK_PANALTY;
-        timeGamePenaltyMillis += MS_PER_TICK_PANALTY;
+        timeGamePanaltyMillis += MS_PER_TICK_PANALTY;
     }
     else
     {
-        timeGamePenaltyMillis += timeGamePanaltyBuffer;
+        timeGamePanaltyMillis += timeGamePanaltyBuffer;
         timeGamePanaltyBuffer = 0;
     }
 }
@@ -324,7 +339,7 @@ void updateTimeGamePenaltyMillis()
  * @return true    Als het beacon-IP overeenkomt met de huidige kamer.
  * @return false   Als het beacon-IP niet overeenkomt.
  */
-bool isInCorrectRoom(char *beconIp)
+bool isInCorrectRoom(const char *beconIp)
 {
     if(strcmp(roomsSettings[roomIndex].beconIp, beconIp) == 0) return true;
     return false;
@@ -375,7 +390,7 @@ bool isInputMatching(const  char *input, const char *correctInput)
 bool isWithinTimeLimit(void)
 {
     uint32_t elapsedTime = getElapsedTime(); 
-    return  (elapsedTime  <= globalSettings.totalTime * 60.0f * 1000.0f) || (globalSettings.difficulty <= 2);
+    return  (elapsedTime  <= globalSettings.totalTime * 60UL * 1000UL) || (globalSettings.difficulty <= 2);
 }
 
 /**

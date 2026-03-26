@@ -9,17 +9,19 @@
 #define BLINK_DURATION_DISARMT 500
 #define MAX_BLINK_DURATION_TIMEOUT 200
 #define MIN_BLINK_DURATION_TIMEOUT 25
-
+#define END_SCREEN_DURATION 5000
+#define FAST_BLINK_DURATION 1000
 uint32_t startRoomTimeMillis = 0;
 
 void completed_onEntry(void) 
 { 
     gameActiv = false;
     startRoomTimeMillis = millis();
-    addDisplayTemplate(TIJD_D, 0);
+    addDisplayTemplate(GEHAALT_D, END_SCREEN_DURATION);
 }
 void completed_onUpdate(void) 
 { 
+    //BUG soms blijft hij hier in een onijnige loop hangen
     static uint32_t lastBlink = 0;
     static bool displayStatus = false;
 
@@ -32,7 +34,7 @@ void completed_onUpdate(void)
         displayStatus = !displayStatus;   
     }
 
-    if(now - startRoomTimeMillis < 5 * 1000) return; // wacht nog even met naar volgende scherm gaan zodat de spelers de tijd kunnen zien
+    if(now - startRoomTimeMillis < END_SCREEN_DURATION) return; // wacht nog even met naar volgende scherm gaan zodat de spelers de tijd kunnen zien
 
     FSM_addEvent(E_GAME_COMPLETED);
 }
@@ -44,11 +46,12 @@ void timeout_onEntry(void)
 { 
     gameActiv = false;
     startRoomTimeMillis = millis();
-    addDisplayTemplate(TIJD_D,0);
+    addDisplayTemplate(TIJD_D, END_SCREEN_DURATION);
 
 }
 void timeout_onUpdate(void) 
 { 
+    //BUG soms blijft hij hier in een onijnige loop hangen
     static uint32_t lastBlink = 0;
     static bool displayStatus = false;
     static uint32_t blinkDuration = MAX_BLINK_DURATION_TIMEOUT;
@@ -58,7 +61,7 @@ void timeout_onUpdate(void)
     if(now - lastBlink > blinkDuration) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
     {
 
-        float ratio = (float)(now - startRoomTimeMillis) /(float)((4 * 1000));
+        float ratio = (float)(now - startRoomTimeMillis) /(float)(END_SCREEN_DURATION - FAST_BLINK_DURATION);
         if (ratio > 1.0f) ratio = 1.0f;
         blinkDuration = MAX_BLINK_DURATION_TIMEOUT - (MAX_BLINK_DURATION_TIMEOUT - MIN_BLINK_DURATION_TIMEOUT) * (ratio * ratio);
 
@@ -72,7 +75,7 @@ void timeout_onUpdate(void)
         
     }
 
-    if(now - startRoomTimeMillis < 5 * 1000) return; // wacht nog even met naar volgende scherm gaan zodat de spelers de tijd kunnen zien
+    if(now - startRoomTimeMillis < END_SCREEN_DURATION) return; // wacht nog even met naar volgende scherm gaan zodat de spelers de tijd kunnen zien
     FSM_addEvent(E_GAME_TIMEOUT);
 }
 void timeout_onExit(void) 
@@ -82,7 +85,7 @@ void timeout_onExit(void)
 
 void reset_onEntry(void) 
 { 
- addDisplayTemplate(RESET_D, 1000);
+ addDisplayTemplate(RESET_D, 0);
 }
 void reset_onUpdate(void) 
 { 

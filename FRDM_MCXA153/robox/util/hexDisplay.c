@@ -74,11 +74,22 @@ void writeByte(uint8_t b) {
 
 void displayDigits(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t dot) 
 {
-  uint8_t segments[] = {
-    0b00111111, 0b00000110, 0b01011011, 0b01001111,
-    0b01100110, 0b01101101, 0b01111101, 0b00000111,
-    0b01111111, 0b01101111, 0b00000000
-  };
+const uint8_t hex_digits[] = {
+    0b00111111, // 0
+    0b00000110, // 1
+    0b01011011, // 2
+    0b01001111, // 3
+    0b01100110, // 4
+    0b01101101, // 5
+    0b01111101, // 6
+    0b00000111, // 7
+    0b01111111, // 8
+    0b01101111, // 9
+    0b00000000, // OFF
+    0b01111001, // E
+    0b01011110, // D
+    0b00000110  // I
+};
 
   uint8_t seg0 = segments[d0];
   uint8_t seg1 = segments[d1];

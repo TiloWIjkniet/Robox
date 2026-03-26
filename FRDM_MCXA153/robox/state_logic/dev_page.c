@@ -8,13 +8,14 @@
 #include "touch_sensor.h"
 #include "lpuart1.h"
 #include "time_millis.h"
+#include "hexDisplay.h"
 
-#define WEBSERVER_ON 0xCC
-#define WEBSERVER_OFF 0xCC
+#define WEBSERVER_ON  0xCC
+#define WEBSERVER_OFF 0xEE
 #define START_BYTE_GET_SETTINGS_DATA 0xBB
-#define START_BYTE_SEND_RUN_DATA 0xBB
+#define START_BYTE_SEND_RUN_DATA 0xAA
 #define START_BYTE_GLOBAL_DATA 0xAA
-#define START_BYTE_ROOM_DATA 0xAB
+#define START_BYTE_ROOM_DATA   0xAB
 
 #define EXIT_DEV_CODE "0000"
 #define OPEN_ALL_COMPARTMETS "9999"
@@ -46,6 +47,7 @@ void dev_page_onEntry(void)
 {
     lpuart1_putchar(WEBSERVER_ON); //Zet webserver aan
     forceDisplayTemplate(D_DEV_PAGE, 0);
+    displayDigits(OFF,DEV_MODE_HEX_DIS,OFF,DEV_MODE_HEX_DIS,OFF);
     emptyInputBuffer();
 }
 
@@ -53,7 +55,6 @@ void dev_page_onUpdate(void)
 {
     updateInputBuffer();
     if(!hasNewAnswer) return;
-    hasNewAnswer = false;
 
     if(isInputMatching(answerBuffer, EXIT_DEV_CODE))
     {
@@ -63,7 +64,7 @@ void dev_page_onUpdate(void)
     else if(isInputMatching(answerBuffer, OPEN_ALL_COMPARTMETS))
     {
         openCompartment(NON_C);
-        //Moet nog ge implementeerd worden
+        //TODO: Moet nog ge implementeerd worden
     }
 
     uint8_t numberOfRooms = getNumRooms();
@@ -73,7 +74,8 @@ void dev_page_onUpdate(void)
         {   
             receive_room_settings_from_esp();                                   //Verkrijg ingestelde data van esp
             setMapCoordinates(roomsSettings[room].coordinates);                 //Zet de codinate van de geslecteerde kamer aan
-            //Dispalys de settings voor die spesefieke room 
+            hexDisplay_setTime(0,room);
+            //TODO: Dispalys de settings voor die spesefieke room 
             break;
         }
     }
@@ -126,6 +128,7 @@ bool receive_room_settings(void)
         }
 
         if(lpuart1_rxcnt() <= 0) continue; // wacht op data
+        
         uint8_t b = lpuart1_getchar();
         timeoutStart = millis();
         switch(state)
@@ -211,6 +214,8 @@ void receive_room_settings_from_esp(void)
         if(attempts > RETRY_ATTEMPTS)
         {
             forceDisplayTemplate(D_ERROR_RECEIVE_SETTINGS, 10000); // Toon kritische error
+            displayDigits(ERROR_HEX_DIS,ERROR_HEX_DIS,ERROR_HEX_DIS,ERROR_HEX_DIS,OFF);
+            while(true);
         }
         lpuart1_putchar(START_BYTE_GET_SETTINGS_DATA);
 
@@ -248,11 +253,12 @@ void receive_room_settings_from_esp(void)
  */
 void send_run_data_to_esp(void)
 {
+    // IDEA: Stuur verkrijg een alle data ontvangen bit van esp ander retry
     uint8_t *data = (uint8_t*)&runData;
     size_t size = sizeof(runData);
 
     lpuart1_putchar(START_BYTE_SEND_RUN_DATA);
-
+    
     for (size_t i = 0; i < size; i++)
     {
         lpuart1_putchar(data[i]);

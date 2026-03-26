@@ -49,6 +49,7 @@ void askForBeacons()
 
 void HM10_init()
 {
+    // WARN: Heb dit niew toe gevoegt dus werkt mis niet goed
     lpuart2_init(9600);
     sentDataToHM10("AT+BAUD4");
     lpuart2_init(115200);

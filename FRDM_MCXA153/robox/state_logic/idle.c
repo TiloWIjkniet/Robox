@@ -15,7 +15,7 @@ void idle_onEntry(void)
     emptyInputBuffer();
     setMapCoordinates((uint8_t[]){INVALID_COORD, INVALID_COORD});
     forceDisplayTemplate(D_IDLE, 0);
-    hexDisplay_setTime(0,0);
+    displayDigits(OFF,IDLE_MODE_HEX_DIS,OFF,IDLE_MODE_HEX_DIS,OFF);
 }
 void idle_onUpdate(void)
 {
