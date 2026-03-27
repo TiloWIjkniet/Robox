@@ -213,7 +213,7 @@ void receive_room_settings_from_esp(void)
         attempts ++;
         if(attempts > RETRY_ATTEMPTS)
         {
-            forceDisplayTemplate(D_ERROR_RECEIVE_SETTINGS, 10000); // Toon kritische error
+            forceDisplayTemplate(D_ERROR, 10000); // Toon kritische error
             displayDigits(ERROR_HEX_DIS,ERROR_HEX_DIS,ERROR_HEX_DIS,ERROR_HEX_DIS,OFF);
             while(true);
         }

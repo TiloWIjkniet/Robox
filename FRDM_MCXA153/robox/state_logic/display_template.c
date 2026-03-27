@@ -1,115 +1,190 @@
-#include "display_template.h"
-    // TODO: Maak de startfunctie af
-    // NOTE: Dit is alleen een test-commentaar
-    // WARN: Let op, deze functie kan crashen
-    // IDEA: Misschien kunnen we dit optimaliseren
-    // BUG: Fout bij indexberekening
-    // DONE: Deze functie is afgerond
-    // DOING: Hier ben ik nu mee bezig
-    // TEMP: Tijdelijke code, verwijderen later
-    // TEST: Test deze functie grondig
-    // FIXME: Hier zit een bug die gefixt moet worden
-    // OPTIMIZE: Code kan sneller worden gemaakt
-    // REVIEW: Laat iemand anders dit controleren
-    // HACK: Snel opgelost, maar niet ideaal
-    // DEBUG: Print debug informatie
-    // QUESTION: Waarom doet dit niet wat verwacht?
-
-//TODO Beter naamen geven aan de templates en de tekst in de templates aanpassen/ templates toe voegen
-//TODO Mogelijk maken dat rile time data in templates komen 
-//IDEA Mogelijk naam van kamer in kamers template en of antwoord template gebruiken
- 
-const char* displayTemplates[MAX_TEMPLATES] = {
+const char* displayTemplates[40] = {
 
     "NON\n",
 
+    // D_IDLE
     "|--------------------------------------------------------|\n"
-    "|                                                        |\n"
-    "|Idle pagina                                             |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // D_IDLE
+    "|   De bom staat klaar                                   |\n"
+    "|   Durf jij hem te stoppen?                             |\n"
+    "|   Druk op een toets om te starten                      |\n"
+    "|--------------------------------------------------------|\n",
+
+    // D_DEV_PAGE
+    "|--------------------------------------------------------|\n"
+    "|   DEVELOPMENT MODE                                     |\n"
+    "|   Voer kamernummer in voor data                        |\n"
+    "|   9999 = open alles | 0000 = exit                      |\n"
+    "|--------------------------------------------------------|\n",
+
+    // D_START_GAME
+    "|--------------------------------------------------------|\n"
+    "|   De bom is geactiveerd                                |\n"
+    "|   Je hebt [tijd] min                                   |\n"
+    "|   Maak geen fouten...                                  |\n"
+    "|--------------------------------------------------------|\n",
+
+    // GO TO ROOM - variant 1
+    "|--------------------------------------------------------|\n"
+    "|   Verkeerde kamer                                      |\n"
+    "|   Ga naar: [kamer naam]                                |\n"
+    "|   Blijf niet hangen                                    |\n"
+    "|--------------------------------------------------------|\n",
+
+    // GO TO ROOM - variant 2
+    "|--------------------------------------------------------|\n"
+    "|   Dit klopt niet                                       |\n"
+    "|   Zoek: [kamer naam]                                   |\n"
+    "|   Je zit op het verkeerde spoor                        |\n"
+    "|--------------------------------------------------------|\n",
+
+    // GO TO ROOM - variant 3
+    "|--------------------------------------------------------|\n"
+    "|   Foute plek                                           |\n"
+    "|   Ga snel naar: [kamer naam]                           |\n"
+    "|   Elke seconde telt                                    |\n"
+    "|--------------------------------------------------------|\n",
+
+        // D_GO_TO_FINAL_ROOM
+    "|--------------------------------------------------------|\n"
+    "|   Bijna klaar                                          |\n"
+    "|   Ga naar de laatste kamer: [kamer naam]               |\n"
+    "|   Maak het af                                          |\n"
+    "|--------------------------------------------------------|\n",
+
+    // IN ROOM
+    "|--------------------------------------------------------|\n"
+    "|   Kamer: [kamer naam]                                  |\n"
+    "|   Hier moet het gebeuren                               |\n"
+    "|   Maak geen fouten                                     |\n"
+    "|--------------------------------------------------------|\n",
+
+        // D_FINAL_ROOM_ENTER
+    "|--------------------------------------------------------|\n"
+    "|   Dit is de laatste kamer                              |\n"
+    "|   Hier beslist alles                                   |\n"
+    "|   Geen fouten meer                                     |\n"
+    "|--------------------------------------------------------|\n",
+
+    // ENTER ANSWER
+    "|--------------------------------------------------------|\n"
+    "|   Voer het antwoord in                                 |\n"
+    "|   Denk goed na                                         |\n"
+    "|   Een fout kan fataal zijn                             |\n"
+    "|--------------------------------------------------------|\n",
 
     "|--------------------------------------------------------|\n"
-    "|                                                        |\n"
-    "|Def pagina                                              |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // D_DEV_PAGE
+    "|   Dit is het moment                                    |\n"
+    "|   Alles hangt hiervan af                               |\n"
+    "|   Voer het antwoord in                                 |\n"
+    "|--------------------------------------------------------|\n",
+
+    // CORRECT - variant 1
+    "|--------------------------------------------------------|\n"
+    "|   Correct                                              |\n"
+    "|   Dat was scherp                                       |\n"
+    "|   Ga verder                                            |\n"
+    "|--------------------------------------------------------|\n",
+
+    // CORRECT - variant 2
+    "|--------------------------------------------------------|\n"
+    "|   Goed antwoord                                        |\n"
+    "|   Je zit op het juiste pad                             |\n"
+    "|   Volgende stap                                        |\n"
+    "|--------------------------------------------------------|\n",
+
+    // CORRECT - variant 3
+    "|--------------------------------------------------------|\n"
+    "|   Dat klopt                                            |\n"
+    "|   Nog even doorgaan                                    |\n"
+    "|   Je bent dichtbij                                     |\n"
+    "|--------------------------------------------------------|\n",
 
     "|--------------------------------------------------------|\n"
-    "|Start spel                                              |\n"
-    "|Het spel werkt zo                                       |\n"
+    "|   Eerste stap gelukt                                   |\n"
+    "|   Je bent begonnen                                     |\n"
+    "|   Blijf doorgaan                                       |\n"
+    "|--------------------------------------------------------|\n",
+
+    // WRONG - variant 1
+    "|--------------------------------------------------------|\n"
+    "|   Fout antwoord                                        |\n"
+    "|   Pas op...                                            |\n"
+    "|   Nog zo'n fout en het gaat mis                        |\n"
+    "|--------------------------------------------------------|\n",
+
+    // WRONG - variant 2
+    "|--------------------------------------------------------|\n"
+    "|   Niet correct                                         |\n"
+    "|   Dat zag er niet goed uit                             |\n"
+    "|   Probeer het opnieuw                                  |\n"
+    "|--------------------------------------------------------|\n",
+
+    // WRONG - variant 3
+    "|--------------------------------------------------------|\n"
+    "|   Dat klopt niet                                       |\n"
+    "|   De bom tikt door...                                  |\n"
+    "|   Denk sneller                                         |\n"
+    "|--------------------------------------------------------|\n",
+
+    // SCAN
+    "|--------------------------------------------------------|\n"
+    "|   Scan je vinger                                       |\n"
+    "|   Wacht op bevestiging                                 |\n"
+    "|   Niet bewegen                                         |\n"
+    "|--------------------------------------------------------|\n",
+
+    // KEY
+    "|--------------------------------------------------------|\n"
+    "|   Draai de sleutel                                     |\n"
     "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // START_D
+    "|                                                        |\n"
+    "|--------------------------------------------------------|\n",
+
+    // SWITCH
+    "|--------------------------------------------------------|\n"
+    "|   Zet de schakelaar om                                 |\n"
+    "|                                                        |\n"
+    "|                                                        |\n"
+    "|--------------------------------------------------------|\n",
+
+    // D_SPECIAL_WRONG
+    "|--------------------------------------------------------|\n"
+    "|   Verkeerde handeling                                  |\n"
+    "|   Dit had niet moeten gebeuren                         |\n"
+    "|   Probeer iets anders                                  |\n"
+    "|--------------------------------------------------------|\n",
 
     "|--------------------------------------------------------|\n"
-    "|Ga naar de goede kamer                                  |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // KAMER_D
+    "|   Goede handeling                                      |\n"
+    "|   Dit is correct                                       |\n"
+    "|   Ga door                                              |\n"
+    "|--------------------------------------------------------|\n",
 
+    // D_OPEN_COMPARTMENT
     "|--------------------------------------------------------|\n"
-    "|Je bent in de goede kamer                               |\n"
-    "|Wat is antwoord op vraag                                |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // ANTWOORD_D
+    "|   Compartiment geopend                                 |\n"
+    "|   Er is iets vrijgegeven                               |\n"
+    "|   Kijk snel wat er is veranderd                        |\n"
+    "|--------------------------------------------------------|\n",
 
+    // TIME UP
     "|--------------------------------------------------------|\n"
-    "|Jaa dat was het goede antowwrd                          |\n"
-    "|Doe nu speshale action                                  |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // GOED_S_D
+    "|   Te laat                                              |\n"
+    "|   De bom is afgegaan                                   |\n"
+    "|   Einde spel                                           |\n"
+    "|--------------------------------------------------------|\n",
 
+    // WIN
     "|--------------------------------------------------------|\n"
-    "|Jaa dat was het goede antowwrd                          |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // GOED_D
+    "|   Gelukt                                               |\n"
+    "|   De bom is ontmanteld                                 |\n"
+    "|   Net op tijd                                          |\n"
+    "|--------------------------------------------------------|\n",
 
+    // ERROR
     "|--------------------------------------------------------|\n"
-    "|Jaa dat was het goede antowwrd                          |\n"
-    "|Nu gaat ruimte open                                     |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // GOED_C_D
-
-    "|--------------------------------------------------------|\n"
-    "|NOPE foud                                               |\n"
-    "|:)                                                      |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // FOUD_D
-
-    "|--------------------------------------------------------|\n"
-    "|Ga naar volgede kamer                                   |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // VOLGENDE_D
-
-    "|--------------------------------------------------------|\n"
-    "|Ga naar de laatse kamer                                 |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // LAATSTE_D
-
-    "|--------------------------------------------------------|\n"
-    "|De tijd is op                                           |\n"
-    "|Boem                                                    |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // TIJD_D
-
-    "|--------------------------------------------------------|\n"
-    "|Je hebt het optijd gehaalt                              |\n"
-    "|jeeee                                                   |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // GEHAALT_D
-
-    "|--------------------------------------------------------|\n"
-    "|Save data                                               |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // RESET_D
-
-    "|--------------------------------------------------------|\n"
-    "|Er is een kritiche error, prose kan niet veder gaan     |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n", // GET_DATA_D
+    "|   Kritische fout                                       |\n"
+    "|   Systeem gestopt                                      |\n"
+    "|   Herstart vereist                                     |\n"
+    "|--------------------------------------------------------|\n",
 };

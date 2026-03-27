@@ -17,7 +17,7 @@ void completed_onEntry(void)
 { 
     gameActiv = false;
     startRoomTimeMillis = millis();
-    addDisplayTemplate(GEHAALT_D, END_SCREEN_DURATION);
+    addDisplayTemplate(D_WIN, END_SCREEN_DURATION);
 }
 void completed_onUpdate(void) 
 { 
@@ -46,7 +46,7 @@ void timeout_onEntry(void)
 { 
     gameActiv = false;
     startRoomTimeMillis = millis();
-    addDisplayTemplate(TIJD_D, END_SCREEN_DURATION);
+    addDisplayTemplate(D_TIME_UP, END_SCREEN_DURATION);
 
 }
 void timeout_onUpdate(void) 
@@ -85,7 +85,7 @@ void timeout_onExit(void)
 
 void reset_onEntry(void) 
 { 
- addDisplayTemplate(RESET_D, 0);
+
 }
 void reset_onUpdate(void) 
 { 

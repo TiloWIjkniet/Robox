@@ -33,7 +33,7 @@ typedef struct
 
 const displayQueueItem_t emptyDisplayItem = 
 {
-        .displayLoadTemplate = D_NON,
+        .displayLoadTemplate = D_NONE,
         .displayDurationMillis = 0,
         .displayStartMillis = 0
 };
@@ -140,7 +140,7 @@ void loadDisplayTemplate(displayTemplate_t displayTemplate)
 void updateDisplayQueue()
 {
     
-    if(displayQueue[0].displayLoadTemplate == D_NON) return;
+    if(displayQueue[0].displayLoadTemplate == D_NONE) return;
     
     uint32_t now = millis();
     if(displayQueue[0].displayStartMillis == 0) 
@@ -150,7 +150,7 @@ void updateDisplayQueue()
     }
     else if(now - displayQueue[0].displayStartMillis >= displayQueue[0].displayDurationMillis)
     {
-        if(displayQueue[1].displayLoadTemplate == D_NON) return;
+        if(displayQueue[1].displayLoadTemplate == D_NONE) return;
 
         displayQueue[0] = displayQueue[1];
         displayQueue[1] = emptyDisplayItem;
@@ -204,7 +204,7 @@ void addDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t 
         .displayStartMillis = 0
     };
 
-    if(displayQueue[0].displayLoadTemplate == D_NON)
+    if(displayQueue[0].displayLoadTemplate == D_NONE)
     {
         displayQueue[0] = newItem;
     }
@@ -224,7 +224,7 @@ void addDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t 
  */
 bool isDisplayTemplateDonPlaying()
 {
-    if(displayQueue[0].displayLoadTemplate != D_NON && displayQueue[1].displayLoadTemplate != D_NON) return true; // Template niet in buffer
+    if(displayQueue[0].displayLoadTemplate != D_NONE && displayQueue[1].displayLoadTemplate != D_NONE) return true; // Template niet in buffer
 
     uint32_t now = millis();
     if(now - displayQueue[0].displayStartMillis < displayQueue[0].displayDurationMillis) return false; // Template still dusy

@@ -24,7 +24,6 @@ typedef struct
     displayTemplate_t enterAnswer;
     displayTemplate_t answerCorrect;
     displayTemplate_t answerWrong;
-    displayTemplate_t specialActionPrompt;
     displayTemplate_t specialActionCorrect;
     displayTemplate_t specialActionWrong;
     displayTemplate_t openCompartment;
@@ -34,41 +33,38 @@ typedef struct
 
 const roomDisplayConfig_t firstRoom =
 {
-    .waitForRoom = KAMER_D,
-    .enteredRoom = KAMER_D,
-    .enterAnswer = ANTWOORD_D,
-    .answerCorrect = GOED_D,
-    .answerWrong = FOUD_D,
-    .specialActionPrompt = GOED_S_D,
-    .specialActionCorrect = GOED_D,
-    .specialActionWrong = FOUD_D,
-    .openCompartment = ANTWOORD_D
+    .waitForRoom = D_GO_TO_ROOM_3,
+    .enteredRoom = D_IN_ROOM,
+    .enterAnswer = D_ENTER_ANSWER,
+    .answerCorrect = D_FIRST_SUCCESS,
+    .answerWrong = D_WRONG_1,
+    .specialActionCorrect = D_SPECIAL_CORRECT  ,
+    .specialActionWrong = D_SPECIAL_WRONG,
+    .openCompartment = D_OPEN_COMPARTMENT
 };
 
 const roomDisplayConfig_t middelRoom =
 {
-    .waitForRoom = KAMER_D,
-    .enteredRoom = KAMER_D,
-    .enterAnswer = ANTWOORD_D,
-    .answerCorrect = GOED_D,
-    .answerWrong = FOUD_D,
-    .specialActionPrompt = GOED_S_D,
-    .specialActionCorrect = GOED_D,
-    .specialActionWrong = FOUD_D,
-    .openCompartment = ANTWOORD_D
+    .waitForRoom = D_GO_TO_ROOM_2,
+    .enteredRoom = D_IN_ROOM,
+    .enterAnswer = D_ENTER_ANSWER,
+    .answerCorrect = D_CORRECT_2,
+    .answerWrong = D_WRONG_2,
+    .specialActionCorrect = D_SPECIAL_CORRECT,
+    .specialActionWrong = D_SPECIAL_WRONG,
+    .openCompartment = D_OPEN_COMPARTMENT
 };
 
 const roomDisplayConfig_t lastRoom =
 {
-    .waitForRoom = KAMER_D,
-    .enteredRoom = KAMER_D,
-    .enterAnswer = ANTWOORD_D,
-    .answerCorrect = GOED_D,
-    .answerWrong = FOUD_D,
-    .specialActionPrompt = GOED_S_D,
-    .specialActionCorrect = GOED_D,
-    .specialActionWrong = FOUD_D,
-    .openCompartment = ANTWOORD_D
+    .waitForRoom = D_GO_TO_FINAL_ROOM,
+    .enteredRoom = D_FINAL_ROOM_ENTER,
+    .enterAnswer = D_ENTER_ANSWER_STRESS,
+    .answerCorrect = D_CORRECT_3,
+    .answerWrong = D_WRONG_3,
+    .specialActionCorrect = D_SPECIAL_CORRECT,
+    .specialActionWrong = D_SPECIAL_WRONG,
+    .openCompartment = D_OPEN_COMPARTMENT
 };
 
 
@@ -103,7 +99,7 @@ void first_room_onEntry(void)
 
     commonRoom_onEntry();
 
-    forceDisplayTemplate(START_D, DISPLAY_5S);
+    forceDisplayTemplate(D_START_GAME, DISPLAY_5S);
 }
 void first_room_onUpdate(void)
 {
@@ -118,7 +114,7 @@ void room_loop_onEntry(void)
 {
     roomIndex ++; 
     commonRoom_onEntry();
-    forceDisplayTemplate(START_D, DISPLAY_5S);
+    forceDisplayTemplate(D_START_GAME, DISPLAY_5S);
 }
 void room_loop_onUpdate(void)
 { 
@@ -133,7 +129,7 @@ void last_room_onEntry(void)
 {   
     roomIndex ++; 
     commonRoom_onEntry();
-    forceDisplayTemplate(START_D, DISPLAY_5S);
+    forceDisplayTemplate(D_START_GAME, DISPLAY_5S);
 }
 void last_room_onUpdate(void)
 {
@@ -192,7 +188,13 @@ bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
         return true;
     }
     setRequiredSpecialActies(requiredSpeciaAction, true);
-    addDisplayTemplate(roomDisplay.specialActionPrompt, DISPLAY_3S);
+
+    displayTemplate_t specialActieTemplate;
+    if(requiredSpeciaAction == TOUCH_SENSOR) specialActieTemplate = D_SCAN; 
+    else if(requiredSpeciaAction == NON_S) specialActieTemplate = D_KEY; 
+    else if(requiredSpeciaAction == NON_S) specialActieTemplate = D_SWITCH; 
+
+    addDisplayTemplate(specialActieTemplate, DISPLAY_3S);
     specialActies_t preformedAction = getSpecialActies();
     if(preformedAction == NON_S) return false;
     
