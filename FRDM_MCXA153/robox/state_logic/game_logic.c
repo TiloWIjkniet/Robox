@@ -60,21 +60,7 @@ void setMapCoordinates(const uint8_t coordinates[2])
     static coordinates_t lastCoordinates = {.x = INVALID_COORD, .y = INVALID_COORD};
     coordinates_t my_coordinates = {.x = coordinates[0], .y = coordinates[1]};
 
-    // TODO: Maak de startfunctie af
-    // NOTE: Dit is alleen een test-commentaar
-    // WARN: Let op, deze functie kan crashen
-    // IDEA: Misschien kunnen we dit optimaliseren
-    // BUG: Fout bij indexberekening
-    // DONE: Deze functie is afgerond
-    // DOING: Hier ben ik nu mee bezig
-    // TEMP: Tijdelijke code, verwijderen later
-    // TEST: Test deze functie grondig
-    // FIXME: Hier zit een bug die gefixt moet worden
-    // OPTIMIZE: Code kan sneller worden gemaakt
-    // REVIEW: Laat iemand anders dit controleren
-    // HACK: Snel opgelost, maar niet ideaal
-    // DEBUG: Print debug informatie
-    // QUESTION: Waarom doet dit niet wat verwacht?
+
     
     if(my_coordinates.x == lastCoordinates.x && my_coordinates.y == lastCoordinates.y) return; 
     
@@ -121,7 +107,15 @@ displayQueueItem_t displayQueue[2] = {emptyDisplayItem, emptyDisplayItem};
 void loadDisplayTemplate(displayTemplate_t displayTemplate)
 {
     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
-    printf(displayTemplates[displayTemplate]);
+    if(globalSettings.censorship == NOT_CENSORED)
+    {
+        printf(displayTemplate[displayTemplate]);
+    }
+    else
+    {
+        printf(displayTemplatesSafe[displayTemplate]);
+    }
+  
 }
 /**
  * @brief Update de display queue en verwerkt de timers.
@@ -409,6 +403,7 @@ void updateGameTimer()
 
     setGameTimer(lastSec);
     buzzer_play(BUZZERT_DURATION);
+
 }
 
 void setGameTimer(int32_t sec)

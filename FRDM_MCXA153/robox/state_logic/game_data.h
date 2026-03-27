@@ -65,16 +65,21 @@ typedef enum
 
 typedef enum
 {
-    AUDIO_ON,    
-    AUDIO_CENSORED,    
+    AUDIO_ON,       
     AUDIO_OFF
 }audio_t;
 
+typedef enum
+{
+    NOT_CENSORED,    // nog niet gecensureerd
+    CENSORED         // al gecensureerd
+} censorship_status_t;
 typedef struct 
 {
     wrongAnswerPenalty_t difficulty;
     uint16_t totalTime;
     audio_t audio;
+    censorship_status_t censorship;
 
 }globalSettings_t;
 

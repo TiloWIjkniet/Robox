@@ -41,6 +41,12 @@ enum __attribute__((packed)) compartment_t : uint8_t
     TWO_C
 };
 
+typedef enum
+{
+    NOT_CENSORED,    // nog niet gecensureerd
+    CENSORED         // al gecensureerd
+} censorship_status_t;
+
 enum __attribute__((packed)) specialActies_t : uint8_t
 {
     NON_S,
@@ -69,8 +75,7 @@ enum __attribute__((packed)) wrongAnswerPenalty_t : uint8_t
 
 enum __attribute__((packed)) audio_t : uint8_t
 {
-    AUDIO_ON,    
-    AUDIO_CENSORED,    
+    AUDIO_ON,       
     AUDIO_OFF
 } ;
 
@@ -79,6 +84,7 @@ typedef struct
     wrongAnswerPenalty_t difficulty;
     uint16_t totalTime;
     audio_t audio;
+    censorship_status_t censorship;   
 } globalSettings_t;
 
 bool serverRunning = false;
@@ -216,6 +222,7 @@ void handleLoad()
   gs["moeilijkheid"] = globalSettings.difficulty;
   gs["start-tijd"] = globalSettings.totalTime;
   gs["audio"] = globalSettings.audio;
+  gs["censorship"] = globalSettings.censorship;
 
   if (plattegrond.length() > 0) 
     doc["uploadedImageData"] = plattegrond;
@@ -331,6 +338,7 @@ void handleSave()
   globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
   globalSettings.totalTime = gs["start-tijd"].as<int>();
   globalSettings.audio = (audio_t)gs["audio"].as<int>();
+  globalSettings.censorship = (censorship_status_t)gs["censorship"].as<int>();
   }
 
   if (doc.containsKey("uploadedImageData")) 
@@ -388,7 +396,7 @@ void saveToFlash()
   gs["moeilijkheid"] = globalSettings.difficulty;
   gs["start-tijd"] = globalSettings.totalTime;
   gs["audio"] = globalSettings.audio;
-
+  gs["censorship"] = globalSettings.censorship;
   doc["plattegrond"] = plattegrond;
 
   File f = LittleFS.open("/data.json", "w");
@@ -438,9 +446,10 @@ void loadFromFlash() {
 
     // Global settings
     JsonObject gs = doc["globalSettings"];
-    globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
-    globalSettings.totalTime = gs["start-tijd"] | 0;
-    globalSettings.audio = (audio_t)(gs["audio"] | AUDIO_OFF);
+  globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
+  globalSettings.totalTime = gs["start-tijd"].as<int>();
+  globalSettings.audio = (audio_t)gs["audio"].as<int>();
+  globalSettings.censorship = (censorship_status_t)gs["censorship"].as<int>();
 
     plattegrond = doc["plattegrond"] | "";
 

@@ -19,9 +19,8 @@ int main(void)
 
   serial_init(115200);
   lpuart1_init(115200);
-  // lpuart2_init word in void HM10_init() ingesteld 
-  printf("Starting game...\n");
-    
+  //lpuart2_init word in void HM10_init() ingesteld 
+
   FSM_config();
   keyPad_init();
   millis_init();
@@ -45,10 +44,15 @@ int main(void)
       updateTimeGamePenaltyMillis();
       updateGameTimer();
       if(globalSettings.difficulty == WRONG_ANSWER_TIME_X2) updateVirtualTime();
-
-
     }
 
   }
 }
+//
+// WARN : De function voor gesenureert is to gevoegt maar grote kans dat er nog iets mis in zit
 
+//TODO: uitzoeken hoe lupart0 werkt.
+//TODO: audio uitzoeken en triggers voor die aurio maken.
+
+// IDEA : In global setting bool maken voor save mode en uit audio halen. dit ook aanpassen in websiten en esp na aanlijding hier van de juiste template en audio evecten gebruiken.
+//IDEA: In send run data rety function maken

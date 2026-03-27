@@ -29,7 +29,8 @@ globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_STOP,
     60,
-    AUDIO_ON
+    AUDIO_ON,
+    NOT_CENSORED
 };
 runData_t runData = 
 {
@@ -220,25 +221,6 @@ void receive_room_settings_from_esp(void)
         lpuart1_putchar(START_BYTE_GET_SETTINGS_DATA);
 
     }while(!receive_room_settings());
-
-    // printf("Moelijkhijd: %d\n", globalSettings.difficulty);
-    // printf("tijd: %d\n",        globalSettings.totalTime);
-    // printf("audio: %d\n", globalSettings.audio);
-
-    // printf("\nroomSettings\n");
-    // for(int i = 0; i < getNumRooms(); i++)
-    // {
-    //     printf("coordinates: %d, %d\n", roomsSettings[i].coordinates[0], roomsSettings[i].coordinates[1]);
-    //     printf("beconIp: %s\n",        roomsSettings[i].beconIp);
-    //     printf("answers: ");
-    //     for(int x = 0; x < MAX_ANSWERS; x++) printf("%s, ",roomsSettings[i].answers[x]);
-    //     printf("\n");
-    //     printf("openCompartment: %d\n", roomsSettings[i].openCompartment);
-    //     printf("specialActies: %d\n", roomsSettings[i].specialActies);
-    //     printf("kamer naam: %s\n", roomsSettings[i].naam);
-    //     printf("\n");
-    // }
-
 }
 
 /**
@@ -253,7 +235,7 @@ void receive_room_settings_from_esp(void)
  */
 void send_run_data_to_esp(void)
 {
-    // IDEA: Stuur verkrijg een alle data ontvangen bit van esp ander retry
+    
     uint8_t *data = (uint8_t*)&runData;
     size_t size = sizeof(runData);
 

@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include "fsm.h"
 
-#define DEBUG_FMS 1
+#define DEBUG_FMS 0
 #if DEBUG_FMS 
 #include <stdio.h>
 const char* stateNames[] = { "S_INIT", "S_IDLE", "S_DEV_PAGE", "S_FIRST_ROOM",
