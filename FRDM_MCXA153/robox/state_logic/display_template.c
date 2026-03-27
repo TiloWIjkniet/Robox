@@ -15,11 +15,14 @@
     // DEBUG: Print debug informatie
     // QUESTION: Waarom doet dit niet wat verwacht?
 
-//TODO Beter naamen geven aan de templates en de tekst in de templates aanpassen
+//TODO Beter naamen geven aan de templates en de tekst in de templates aanpassen/ templates toe voegen
 //TODO Mogelijk maken dat rile time data in templates komen 
 //IDEA Mogelijk naam van kamer in kamers template en of antwoord template gebruiken
  
 const char* displayTemplates[MAX_TEMPLATES] = {
+
+    "NON\n",
+
     "|--------------------------------------------------------|\n"
     "|                                                        |\n"
     "|Idle pagina                                             |\n"

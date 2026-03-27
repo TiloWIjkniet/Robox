@@ -12,13 +12,75 @@
 
 #define DISPLAY_5S 5000
 #define DISPLAY_3S 3000
+
 uint32_t startRoomMillis;
 bool hasAnwertCorrect = false;
 bool gameActiv = false;
 
+typedef struct 
+{
+    displayTemplate_t waitForRoom;
+    displayTemplate_t enteredRoom;
+    displayTemplate_t enterAnswer;
+    displayTemplate_t answerCorrect;
+    displayTemplate_t answerWrong;
+    displayTemplate_t specialActionPrompt;
+    displayTemplate_t specialActionCorrect;
+    displayTemplate_t specialActionWrong;
+    displayTemplate_t openCompartment;
+
+
+} roomDisplayConfig_t;
+
+const roomDisplayConfig_t firstRoom =
+{
+    .waitForRoom = KAMER_D,
+    .enteredRoom = KAMER_D,
+    .enterAnswer = ANTWOORD_D,
+    .answerCorrect = GOED_D,
+    .answerWrong = FOUD_D,
+    .specialActionPrompt = GOED_S_D,
+    .specialActionCorrect = GOED_D,
+    .specialActionWrong = FOUD_D,
+    .openCompartment = ANTWOORD_D
+};
+
+const roomDisplayConfig_t middelRoom =
+{
+    .waitForRoom = KAMER_D,
+    .enteredRoom = KAMER_D,
+    .enterAnswer = ANTWOORD_D,
+    .answerCorrect = GOED_D,
+    .answerWrong = FOUD_D,
+    .specialActionPrompt = GOED_S_D,
+    .specialActionCorrect = GOED_D,
+    .specialActionWrong = FOUD_D,
+    .openCompartment = ANTWOORD_D
+};
+
+const roomDisplayConfig_t lastRoom =
+{
+    .waitForRoom = KAMER_D,
+    .enteredRoom = KAMER_D,
+    .enterAnswer = ANTWOORD_D,
+    .answerCorrect = GOED_D,
+    .answerWrong = FOUD_D,
+    .specialActionPrompt = GOED_S_D,
+    .specialActionCorrect = GOED_D,
+    .specialActionWrong = FOUD_D,
+    .openCompartment = ANTWOORD_D
+};
+
+
+typedef enum {STATE_WAIT_FOR_ROOM, STATE_ENTER_ANSWER, STATE_SPECIAL_ACTION, STATE_HANDLE_COMPARTMENT, STATE_FINISHED}room_stat_t;
+room_stat_t state = STATE_WAIT_FOR_ROOM; 
 
 void commonRoom_onEntry();
 void commonRoom_onExit();
+void commonRoom_Compartment(roomDisplayConfig_t roomDisplay);
+bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay);
+bool commonRoom_AnswerCheck(roomDisplayConfig_t roomDisplay);
+void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay);
 
 void first_room_onEntry(void)
 {
@@ -41,68 +103,11 @@ void first_room_onEntry(void)
 
     commonRoom_onEntry();
 
-    addDisplayTemplate(START_D, DISPLAY_5S);
+    forceDisplayTemplate(START_D, DISPLAY_5S);
 }
 void first_room_onUpdate(void)
 {
-    if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
-    bool inCorrectRoom = isInCorrectRoom(beconIp);
-    //IDEA: messchien maar een keer chekken tot dat je een keer in de kamer bent geweest dat je in de goede kamer bent en dan niet meer chekken zodat je ook antwoorden kan geven als je neit in de kamer bent 
-    if(!inCorrectRoom) 
-    {
-        addDisplayTemplate(KAMER_D, 0);
-        return;
-    }
-
-
-    if(!hasAnwertCorrect)
-    {
-        addDisplayTemplate(ANTWOORD_D, 0);
-
-        updateInputBuffer(); // meschein ergens anders neer zetten dat je ook als je neit in de kamer bent antwoorden kan doen
-        
-        if(!hasNewAnswer) return;
-        bool correct = isAnswerCorrect(answerBuffer); 
-
-        if(!correct)
-        {
-            //Fout antwoord
-            applyWrongAnswerPenalty();
-            addDisplayTemplate(FOUD_D, DISPLAY_3S); 
-            return;  
-        }
-        hasAnwertCorrect = true;
-    }
-    //Corect antwoord
-    
-    specialActies_t required = roomsSettings[roomIndex].specialActies;
-    if(required != NON_S)
-    {
-        serRequiredSpecialActies(required, true);
-        addDisplayTemplate(GOED_S_D, DISPLAY_3S); /
-        specialActies_t performed = getSpecialActies();
-        if(performed == NON_S) return;
-        if(performed != required)
-        {
-            forceDisplayTemplate(FOUD_D, DISPLAY_3S);
-            applyWrongAnswerPenalty();
-            return; 
-        } 
-        serRequiredSpecialActies(required, false);
-    }
-
-    //Alles goed ga door
-    compartment_t compartment = roomsSettings[roomIndex].openCompartment;
-    if (compartment != NON_C)
-    {
-        forceDisplayTemplate(GOED_C_D, DISPLAY_5S);
-        openCompartment(compartment);
-    }
-    else
-    {
-        forceDisplayTemplate(GOED_D, DISPLAY_5S);
-    }
-    FSM_addEvent(E_ROOM_COMPLETED);
+    commonRoom_onUpdate(firstRoom);
 }
 void first_room_onExit(void)
 {
@@ -113,72 +118,11 @@ void room_loop_onEntry(void)
 {
     roomIndex ++; 
     commonRoom_onEntry();
+    forceDisplayTemplate(START_D, DISPLAY_5S);
 }
 void room_loop_onUpdate(void)
-{
-    if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
-
-    bool inCorrectRoom = isInCorrectRoom(beconIp);
-    //IDEA: messchien maar een keer chekken tot dat je een keer in de kamer bent geweest dat je in de goede kamer bent en dan niet meer chekken zodat je ook antwoorden kan geven als je neit in de kamer bent 
-    if(!inCorrectRoom) 
-    {
-        addDisplayTemplate(KAMER_D, 0);
-        return;
-    }
-
-
-    if(!hasAnwertCorrect)
-    {
-        addDisplayTemplate(ANTWOORD_D, 0);
-
-        updateInputBuffer();
-        if(!hasNewAnswer) return;
-        bool correct = isAnswerCorrect(answerBuffer); 
-
-        if(!correct)
-        {
-            //Fout antwoord
-            applyWrongAnswerPenalty();
-            forceDisplayTemplate(FOUD_D,DISPLAY_3S);
-            return;  
-        }
-        hasAnwertCorrect = true;
-    }
-    //Corect antwoord
-    
-    specialActies_t required = roomsSettings[roomIndex].specialActies;
-    if(required != NON_S)
-    {
-        serRequiredSpecialActies(required, true);
-        addDisplayTemplate(GOED_S_D,DISPLAY_3S); 
-        specialActies_t performed = getSpecialActies();
-        if(performed == NON_S) return;
-        if(performed != required)
-        {
-            forceDisplayTemplate(FOUD_D,DISPLAY_3S);
-            applyWrongAnswerPenalty();
-            return; 
-        } 
-        serRequiredSpecialActies(required, false);
-    }
-
-    //Alles goed ga door
-    compartment_t compartment = roomsSettings[roomIndex].openCompartment;
-
-    if (compartment != NON_C)
-    {
-        forceDisplayTemplate(GOED_C_D, DISPLAY_5S); 
-        openCompartment(compartment);
-    }
-    else
-    {
-        forceDisplayTemplate(GOED_D, DISPLAY_5S);
-    }
-
-
-
-    if(roomIndex < getNumRooms() - 2) FSM_addEvent(E_ROOM_COMPLETED);
-    else FSM_addEvent(E_ROOM_LOOP_TO_LAST);   
+{ 
+    commonRoom_onUpdate(middelRoom);
 }
 void room_loop_onExit(void)
 {
@@ -189,55 +133,11 @@ void last_room_onEntry(void)
 {   
     roomIndex ++; 
     commonRoom_onEntry();
+    forceDisplayTemplate(START_D, DISPLAY_5S);
 }
 void last_room_onUpdate(void)
 {
-    if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
-
-    bool inCorrectRoom = isInCorrectRoom(beconIp);
-
-
-
-    if(!inCorrectRoom) 
-    {
-        addDisplayTemplate(KAMER_D,0);
-        return;
-    }
-
-
-    if(commonRoom_AnswerCheck()) return;
-    //Corect antwoord
-    
-    specialActies_t required = roomsSettings[roomIndex].specialActies;
-    if(required != NON_S)
-    {
-        serRequiredSpecialActies(required, true);
-        addDisplayTemplate(GOED_S_D,DISPLAY_3S);
-        specialActies_t performed = getSpecialActies();
-        if(performed == NON_S) return;
-        if(performed != required)
-        {
-            forceDisplayTemplate(FOUD_D,DISPLAY_3S);
-            applyWrongAnswerPenalty();
-            return; 
-        } 
-        serRequiredSpecialActies(required, false);
-    }
-
-    //Alles goed ga door
-    compartment_t compartment = roomsSettings[roomIndex].openCompartment;
-    if (compartment != NON_C)
-    {
-        forceDisplayTemplate(GOED_C_D, DISPLAY_5S); 
-        openCompartment(compartment);
-    }
-    else
-    {
-        forceDisplayTemplate(GOED_D, DISPLAY_5S); 
-    }
-
-    FSM_addEvent(E_LAST_ROOM_COMPLETED);
-
+    commonRoom_onUpdate(lastRoom);
 }
 void last_room_onExit(void)
 {
@@ -254,6 +154,8 @@ void commonRoom_onEntry()
 
     startRoomMillis = startGameMillis; 
     hasAnwertCorrect = false;
+    
+    state = STATE_WAIT_FOR_ROOM;
 }
 
 /**
@@ -273,24 +175,103 @@ void commonRoom_onExit()
 
 }
 
-void commonRoom_AnswerCheck()
+void commonRoom_Compartment(roomDisplayConfig_t roomDisplay)
 {
-    if(!hasAnwertCorrect)
+    compartment_t compartment = roomsSettings[roomIndex].openCompartment;
+    if(compartment != NON_C)
     {
-        addDisplayTemplate(ANTWOORD_D, 0);
-
-        updateInputBuffer();
-        if(!hasNewAnswer) return;
-        bool correct = isAnswerCorrect(answerBuffer); 
-
-        if(!correct)
-        {
-            //Fout antwoord
-            applyWrongAnswerPenalty();
-            forceDisplayTemplate(FOUD_D,DISPLAY_3S); 
-            return;  
-        }
-        hasAnwertCorrect = true;
+        addDisplayTemplate(roomDisplay.openCompartment, DISPLAY_3S);
+        openCompartment(compartment);
     }
 }
+bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
+{
+    specialActies_t requiredSpeciaAction = roomsSettings[roomIndex].specialActies;
+    if(requiredSpeciaAction == NON_S)
+    {
+        return true;
+    }
+    setRequiredSpecialActies(requiredSpeciaAction, true);
+    addDisplayTemplate(roomDisplay.specialActionPrompt, DISPLAY_3S);
+    specialActies_t preformedAction = getSpecialActies();
+    if(preformedAction == NON_S) return false;
+    
+    if(preformedAction != requiredSpeciaAction)
+    {
+        forceDisplayTemplate(roomDisplay.specialActionWrong, DISPLAY_3S);
+        applyWrongAnswerPenalty();
+        return false;
+    }
+    forceDisplayTemplate(roomDisplay.specialActionCorrect, DISPLAY_3S);
+    setRequiredSpecialActies(requiredSpeciaAction , false);
+    return true;
+    
+}
+bool commonRoom_AnswerCheck(roomDisplayConfig_t roomDisplay)
+{
+    updateInputBuffer();
+    if(!hasNewAnswer) return false;
+    bool correct = isAnswerCorrect(answerBuffer); 
+    if(correct)
+    {
+        forceDisplayTemplate(roomDisplay.answerCorrect, DISPLAY_3S); 
+        return true;
+    }
+    applyWrongAnswerPenalty();
+    forceDisplayTemplate(roomDisplay.answerWrong, DISPLAY_3S); 
+    return false;  
+}
   
+void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay)
+{
+    if(!isWithinTimeLimit()) {FSM_addEvent(E_ROOM_TIMEOUT); return;}
+
+    switch (state)
+    {
+        case STATE_WAIT_FOR_ROOM:
+        {
+            bool inCorrectRoom = isInCorrectRoom(beconIp);
+            addDisplayTemplate(roomDisplay.waitForRoom, 0);
+            if(inCorrectRoom)
+            {
+                forceDisplayTemplate(roomDisplay.enteredRoom, DISPLAY_3S);
+                state = STATE_ENTER_ANSWER;
+            }
+            break;
+        }
+        case STATE_ENTER_ANSWER:
+        {
+            addDisplayTemplate(roomDisplay.enterAnswer, 0);
+            bool result = commonRoom_AnswerCheck(roomDisplay);
+            if     (result) state = STATE_SPECIAL_ACTION;
+            break;
+        }
+        case STATE_SPECIAL_ACTION:
+        {
+            bool preformedAction =commonRoom_SpesialAction(roomDisplay);
+            if(preformedAction) state = STATE_HANDLE_COMPARTMENT;
+            break;
+        }
+        case STATE_HANDLE_COMPARTMENT:
+        {
+            commonRoom_Compartment(roomDisplay);
+            state = STATE_FINISHED;
+            break;
+        }
+        case STATE_FINISHED:
+        {
+            if(isDisplayTemplateDonPlaying())
+            {
+                if(roomIndex < getNumRooms() - 2)       FSM_addEvent(E_ROOM_COMPLETED);
+                else if (roomIndex < getNumRooms() - 1) FSM_addEvent(E_ROOM_LOOP_TO_LAST);
+                else                                    FSM_addEvent(E_LAST_ROOM_COMPLETED);
+            }
+ 
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}

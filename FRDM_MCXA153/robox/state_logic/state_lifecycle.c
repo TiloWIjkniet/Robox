@@ -29,7 +29,7 @@ void completed_onUpdate(void)
     if(now - lastBlink > BLINK_DURATION_DISARMT) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
     {
         lastBlink = now;
-        if(displayStatus) setGameTimer(getElapsedTime() / 1000);
+        if(displayStatus) setGameTimer(getTimeRemaining() / 1000);
         else displayDigits(OFF, OFF, OFF, OFF, OFF);
         displayStatus = !displayStatus;   
     }

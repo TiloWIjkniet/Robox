@@ -34,13 +34,13 @@ int main(void)
   
   while(1)
   {
-  
+    updateHM10();
     FSM_runStateMachine();
     updateDisplayQueue();
     buzzer_loop();
     if(gameActiv)
     {
-      updateHM10();
+
       touchUpdate();
       updateTimeGamePenaltyMillis();
       updateGameTimer();

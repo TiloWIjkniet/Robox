@@ -222,9 +222,9 @@ void addDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t 
  * @param displayTemplate Het template dat gecontroleerd moet worden.
  * @return true als het template klaar met speelen is.
  */
-bool isDisplayTemplateDonPlaying(const displayTemplate_t displayTemplate)
+bool isDisplayTemplateDonPlaying()
 {
-    if(displayQueue[0].displayLoadTemplate != displayTemplate && displayQueue[1].displayLoadTemplate != displayTemplate) return false; // Template niet in buffer
+    if(displayQueue[0].displayLoadTemplate != D_NON && displayQueue[1].displayLoadTemplate != D_NON) return true; // Template niet in buffer
 
     uint32_t now = millis();
     if(now - displayQueue[0].displayStartMillis < displayQueue[0].displayDurationMillis) return false; // Template still dusy
@@ -240,7 +240,7 @@ bool isDisplayTemplateDonPlaying(const displayTemplate_t displayTemplate)
  * @param state    de waarde die de actie moet krijgen (true = actie actief, false = actie niet actief).
  *  *
  */
-void serRequiredSpecialActies(const specialActies_t required, const bool state)
+void setRequiredSpecialActies(const specialActies_t required, const bool state)
 {
     switch (required)
     {

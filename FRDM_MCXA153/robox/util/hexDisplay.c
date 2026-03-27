@@ -1,5 +1,7 @@
 #include "board.h"
-
+#include <stdio.h>
+#include <string.h>
+#include "hexDisplay.h"
 #define TM1637_CMD_DATA 0x40
 #define TM1637_CMD_ADDR 0xC0
 #define TM1637_CMD_DISP 0x8F
@@ -7,6 +9,7 @@
 #define PIN_CLK 30
 #define PIN_DIO 31
 
+#define NUMBER_OF_HEX_NUMBERS 14
 
 
 void displayDigits(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t dot);
@@ -34,6 +37,7 @@ void hexDisplay_setTime(uint8_t minutes, uint8_t seconds)
     uint8_t hex3 = seconds % 10;
 
     char colom = 1;
+    //printf("min:%d sec: %d\n",minutes, seconds);
     displayDigits(hex0, hex1, hex2, hex3, colom);
 }
 
@@ -57,7 +61,8 @@ void stop(void) {
 }
 
 void writeByte(uint8_t b) {
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 8; i++) 
+  {
     setPintate_hexDisplay(PIN_CLK, false);
 
     if (b & 0x01) setPintate_hexDisplay(PIN_DIO, true);
@@ -74,7 +79,7 @@ void writeByte(uint8_t b) {
 
 void displayDigits(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t dot) 
 {
-const uint8_t hex_digits[] = {
+const uint8_t segments[NUMBER_OF_HEX_NUMBERS] = {
     0b00111111, // 0
     0b00000110, // 1
     0b01011011, // 2
@@ -91,12 +96,13 @@ const uint8_t hex_digits[] = {
     0b00000110  // I
 };
 
+
   uint8_t seg0 = segments[d0];
   uint8_t seg1 = segments[d1];
   uint8_t seg2 = segments[d2];
   uint8_t seg3 = segments[d3];
 
-  if (dot) seg1 |= 0b10000000;
+  if (dot != OFF) seg1 |= 0b10000000;
 
   start();
   writeByte(TM1637_CMD_DATA);

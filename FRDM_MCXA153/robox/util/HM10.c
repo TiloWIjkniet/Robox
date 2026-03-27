@@ -37,13 +37,12 @@ void sentDataToHM10(const char *mesag)
     {
         lpuart2_putchar(mesag[i]);
     }
-    lpuart2_putchar('\r');
-    lpuart2_putchar('\n');
+
 }
 
 void askForBeacons()
 {
-    sentDataToHM10("AT+DISA?"); // AT+DISI?
+    sentDataToHM10("AT+DISI?\r\n"); // AT+DISI?
     
 }
 
@@ -51,17 +50,12 @@ void HM10_init()
 {
     // WARN: Heb dit niew toe gevoegt dus werkt mis niet goed
     lpuart2_init(9600);
-    sentDataToHM10("AT+BAUD4");
-    lpuart2_init(115200);
 
-    uint32_t start = millis();
-    while((millis() - start) < 100);  // wacht ~100 ms
-    
-    sentDataToHM10("AT+ROLE1"); // master mode
-    sentDataToHM10("AT+IMME0"); // scan gelijk 
+    sentDataToHM10("AT+ROLE1\r\n"); // master mode
+    sentDataToHM10("AT+IMME0\r\n"); // scan gelijk 
 
-    sentDataToHM10("AT+POWE3"); // zet power hooger dus sneler detection en reaction
-    sentDataToHM10("AT+IBEA1"); // zorgt er voor dat je allen iBcons ziet 
+//    sentDataToHM10("AT+POWE3\r\n"); // zet power hooger dus sneler detection en reaction
+    sentDataToHM10("AT+IBEA1\r\n"); // zorgt er voor dat je allen iBcons ziet 
 
     
     askForBeacons();
@@ -75,15 +69,17 @@ void getBeconData()
             if (line_index < LINE_BUFFER_SIZE - 1)
             {
                 line_buffer[line_index++] = data;
-                lastReseaftMasige = millis();
+                
             }
 
             if (data == '\n')
             {
+                lastReseaftMasige = millis();
                 line_buffer[line_index] = '\0';
-                
+              
                 if (strstr(line_buffer, "4C000215") != NULL)
-                {
+                {   
+                    //printf("%s",line_buffer);
                     char strength[4];
                     strength[0] = line_buffer[75];
                     strength[1] = line_buffer[76];
@@ -127,6 +123,7 @@ void getBeconData()
                 if (strstr(line_buffer, "OK+DISCE") != NULL)
                 {
                     scanInProgress = false;
+                    printf("\n");
                 }
                 line_index = 0;
             }
@@ -138,16 +135,17 @@ void updateHM10()
 {
     
    
-    if(millis() - lastReseaftMasige > 1000) scanInProgress = false; // meschein sneller mis langzaamer
-    if(!scanInProgress) 
+    if(millis() - lastReseaftMasige > 500) scanInProgress = false; // meschein sneller mis langzaamer
+    if(scanInProgress) 
     {
-        lastReseaftMasige = millis();
-        scanInProgress = true;
-        askForBeacons();
+        getBeconData();
+        return;
     }
+    lastReseaftMasige = millis();
+    scanInProgress = true;
+    askForBeacons();
 
-
-    getBeconData();
+    
 
     for (int i = 0; i < beconIndex; i++)
     {
@@ -184,5 +182,5 @@ void updateHM10()
         strcpy(beconIp, becons[lowestBeaconIndex].beaconIp);
     }
 
-    printf("Lowest: %s\n", beconIp);
+   // printf("Lowest: %s\n", beconIp);
 }

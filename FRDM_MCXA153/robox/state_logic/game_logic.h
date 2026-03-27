@@ -16,7 +16,7 @@
 void updateDisplayQueue();
 void forceDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis);
 void addDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis);
-bool isDisplayTemplateDonPlaying(displayTemplate_t displayTemplate);
+bool isDisplayTemplateDonPlaying();
 
 
 // =======================
@@ -48,7 +48,7 @@ void setGameTimer(int32_t sec);
 // 📍 GAME STATE / INPUT
 // =======================
 
-bool isInCorrectRoom(char *beconIp);
+bool isInCorrectRoom(const char *beconIp);
 bool isAnswerCorrect(char *userInput);
 bool isInputMatching(const char *input, const char *correctInput);
 
@@ -59,9 +59,9 @@ uint8_t getNumRooms(void);
 // =======================
 // 🔐 HARDWARE / ACTIES
 // =======================
-
+void setRequiredSpecialActies(const specialActies_t required, const bool state);
 compartment_t openCompartment(compartment_t compartment);
-void setMapCoordinates(uint8_t coordinates[2]);
+void setMapCoordinates(const uint8_t coordinates[2]);
 
 // =======================
 // 📡 COMMUNICATIE
