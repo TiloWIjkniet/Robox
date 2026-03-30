@@ -104,18 +104,17 @@ displayQueueItem_t displayQueue[2] = {emptyDisplayItem, emptyDisplayItem};
  * @note Deze functie wordt normaal alleen intern gebruikt door
  *       de display queue mechanismen.
  */
-void loadDisplayTemplate(displayTemplate_t displayTemplate)
+void loadDisplayTemplate(displayTemplate_t template)
 {
     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
     if(globalSettings.censorship == NOT_CENSORED)
     {
-        printf(displayTemplate[displayTemplate]);
+        printf(displayTemplates[template]);
     }
     else
     {
-        printf(displayTemplatesSafe[displayTemplate]);
+        printf(displayTemplatesSafe[template]);
     }
-  
 }
 /**
  * @brief Update de display queue en verwerkt de timers.

@@ -13,11 +13,13 @@
 #include "lpuart1.h"
 #include "lpuart2.h"
 #include "HM10.h"
+#include "audio.h"
 int main(void)
 {
 
 
-  serial_init(115200);
+
+  serial_init(9600);
   lpuart1_init(115200);
   //lpuart2_init word in void HM10_init() ingesteld 
 
@@ -28,15 +30,20 @@ int main(void)
   touchSensor_init();
   hexDisplay_init();
   HM10_init();
-  
-  receive_room_settings_from_esp();
+  audio_init();
+
+   audioSetVolume((uint8_t)5);
+  playGlobelAudio(AUDIO_CHECK);
+ // receive_room_settings_from_esp();
+
   
   while(1)
   {
     updateHM10();
     FSM_runStateMachine();
-    updateDisplayQueue();
+    //updateDisplayQueue();
     buzzer_loop();
+    updateAudioQueue();
     if(gameActiv)
     {
 

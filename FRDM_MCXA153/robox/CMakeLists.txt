@@ -59,6 +59,9 @@ mcux_add_source(
             util/hexDisplay.h
             util/HM10.c
             util/HM10.h
+            util/audio.c
+            util/audio.h
+
 
             board/board.h
 )

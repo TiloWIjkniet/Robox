@@ -976,8 +976,9 @@ generateSettingsTable([
         },
     { key: "start-tijd",label: "Starttijd", type:  "text", value: 60 , help:"Hoeveel tijd er is om het spel op te lossen"},
     { key: "audio",label: "Audio ", type: "select", value: 0, options: [
-            { label: "Aan", value: 0 },
-            { label: "Uit", value: 1 }],
+            { label: "Engels", value: 0 },
+            { label: "Nederlands", value: 1 },
+            { label: "Uit", value: 2}],
             help:"Toggle sound effects en getik "  
         },
     { key: "censorship",label: "Censorship ", type: "select", value: 0, options: [

@@ -6,6 +6,7 @@
 #include "buzzer.h"
 #include "hexDisplay.h"
 #include "time_millis.h"
+#include "audio.h"
 #define BLINK_DURATION_DISARMT 500
 #define MAX_BLINK_DURATION_TIMEOUT 200
 #define MIN_BLINK_DURATION_TIMEOUT 25
@@ -18,6 +19,7 @@ void completed_onEntry(void)
     gameActiv = false;
     startRoomTimeMillis = millis();
     addDisplayTemplate(D_WIN, END_SCREEN_DURATION);
+    playAudio(BOM_HAS_BEEN_DEFUSED);
 }
 void completed_onUpdate(void) 
 { 
@@ -47,7 +49,7 @@ void timeout_onEntry(void)
     gameActiv = false;
     startRoomTimeMillis = millis();
     addDisplayTemplate(D_TIME_UP, END_SCREEN_DURATION);
-
+    playAudio(TIME_IS_UP);
 }
 void timeout_onUpdate(void) 
 { 

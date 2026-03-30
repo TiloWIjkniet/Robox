@@ -1,3 +1,4 @@
+#include "display_template.h"
 const char* displayTemplates[MAX_TEMPLATES] = {
 
     "NON\n",

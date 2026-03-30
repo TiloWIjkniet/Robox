@@ -75,13 +75,13 @@ void serial_init(const uint32_t baudrate)
     // PORT0: [1] = Peripheral clock is enabled
     MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_LPUART0(1);
     MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_PORT0(1);
-
+    MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_PORT2(1);
     // Release modules from reset and leave others unchanged
     // LPUART0: [1] = Peripheral is released from reset
     // PORT0: [1] = Peripheral is released from reset
     MRCC0->MRCC_GLB_RST0_SET = MRCC_MRCC_GLB_RST0_LPUART0(1);
     MRCC0->MRCC_GLB_RST0_SET = MRCC_MRCC_GLB_RST0_PORT0(1);
-
+    MRCC0->MRCC_GLB_RST0_SET = MRCC_MRCC_GLB_RST0_PORT2(1);
     // Configure P0_2
     // LK : [1] = Locks this PCR
     // INV: [0] = Does not invert
@@ -95,7 +95,7 @@ void serial_init(const uint32_t baudrate)
     // PE:  [0] = Disables
     // PS:  [0] = n.a.
     PORT0->PCR[2] = PORT_PCR_LK(1) | PORT_PCR_MUX(2) | PORT_PCR_IBE(1);
-
+    PORT2->PCR[0] = PORT_PCR_LK(1) | PORT_PCR_MUX(2) | PORT_PCR_IBE(1);
     // Configure P0_3
     // LK : [1] = Locks this PCR
     // INV: [0] = Does not invert
@@ -108,6 +108,7 @@ void serial_init(const uint32_t baudrate)
     // PE:  [0] = Disables
     // PS:  [0] = n.a.
     PORT0->PCR[3] = PORT_PCR_LK(1) | PORT_PCR_MUX(2);
+    PORT2->PCR[1] = PORT_PCR_LK(1) | PORT_PCR_MUX(2);
 
     // Configure LPUART0. Although there are a lot of configuration options, the
     // default configuration takes the following steps:
@@ -202,8 +203,8 @@ void LPUART0_IRQHandler(void)
             // Error: receive FIFO full!!
             // Should not happen, so freeze the system. Update FIFO size to
             // match your application.
-            while (1)
-            {}
+            // while (1)
+            // {}
         }
     }
 }

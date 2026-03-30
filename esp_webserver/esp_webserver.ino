@@ -75,7 +75,8 @@ enum __attribute__((packed)) wrongAnswerPenalty_t : uint8_t
 
 enum __attribute__((packed)) audio_t : uint8_t
 {
-    AUDIO_ON,       
+    AUDIO_ENGELS,       
+    AUDIO_NEDERLANTS,
     AUDIO_OFF
 } ;
 

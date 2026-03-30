@@ -9,7 +9,9 @@
 #include "lpuart1.h"
 #include "time_millis.h"
 #include "hexDisplay.h"
-
+#include "audio.h"
+#include <string.h>
+#include <stdlib.h>
 #define WEBSERVER_ON  0xCC
 #define WEBSERVER_OFF 0xEE
 #define START_BYTE_GET_SETTINGS_DATA 0xBB
@@ -29,7 +31,7 @@ globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_STOP,
     60,
-    AUDIO_ON,
+    AUDIO_ENGELS,
     NOT_CENSORED
 };
 runData_t runData = 
@@ -66,6 +68,16 @@ void dev_page_onUpdate(void)
     {
         openCompartment(NON_C);
         //TODO: Moet nog ge implementeerd worden
+        return;
+    }
+    char *pos = strstr(answerBuffer, "1111");
+    if(pos != NULL)
+    {
+        pos += 4;
+        int value = atoi(pos);
+        audioSetVolume((uint8_t)value);
+        playGlobelAudio(CORRECT_ANSWER);
+        return;
     }
 
     uint8_t numberOfRooms = getNumRooms();

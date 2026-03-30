@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "time_millis.h"
 #include "buzzer.h"
+#include "audio.h"
 #define ROWS 4
 #define COLS 3
 
@@ -142,7 +143,8 @@ void updateInputBuffer()
       inputBuffer[inputBufferIndex] = '\0';
     break;
   }
-  buzzer_play(BUZZERT_DURATION);
+  // NOTE: Mogelijk audio meten forseren om geen erg laten audio feedback te krijgen bij het indrukken van toetsen
+  playGlobelAudio(NUMPAD_INPUT);
 
   //TEMP: Print de inhoud van de input buffer voor debug doeleinden
   printf("Input buffer: %s\n", inputBuffer);

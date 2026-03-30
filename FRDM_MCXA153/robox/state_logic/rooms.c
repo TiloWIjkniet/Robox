@@ -9,6 +9,7 @@
 #include "keypad.h"
 #include "touch_sensor.h"
 #include "HM10.h"
+#include "audio.h"
 
 #define DISPLAY_5S 5000
 #define DISPLAY_3S 3000
@@ -100,6 +101,8 @@ void first_room_onEntry(void)
     commonRoom_onEntry();
 
     forceDisplayTemplate(D_START_GAME, DISPLAY_5S);
+
+    playAudio(BOM_HAS_BEEN_PLANTED);
 }
 void first_room_onUpdate(void)
 {
@@ -178,6 +181,7 @@ void commonRoom_Compartment(roomDisplayConfig_t roomDisplay)
     {
         addDisplayTemplate(roomDisplay.openCompartment, DISPLAY_3S);
         openCompartment(compartment);
+
     }
 }
 bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
@@ -202,10 +206,13 @@ bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
     {
         forceDisplayTemplate(roomDisplay.specialActionWrong, DISPLAY_3S);
         applyWrongAnswerPenalty();
+        playGlobelAudio(WRONG_ANSWER);
         return false;
     }
     forceDisplayTemplate(roomDisplay.specialActionCorrect, DISPLAY_3S);
     setRequiredSpecialActies(requiredSpeciaAction , false);
+    playGlobelAudio(CORRECT_ANSWER);
+
     return true;
     
 }
@@ -217,10 +224,12 @@ bool commonRoom_AnswerCheck(roomDisplayConfig_t roomDisplay)
     if(correct)
     {
         forceDisplayTemplate(roomDisplay.answerCorrect, DISPLAY_3S); 
+        playGlobelAudio(CORRECT_ANSWER);
         return true;
     }
     applyWrongAnswerPenalty();
     forceDisplayTemplate(roomDisplay.answerWrong, DISPLAY_3S); 
+    playGlobelAudio(WRONG_ANSWER);
     return false;  
 }
   
@@ -237,6 +246,7 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay)
             if(inCorrectRoom)
             {
                 forceDisplayTemplate(roomDisplay.enteredRoom, DISPLAY_3S);
+                playGlobelAudio(CORRECT_ANSWER);
                 state = STATE_ENTER_ANSWER;
             }
             break;
@@ -251,7 +261,10 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay)
         case STATE_SPECIAL_ACTION:
         {
             bool preformedAction =commonRoom_SpesialAction(roomDisplay);
-            if(preformedAction) state = STATE_HANDLE_COMPARTMENT;
+            if(preformedAction)
+            {
+                state = STATE_HANDLE_COMPARTMENT;
+            }
             break;
         }
         case STATE_HANDLE_COMPARTMENT:

@@ -65,7 +65,8 @@ typedef enum
 
 typedef enum
 {
-    AUDIO_ON,       
+    AUDIO_ENGELS,       
+    AUDIO_NEDERLANTS,
     AUDIO_OFF
 }audio_t;
 
