@@ -82,7 +82,7 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay);
 void first_room_onEntry(void)
 {
     //Reset run data
-    resetVirtualTime();
+    resetGameLogic();
 
     gameActiv = true;
     roomIndex = 0;
@@ -194,9 +194,9 @@ bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
     setRequiredSpecialActies(requiredSpeciaAction, true);
 
     displayTemplate_t specialActieTemplate;
-    if(requiredSpeciaAction == TOUCH_SENSOR) specialActieTemplate = D_SCAN; 
-    else if(requiredSpeciaAction == NON_S) specialActieTemplate = D_KEY; 
-    else if(requiredSpeciaAction == NON_S) specialActieTemplate = D_SWITCH; 
+    if(requiredSpeciaAction == FINGER_PRINT_S)  specialActieTemplate = D_SCAN; 
+    else if(requiredSpeciaAction == KEY_S)      specialActieTemplate = D_KEY; 
+    else if(requiredSpeciaAction == SWITCH_S)   specialActieTemplate = D_SWITCH; 
 
     addDisplayTemplate(specialActieTemplate, DISPLAY_3S);
     specialActies_t preformedAction = getSpecialActies();
@@ -205,8 +205,6 @@ bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
     if(preformedAction != requiredSpeciaAction)
     {
         forceDisplayTemplate(roomDisplay.specialActionWrong, DISPLAY_3S);
-        applyWrongAnswerPenalty();
-        playGlobelAudio(WRONG_ANSWER);
         return false;
     }
     forceDisplayTemplate(roomDisplay.specialActionCorrect, DISPLAY_3S);

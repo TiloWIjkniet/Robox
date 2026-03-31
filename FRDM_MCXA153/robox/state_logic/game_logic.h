@@ -23,8 +23,10 @@ bool isDisplayTemplateDonPlaying();
 // 🎮 GAME FLOW / LOGIC
 // =======================
 
+void resetGameLogic();
 specialActies_t getSpecialActies();
 void applyWrongAnswerPenalty();
+void updateSpecialActies();
 
 bool isWithinTimeLimit(void);
 uint32_t getElapsedTime();
@@ -39,7 +41,7 @@ uint32_t getWrongAnswerPenalty();
 
 void updateVirtualTime();
 uint32_t getVirtualElapsedTime();
-void resetVirtualTime();
+
 
 void updateGameTimer();
 void setGameTimer(int32_t sec);

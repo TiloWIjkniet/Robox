@@ -70,7 +70,7 @@ typedef enum
 
     // ERROR
     D_ERROR,
-
+    D_ERROR_SWITCH_OR_KEY_NEETST_TO_BE_RESET,
     D_MAX
 }displayTemplate_t;
 

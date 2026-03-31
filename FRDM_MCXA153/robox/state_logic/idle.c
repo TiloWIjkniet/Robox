@@ -14,16 +14,25 @@ void idle_onEntry(void)
 {
     emptyInputBuffer();
     setMapCoordinates((uint8_t[]){INVALID_COORD, INVALID_COORD});
-    forceDisplayTemplate(D_IDLE, 0);
+    
     displayDigits(OFF,IDLE_MODE_HEX_DIS,OFF,IDLE_MODE_HEX_DIS,OFF);
 }
 void idle_onUpdate(void)
 {
+    addDisplayTemplate(D_IDLE, 0);
     updateInputBuffer();
     if(!hasNewAnswer) return;
 
     if(isInputMatching(answerBuffer, ENTER_DEV_CODE)) {FSM_addEvent(E_START_DEV); return;} 
     
+    //Zorgt ervoor dat als de switch of key nog niet gereset is, het spel niet start en er een foutmelding komt te staan.
+    bool rawKeyState = readRawKeySensor();
+    bool rawSwitchState = readRawSwitchSensor();
+    if(rawKeyState || rawSwitchState) 
+    {
+        forceDisplayTemplate(D_ERROR_SWITCH_OR_KEY_NEETST_TO_BE_RESET, DISPLAY_5S);
+        return;
+    }
     FSM_addEvent(E_START_GAME); 
 }
 void idle_onExit(void)

@@ -88,7 +88,10 @@ void dev_page_onUpdate(void)
         {   
             receive_room_settings_from_esp();                                   //Verkrijg ingestelde data van esp
             setMapCoordinates(roomsSettings[room].coordinates);                 //Zet de codinate van de geslecteerde kamer aan
-            hexDisplay_setTime(0,room);
+            
+            uint8_t roomFirstDigit = room / 10;
+            uint8_t roomSecondDigit = room % 10;
+            displayDigits(OFF,OFF,roomFirstDigit > 0 ? roomFirstDigit : OFF, roomSecondDigit, OFF); //disply het kamernummer op de hex display
             //TODO: Dispalys de settings voor die spesefieke room 
             break;
         }
@@ -248,7 +251,6 @@ void receive_room_settings_from_esp(void)
  */
 void send_run_data_to_esp(void)
 {
-    
     uint8_t *data = (uint8_t*)&runData;
     size_t size = sizeof(runData);
 
@@ -257,5 +259,5 @@ void send_run_data_to_esp(void)
     for (size_t i = 0; i < size; i++)
     {
         lpuart1_putchar(data[i]);
-    }
+    }   
 }

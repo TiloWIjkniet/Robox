@@ -4,8 +4,10 @@
 #include "time_millis.h"
 #include "serial.h"
 #include <stdio.h>
+
 #define BUSY_PIN 2
 #define QUEUE_SIZE 20
+
 typedef struct 
 {
     uint8_t  command;
@@ -89,13 +91,13 @@ void updateAudioQueue()
 
     if (queueHead == queueTail) return;
 
-    if (!getPinStateAudio()) return;
-
     // Kleine vertraging tussen commando's
     uint32_t now = millis();
     if (now - lastSendTime < 100) return;
     lastSendTime = now;
 
+    if (!getPinStateAudio()) return;
+    
     // Stuur volgende commando in queue
     // printf("head %d, tail %d\n", queueHead, queueTail);
     sendCommand(audioQueue[queueTail]);
@@ -107,6 +109,8 @@ void audioPlayInFile(uint8_t file, uint8_t audio)
 {
   enqueueCommand(CMD_SPECIFIC_FOLDER, ((uint16_t)file << 8) | audio);
 }
+
+
 
 void audioSetVolume(uint8_t volume)
 {
@@ -125,6 +129,6 @@ void playAudio(audio_files_t audioFile)
 
     if(globalSettings.audio == AUDIO_OFF) return;
     
-    uint8_t file = (globalSettings.audio == AUDIO_ENGELS) ? ENGLISH_FOLDER : NEDERLANDS_FOLDER;
+    uint8_t file = (globalSettings.language == LANGUAGE_ENGLISH) ? ENGLISH_FOLDER : NEDERLANDS_FOLDER;
     audioPlayInFile(file + globalSettings.censorship, audioFile);
 }

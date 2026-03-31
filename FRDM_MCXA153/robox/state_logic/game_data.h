@@ -39,8 +39,9 @@ typedef enum // let op ook op esp aanpassen
 typedef enum  // let op ook op esp aanpassen
 {
     NON_S,
-    TOUCH_SENSOR,
-    TWO_S
+    SWITCH_S,
+    KEY_S,
+    FINGER_PRINT_S
 }specialActies_t;
 
 typedef struct 
@@ -64,9 +65,8 @@ typedef enum
 }wrongAnswerPenalty_t;
 
 typedef enum
-{
-    AUDIO_ENGELS,       
-    AUDIO_NEDERLANTS,
+{      
+    AUDIO_ON,
     AUDIO_OFF
 }audio_t;
 

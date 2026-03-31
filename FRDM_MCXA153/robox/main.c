@@ -42,21 +42,23 @@ int main(void)
     if(gameActiv)
     {
 
-      touchUpdate();
+      
       updateTimeGamePenaltyMillis();
       updateGameTimer();
+      updateSpecialActies();
       if(globalSettings.difficulty == WRONG_ANSWER_TIME_X2) updateVirtualTime();
     }
 
   }
 }
-
+//WARN : controleer of updateSpecialActies() werkt
 //WARN : De function voor gesenureert is to gevoegt maar grote kans dat er nog iets mis in zit
 //WARN : audio module is toegevoegd, moet nog goed getest worden en geintergreert worden
 
-//TODO: Taal van display templates wort nu aan gepast aan de hand van de audio instelling, hier voor een aparte instelling voor maken dat je hebt audio aan/ uit en taal NL/EN
+//DONE: Taal van display templates wort nu aan gepast aan de hand van de audio instelling, hier voor een aparte instelling voor maken dat je hebt audio aan/ uit en taal NL/EN
 //DONE: uitzoeken hoe lupart0 werkt.
 //DONE: audio uitzoeken en triggers voor die aurio maken.
 
 //DONE : In global setting bool maken voor gesensureert en uit audio halen. dit ook aanpassen in websiten en esp na aanlijding hier van de juiste template en audio evecten gebruiken.
 //IDEA: In send run data rety function maken
+//IDEA: MS_PER_TICK_PANALTY variable maken tot betrekking tot globalSetting.difeculty //DONE: gelijk gemaakt als Time.DeltaTime

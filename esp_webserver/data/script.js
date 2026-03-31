@@ -936,8 +936,8 @@ function loadSettings(kamerSettingsDiv, data)
 // Voorbeeld aanroepen:
 generateSettingsTable([
     {  key: "naam-kamer", label: "Naam kamer", type: "text", value: "Kamer " + index,help:"De naam van de kamer"},
-    { key: "becon-ip", label: "Beacon ip", type:  "text", value: "" , help:"Het aderes van de becon"},
-    { key: "antwoord",label: "Antwoord", type:  "text", value: "", help:"Welk antwoord er goed zijn <br> Gebruik een ',' om meerdere antwoorden in te vullen <br>" },
+    { key: "becon-ip", label: "Beacon ip", type:  "text", value: "null" , help:"Het aderes van de becon"},
+    { key: "antwoord",label: "Antwoord", type:  "text", value: "null", help:"Welk antwoord er goed zijn <br> Gebruik een ',' om meerdere antwoorden in te vullen <br>" },
     { key: "open-compartment",label: "Open compartiment",type: "select", value: 0, options: [
             { label: "Geen", value: 0 },
             { label: "Compartiment 1", value: 1 },
@@ -947,7 +947,7 @@ generateSettingsTable([
     },
     { key: "special-acties",label: "Speciale acties",type: "select", value: 0, options: [
             { label: "Geen", value: 0 },
-            { label: "Knip draat", value: 1 },
+            { label: "Schakalaar", value: 1 },
             { label: "Draai sluetel", value: 2 },
             { label: "Vinger print", value: 3 }],
             help:"hebt keuzen om spechale actie uit te moeten voeren "
@@ -1059,9 +1059,9 @@ async function loadData()
                     kamerList.push(
                     [null,k[1],
                     {
-                        "naam-kamer": k[2]["naam-kamer"] || "",
-                        "becon-ip": k[2]["becon-ip"] || "",
-                        "antwoord": k[2]["antwoord"] || "",
+                        "naam-kamer": k[2]["naam-kamer"] || "null",
+                        "becon-ip": k[2]["becon-ip"] || "null",
+                        "antwoord": k[2]["antwoord"] || "null",
                         "open-compartment": k[2]["open-compartment"] || 0,
                         "special-acties": k[2]["special-acties"] || 0
                     }]);
@@ -1277,8 +1277,8 @@ function importSettingsNoLib(file)
         data.kamerList.forEach(k => {
             const kamerData = k[2] || {
                 "naam-kamer": "",
-                "becon-ip": "",
-                "antwoord": "",
+                "becon-ip": "null",
+                "antwoord": "null",
                 "open-compartment": 0,
                 "special-acties": 0
             };

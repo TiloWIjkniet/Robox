@@ -188,6 +188,12 @@ const char* displayTemplatesNL[MAX_TEMPLATES] = {
     "|   Systeem gestopt                                      |\n"
     "|   Herstart vereist                                     |\n"
     "|--------------------------------------------------------|\n",
+
+    "|--------------------------------------------------------|\n"
+    "|   Schakelaar en/of sleutel niet gereset                |\n"
+    "|   Reset alstublieft de schakelaar en/of sleutel        |\n"
+    "|   Probeer het daarna opnieuw                           |\n"
+    "|--------------------------------------------------------|\n"
 };
 
 const char* displayTemplatesSafeNL[MAX_TEMPLATES] = {
@@ -379,6 +385,12 @@ const char* displayTemplatesSafeNL[MAX_TEMPLATES] = {
     "|   Systeem gestopt                                      |\n"
     "|   Herstart vereist                                     |\n"
     "|--------------------------------------------------------|\n",
+
+    "|--------------------------------------------------------|\n"
+    "|   Schakelaar en/of sleutel niet gereset                |\n"
+    "|   Reset alstublieft de schakelaar en/of sleutel        |\n"
+    "|   Probeer het daarna opnieuw                           |\n"
+    "|--------------------------------------------------------|\n"
 };
 
 const char* displayTemplatesEn[MAX_TEMPLATES] = {
@@ -570,6 +582,12 @@ const char* displayTemplatesEn[MAX_TEMPLATES] = {
     "|   System stopped                                       |\n"
     "|   Restart required                                     |\n"
     "|--------------------------------------------------------|\n",
+
+    "|--------------------------------------------------------|\n"
+    "|   Switch or/and key not reset                          |\n"
+    "|   Please reset the switch or key                       |\n"
+    "|   Then try again                                       |\n"
+    "|--------------------------------------------------------|\n",
 };
 
 const char* displayTemplatesSafeEn[MAX_TEMPLATES] = {
@@ -760,5 +778,11 @@ const char* displayTemplatesSafeEn[MAX_TEMPLATES] = {
     "|   Critical error                                       |\n"
     "|   System stopped                                       |\n"
     "|   Restart required                                     |\n"
+    "|--------------------------------------------------------|\n",
+
+    "|--------------------------------------------------------|\n"
+    "|   Switch or/and key not reset                          |\n"
+    "|   Please reset the switch or key                       |\n"
+    "|   Then try again                                       |\n"
     "|--------------------------------------------------------|\n",
 };

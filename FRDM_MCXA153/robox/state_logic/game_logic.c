@@ -8,7 +8,8 @@
 #include "touch_sensor.h"
 #include "hexDisplay.h"
 #include "game_logic.h"
-
+#include "audio.h"
+#include "switch_and_key_sensors.h"
 #define MS_PER_TICK_PANALTY 10
 
 uint32_t timeGamePanaltyBuffer=0;
@@ -19,6 +20,10 @@ uint8_t roomIndex=0;
 uint8_t virtualTimeMultiplier = 1;
 uint32_t virtualTime = 0;
 uint32_t lastRealTime = 0;
+
+specialActies_t requiredSpecialActies = NON_S;
+specialActies_t preformtSpecialAction = NON_S;
+uint8_t requiredActions = 0;
 
 uint32_t getWrongAnswerPenalty();
 bool isInputMatching(const  char *input, const char *correctInput);
@@ -44,6 +49,12 @@ typedef struct
     uint8_t y;
 }coordinates_t;
 
+void resetGameLogic()
+{
+    requiredctions = 0;
+    resetVirtualTime();
+}
+
 /**
  * @brief Updateert de kaartcoördinaten indien ze veranderd zijn.
  *
@@ -60,8 +71,6 @@ void setMapCoordinates(const uint8_t coordinates[2])
     static coordinates_t lastCoordinates = {.x = INVALID_COORD, .y = INVALID_COORD};
     coordinates_t my_coordinates = {.x = coordinates[0], .y = coordinates[1]};
 
-
-    
     if(my_coordinates.x == lastCoordinates.x && my_coordinates.y == lastCoordinates.y) return; 
     
     lastCoordinates.x = my_coordinates.x;
@@ -109,12 +118,12 @@ void loadDisplayTemplate(displayTemplate_t template)
     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
     if(globalSettings.censorship == NOT_CENSORED)
     {
-        if(globalSettings.audio == AUDIO_NEDERLANTS)printf(displayTemplatesNL[template]);
+        if(globalSettings.language == LANGUAGE_NEDERLANDS)printf(displayTemplatesNL[template]);
         else printf(displayTemplatesEn[template]);
     }
     else
     {
-        if(globalSettings.audio == AUDIO_NEDERLANTS)printf(displayTemplatesSafeNL[template]);
+        if(globalSettings.language == LANGUAGE_ENGLISH)printf(displayTemplatesSafeNL[template]);
         else printf(displayTemplatesSafeEn[template]);   
     }
 }
@@ -237,16 +246,87 @@ bool isDisplayTemplateDonPlaying()
  */
 void setRequiredSpecialActies(const specialActies_t required, const bool state)
 {
+    requiredSpecialActies = state ? required : NON_S;
     switch (required)
     {
-    case TOUCH_SENSOR:
+    case FINGER_PRINT_S:
         setMustTouchSensor(state);
+
         break;
-    
+    case KEY_S:
+        
+        break;
+    case SWITCH_S:
+
+        break;
     default:
         break;
     }
 }
+
+
+void updateSpecialActies()
+{     
+    static bool lastTouchPressed = false;
+    bool touchPressed = isTouchPressed();
+    if(touchPressed && touchPressed != lastTouchPressed) 
+    {
+
+        if(requiredSpecialActies != NON_S)
+        {
+            preformtSpecialAction = FINGER_PRINT_S;
+        }
+        
+        if(requiredSpecialActies != FINGER_PRINT_S)
+        {
+            applyWrongAnswerPenalty();
+        }
+        
+    }    
+    lastTouchPressed = touchPressed;
+
+    
+    uint8_t lastingActions = 0;
+    bool actionCorect = false;
+
+    if(readKeySensor())       lastingActions |= (1 << KEY_S);
+    if(readSwitchSensor())    lastingActions |= (1 << SWITCH_S);
+    if(lastingActions == requiredActions) return;
+    
+    if((lastingActions & (1 << SWITCH_S)))
+    {
+        if(requiredSpecialActies != NON_S)
+        {
+            if(requiredSpecialActies == SWITCH_S)
+            {
+                requiredActions |= (1 << SWITCH_S);
+                actionCorect = true;
+            }
+            preformtSpecialAction = SWITCH_S;
+        }
+    }
+    if((lastingActions & (1 << KEY_S)))
+    {
+        if(requiredSpecialActies != NON_S)
+        {
+            if(requiredSpecialActies == KEY_S)
+            {
+                requiredActions |= (1 << KEY_S);
+                actionCorect = true;
+            }
+            preformtSpecialAction = KEY_S;
+        }
+    }
+
+    if(!actionCorect)
+    {
+        static uint32_t lastPanaltyUpdate = 0;
+        uint32_t now = millis();
+        timeGamePanaltyMillis += MS_PER_TICK_PANALTY * (now - lastPanaltyUpdate);
+        lastPanaltyUpdate = now;
+    }
+}
+
 /**
  * @brief Bepaalt welke speciale actie uitgevoerd moet worden.
  *
@@ -262,19 +342,9 @@ void setRequiredSpecialActies(const specialActies_t required, const bool state)
  */
 specialActies_t getSpecialActies()
 {
-    static specialActies_t lastSpecialActies = NON_S;
-    specialActies_t newAction = NON_S;
-
-    if     (isTouchLongPressed())   newAction = TOUCH_SENSOR;
-    else if(false)                  newAction = TWO_S;
-    
-    if(newAction != lastSpecialActies)
-    { 
-        lastSpecialActies = newAction;
-        return newAction;
-    }
-    
-    return NON_S;
+    specialActies_t specialAction = preformtSpecialAction;
+    preformtSpecialAction = NON_S;
+    return specialAction;
 }
 
 /**
@@ -311,11 +381,15 @@ uint32_t getElapsedTime()
  */
 void updateTimeGamePenaltyMillis()
 {
+  
     if(timeGamePanaltyBuffer <= 0) return;
-    if(timeGamePanaltyBuffer >= MS_PER_TICK_PANALTY)
+    static uint32_t lastPanaltyUpdate = 0;
+    uint32_t now = millis();
+    if(timeGamePanaltyBuffer >= MS_PER_TICK_PANALTY * (now - lastPanaltyUpdate))
     {
-        timeGamePanaltyBuffer -= MS_PER_TICK_PANALTY;
-        timeGamePanaltyMillis += MS_PER_TICK_PANALTY;
+        timeGamePanaltyBuffer -= MS_PER_TICK_PANALTY * (now - lastPanaltyUpdate);
+        timeGamePanaltyMillis += MS_PER_TICK_PANALTY * (now - lastPanaltyUpdate);
+        lastPanaltyUpdate = now;
     }
     else
     {

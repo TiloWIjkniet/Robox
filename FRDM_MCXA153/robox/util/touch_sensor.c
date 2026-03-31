@@ -50,10 +50,9 @@ void touchSensor_init()
     setCollor(OFF);
 }
 
-bool longPres = false;
 bool mustPres = false;
 
-void touchUpdate()
+bool isTouchPressed()
 {
   // WARN: Heb dit niew toe gevoegt dus werkt mis niet goed
   typedef enum {FIRST_PRES, PRESSING, RELEASE, FIRST_LONG_PRESSED, LONG_PRESSED} touchState_t;
@@ -77,7 +76,6 @@ void touchUpdate()
   case RELEASE:
     if(isPressing) touchState = FIRST_PRES;
     setCollor(mustPres? WHITE : OFF);
-    longPres = false;
     break;
   case FIRST_PRES:
     touchState = PRESSING;
@@ -104,13 +102,16 @@ void touchUpdate()
   case FIRST_LONG_PRESSED:
     setCollor(mustPres? GREEN : RED);
     touchState = LONG_PRESSED;
-    longPres = true;
+     
     break;
   case LONG_PRESSED:
     if(now - lastValidPress > TOUCH_GLITCH_FILTER_MS) touchState = RELEASE;
     mustPres = false;
+    return true;
     break;
+    
   }
+  return false;
 
 }
 
@@ -124,23 +125,6 @@ void setMustTouchSensor(bool must)
   mustPres = must;
 }
 
-/**
- * @brief Controleert of de touch sensor lang genoeg wordt ingedrukt.
- *
- * Deze functie detecteert een "long press" op de touch sensor.
- *
- * LED indicatie:
- * - Wit  : idle
- * - Rood : aanraking bezig
- * - Groen: long press gedetecteerd
- *
- * @return true  wanneer de sensor langer dan TOUCH_HOLD_TIME_MS wordt ingedrukt
- * @return false wanneer er geen geldige long press is
- */
-bool isTouchLongPressed() 
-{
-  return longPres;
-}
 
 /**
  * @brief Leest de huidige status van een GPIO pin voor de touch sensor.

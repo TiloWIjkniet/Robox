@@ -10,8 +10,8 @@ typedef enum
 }collors_t;
 
 void touchSensor_init();
-bool isTouchLongPressed(); 
+
 void setCollor(collors_t collor);
-void touchUpdate();
+bool isTouchPressed();
 void setMustTouchSensor(bool must);
 #endif

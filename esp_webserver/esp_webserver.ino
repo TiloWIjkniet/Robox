@@ -575,7 +575,7 @@ void getRunData(uint8_t byteIn)
       recordings[i] = recordings[i-1];
     }
     recordings[0] = runDataBuffer; 
-    saveRecordingsToFlash() ;
+    saveRecordingsToFlash();
 
   }
   
