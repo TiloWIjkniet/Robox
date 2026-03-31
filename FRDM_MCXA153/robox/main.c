@@ -18,7 +18,6 @@ int main(void)
 {
 
 
-
   serial_init(9600);
   lpuart1_init(115200);
   //lpuart2_init word in void HM10_init() ingesteld 
@@ -31,17 +30,13 @@ int main(void)
   hexDisplay_init();
   HM10_init();
   audio_init();
-
-   audioSetVolume((uint8_t)5);
-  playGlobelAudio(AUDIO_CHECK);
- // receive_room_settings_from_esp();
-
+  receive_room_settings_from_esp();
   
   while(1)
   {
     updateHM10();
     FSM_runStateMachine();
-    //updateDisplayQueue();
+    updateDisplayQueue();
     buzzer_loop();
     updateAudioQueue();
     if(gameActiv)
@@ -55,11 +50,13 @@ int main(void)
 
   }
 }
-//
-// WARN : De function voor gesenureert is to gevoegt maar grote kans dat er nog iets mis in zit
 
-//TODO: uitzoeken hoe lupart0 werkt.
-//TODO: audio uitzoeken en triggers voor die aurio maken.
+//WARN : De function voor gesenureert is to gevoegt maar grote kans dat er nog iets mis in zit
+//WARN : audio module is toegevoegd, moet nog goed getest worden en geintergreert worden
 
-// IDEA : In global setting bool maken voor save mode en uit audio halen. dit ook aanpassen in websiten en esp na aanlijding hier van de juiste template en audio evecten gebruiken.
+//TODO: Taal van display templates wort nu aan gepast aan de hand van de audio instelling, hier voor een aparte instelling voor maken dat je hebt audio aan/ uit en taal NL/EN
+//DONE: uitzoeken hoe lupart0 werkt.
+//DONE: audio uitzoeken en triggers voor die aurio maken.
+
+//DONE : In global setting bool maken voor gesensureert en uit audio halen. dit ook aanpassen in websiten en esp na aanlijding hier van de juiste template en audio evecten gebruiken.
 //IDEA: In send run data rety function maken

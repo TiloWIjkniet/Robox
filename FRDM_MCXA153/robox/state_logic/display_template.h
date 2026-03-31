@@ -74,6 +74,8 @@ typedef enum
     D_MAX
 }displayTemplate_t;
 
-extern  const char *displayTemplates[MAX_TEMPLATES];
-extern  const char *displayTemplatesSafe[MAX_TEMPLATES];
+extern  const char *displayTemplatesNL[MAX_TEMPLATES];
+extern  const char *displayTemplatesSafeNL[MAX_TEMPLATES];
+extern  const char *displayTemplatesEn[MAX_TEMPLATES];
+extern  const char *displayTemplatesSafeEn[MAX_TEMPLATES];
 #endif

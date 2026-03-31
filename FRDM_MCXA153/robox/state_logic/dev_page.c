@@ -31,7 +31,8 @@ globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_STOP,
     60,
-    AUDIO_ENGELS,
+    AUDIO_ON,
+    LANGUAGE_ENGLISH,
     NOT_CENSORED
 };
 runData_t runData = 

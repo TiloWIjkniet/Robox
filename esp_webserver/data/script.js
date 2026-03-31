@@ -976,11 +976,13 @@ generateSettingsTable([
         },
     { key: "start-tijd",label: "Starttijd", type:  "text", value: 60 , help:"Hoeveel tijd er is om het spel op te lossen"},
     { key: "audio",label: "Audio ", type: "select", value: 0, options: [
+            { label: "Aan", value: 0 },
+            { label: "Uit", value: 1 }],
+            help:"Toggle sound effects en getik "},
+    { key: "taal",label: "Taal ", type: "select", value: 0, options: [
             { label: "Engels", value: 0 },
-            { label: "Nederlands", value: 1 },
-            { label: "Uit", value: 2}],
-            help:"Toggle sound effects en getik "  
-        },
+            { label: "Nederlands", value: 1 }],
+            help:"De taal van de audio en teksten"},
     { key: "censorship",label: "Censorship ", type: "select", value: 0, options: [
             { label: "Not censort", value: 0 },
             { label: "Censort", value: 1 }],
@@ -1076,7 +1078,7 @@ async function loadData()
             {
                 "moeilijkheid": data.globalSettings["moeilijkheid"] || 2,
                 "start-tijd": data.globalSettings["start-tijd"] || 60,
-                "audio": data.globalSettings["audio"] || 0,
+                "taal": data.globalSettings["language"] || 0,
                 "censorship": data.globalSettings["censorship"] || 0
             };
         }
@@ -1286,7 +1288,7 @@ function importSettingsNoLib(file)
     }
  console.log("Geïmporteerde data:", kamerList);
             uploadedImageData = data.uploadedImageData || null;
-            globalSettings = data.globalSettings || { "moeilijkheid": 2, "start-tijd": 60, "audio": 0 , "censorship" : 0};
+            globalSettings = data.globalSettings || { "moeilijkheid": 2, "start-tijd": 60, "audio": 0 ,"language": 0, "censorship" : 0};
 
             
             if (uploadedImageData) showLoadedImage(uploadedImageData);

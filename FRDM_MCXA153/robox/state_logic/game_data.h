@@ -75,11 +75,19 @@ typedef enum
     NOT_CENSORED,    // nog niet gecensureerd
     CENSORED         // al gecensureerd
 } censorship_status_t;
+
+typedef enum
+{
+    LANGUAGE_ENGLISH,
+    LANGUAGE_NEDERLANDS
+} language_t;
+
 typedef struct 
 {
     wrongAnswerPenalty_t difficulty;
     uint16_t totalTime;
     audio_t audio;
+    language_t language;
     censorship_status_t censorship;
 
 }globalSettings_t;

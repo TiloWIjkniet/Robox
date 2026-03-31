@@ -109,11 +109,13 @@ void loadDisplayTemplate(displayTemplate_t template)
     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
     if(globalSettings.censorship == NOT_CENSORED)
     {
-        printf(displayTemplates[template]);
+        if(globalSettings.audio == AUDIO_NEDERLANTS)printf(displayTemplatesNL[template]);
+        else printf(displayTemplatesEn[template]);
     }
     else
     {
-        printf(displayTemplatesSafe[template]);
+        if(globalSettings.audio == AUDIO_NEDERLANTS)printf(displayTemplatesSafeNL[template]);
+        else printf(displayTemplatesSafeEn[template]);   
     }
 }
 /**

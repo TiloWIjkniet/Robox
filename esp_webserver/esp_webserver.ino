@@ -41,11 +41,11 @@ enum __attribute__((packed)) compartment_t : uint8_t
     TWO_C
 };
 
-typedef enum
+enum __attribute__((packed)) censorship_status_t : uint8_t
 {
     NOT_CENSORED,    // nog niet gecensureerd
     CENSORED         // al gecensureerd
-} censorship_status_t;
+} ;
 
 enum __attribute__((packed)) specialActies_t : uint8_t
 {
@@ -53,6 +53,12 @@ enum __attribute__((packed)) specialActies_t : uint8_t
     TOUCH_SENSOR,
     TWO_S
 };
+
+enum __attribute__((packed)) language_t : uint8_t
+{
+    LANGUAGE_ENGLISH,
+    LANGUAGE_NEDERLANDS
+} ;
 
 typedef struct __attribute__((packed))
 {
@@ -75,8 +81,7 @@ enum __attribute__((packed)) wrongAnswerPenalty_t : uint8_t
 
 enum __attribute__((packed)) audio_t : uint8_t
 {
-    AUDIO_ENGELS,       
-    AUDIO_NEDERLANTS,
+    AUDIO_ON,       
     AUDIO_OFF
 } ;
 
@@ -85,6 +90,7 @@ typedef struct
     wrongAnswerPenalty_t difficulty;
     uint16_t totalTime;
     audio_t audio;
+    language_t language;
     censorship_status_t censorship;   
 } globalSettings_t;
 
@@ -339,6 +345,7 @@ void handleSave()
   globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
   globalSettings.totalTime = gs["start-tijd"].as<int>();
   globalSettings.audio = (audio_t)gs["audio"].as<int>();
+  globalSettings.language = (language_t)gs["language"].as<int>();
   globalSettings.censorship = (censorship_status_t)gs["censorship"].as<int>();
   }
 
@@ -397,6 +404,7 @@ void saveToFlash()
   gs["moeilijkheid"] = globalSettings.difficulty;
   gs["start-tijd"] = globalSettings.totalTime;
   gs["audio"] = globalSettings.audio;
+  gs["language"] = globalSettings.language;
   gs["censorship"] = globalSettings.censorship;
   doc["plattegrond"] = plattegrond;
 
@@ -450,6 +458,7 @@ void loadFromFlash() {
   globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
   globalSettings.totalTime = gs["start-tijd"].as<int>();
   globalSettings.audio = (audio_t)gs["audio"].as<int>();
+  globalSettings.language = (language_t)gs["language"].as<int>();
   globalSettings.censorship = (censorship_status_t)gs["censorship"].as<int>();
 
     plattegrond = doc["plattegrond"] | "";
