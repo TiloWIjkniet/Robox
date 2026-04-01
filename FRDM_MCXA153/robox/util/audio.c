@@ -131,7 +131,7 @@ void playGlobelAudio(globel_audio_files_t audioFile)
 void playAudio(audio_files_t audioFile)
 {
 
-    if(globalSettings.audio == AUDIO_OFF || volume == 0) return;
+    if(globalSettings.audio == AUDIO_OFF || volume == 0 || audioFile == AUDIO_NONE) return;
     
     uint8_t file = (globalSettings.language == LANGUAGE_ENGLISH) ? ENGLISH_FOLDER : NEDERLANDS_FOLDER;
     audioPlayInFile(file + globalSettings.censorship, audioFile);

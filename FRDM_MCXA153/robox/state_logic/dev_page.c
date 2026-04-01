@@ -48,7 +48,7 @@ runData_t runData =
 roomSettings_t roomsSettings[MAX_ROOMS];
 const char ROOM_CODES[20][2] = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"};
 
-bool niewData = false;
+bool newData = false;
 
 void checkIfNewDataFromEsp();
 
@@ -108,7 +108,7 @@ void dev_page_onUpdate(void)
         if(isInputMatching(answerBuffer, ROOM_CODES[room]))
         { 
             //Recive room settings from the esp  
-            if(niewData) receive_room_settings_from_esp();       
+            if(newData) receive_room_settings_from_esp();       
             //Zet de codinate van de geslecteerde kamer aan                            
             setMapCoordinates(roomsSettings[room].coordinates);                
             
@@ -134,15 +134,14 @@ void dev_page_onExit(void)
 
 void checkIfNewDataFromEsp()
 {
-    if(niewData) return;
+    if(newData) return;
     if(lpuart1_rxcnt() > 0)
     {
         char byte = lpuart1_getchar();
         if(byte == NEW_DATA_BYTE)
         {
-            niewData = true;
-        }
-        
+            newData = true;
+        } 
     }
 }
 
@@ -279,7 +278,7 @@ void receive_room_settings_from_esp(void)
         lpuart1_putchar(START_BYTE_GET_SETTINGS_DATA);
 
     }while(!receive_room_settings());
-    niewData = false;
+    newData = false;
 }
 
 /**

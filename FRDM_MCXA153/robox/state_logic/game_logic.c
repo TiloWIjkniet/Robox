@@ -621,20 +621,21 @@ uint32_t getVirtualElapsedTime()
 }
 
 #define TIME_DEPENDING_ADUIO_INTERVAL 5 * 60 * 1000
-#define HAFE_TIME 0
-#define FIVE_MINUTES_LEFT 1
-#define ONE_MINUTE_LEFT 2
-#define FIFTEEN_MINUTES_LEFT 3
-#define THIRTY_MINUTES_LEFT 4
-#define FORTYFIVE_MINUTES_LEFT 5
-
+#define TIME_AUDIO_CHECK_LEN 5
 typedef struct
 {
-    uint32_t checkTime;
+    uint32_t checkTimeSec;
     audio_files_t audioToPlay;
 }time_audio_check_t;
 
-
+const time_audio_check_t time_audio_check[TIME_AUDIO_CHECK_LEN] = 
+{
+    {.checkTimeSec = 1  * 60 * 1000, .audioToPlay = AUDIO_1_MIN_LEFT},
+    {.checkTimeSec = 5  * 60 * 1000, .audioToPlay = AUDIO_5_MIN_LEFT},
+    {.checkTimeSec = 15 * 60 * 1000, .audioToPlay = AUDIO_15_MIN_LEFT},
+    {.checkTimeSec = 30 * 60 * 1000, .audioToPlay = AUDIO_30_MIN_LEFT},
+    {.checkTimeSec = 45 * 60 * 1000, .audioToPlay = AUDIO_45_MIN_LEFT},
+};
 
 void updateTimeDependingAudio()
 {
@@ -642,37 +643,16 @@ void updateTimeDependingAudio()
     audio_files_t audioToPlay = AUDIO_NONE;
 
     uint32_t timeRemaining = getTimeRemaining();
-
-    if(timeRemaining <= globalSettings.totalTime * 60 * 1000 / 2 && !(playedAudio & (1 << HAFE_TIME)))
+    for(uint8_t i = 0; i < TIME_AUDIO_CHECK_LEN; i++)
     {
-        playedAudio |= (1 << HAFE_TIME);
-        audioToPlay = AUDIO_HALF_TIME;
+        if(timeRemaining <= time_audio_check[i].checkTimeSec && !(playedAudio & (1<<i)))
+        {
+            playedAudio |= (1 <<i);
+            audioToPlay = time_audio_check[i].audioToPlay;
+            break;
+        }
     }
-    else if(timeRemaining <= 1 * 60 * 1000 && !(playedAudio & (1 << ONE_MINUTE_LEFT)))
-    {
-        playedAudio |= (1 << ONE_MINUTE_LEFT);
-        audioToPlay = AUDIO_ONE_MINUTE_LEFT;
-    }
-    else if(timeRemaining <= 5 * 60 * 1000 && !(playedAudio & (1 << FIVE_MINUTES_LEFT)))
-    {
-        playedAudio |= (1 << FIVE_MINUTES_LEFT);
-        audioToPlay = AUDIO_FIVE_MINUTES_LEFT;
-    }
-    else if(timeRemaining <= 15 * 60 * 1000 && !(playedAudio & (1 << FIFTEEN_MINUTES_LEFT)))
-    {
-        playedAudio |= (1 << FIFTEEN_MINUTES_LEFT);
-        audioToPlay = AUDIO_FIFTEEN_MINUTES_LEFT;
-    }
-    else if(timeRemaining <= 30 * 60 * 1000 && !(playedAudio & (1 << THIRTY_MINUTES_LEFT)))
-    {
-        playedAudio |= (1 << THIRTY_MINUTES_LEFT);
-        audioToPlay = AUDIO_THIRTY_MINUTES_LEFT;
-    }
-    else if(timeRemaining <= 45 * 60 * 1000 && !(playedAudio & (1 << FORTYFIVE_MINUTES_LEFT)))
-    {
-        playedAudio |= (1 << FORTYFIVE_MINUTES_LEFT);
-        audioToPlay = AUDIO_FORTYFIVE_MINUTES_LEFT;
-    }
+    
     
     if(audioToPlay == AUDIO_NONE) return;  
     uint32_t now = millis();

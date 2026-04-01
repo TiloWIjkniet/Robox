@@ -54,9 +54,15 @@ typedef enum
 
 typedef enum
 {
+  AUDIO_NONE,
   BOM_HAS_BEEN_PLANTED = 1, 
   BOM_HAS_BEEN_DEFUSED, 
-  TIME_IS_UP
+  TIME_IS_UP,
+  AUDIO_1_MIN_LEFT,   //TODO: Audio hier voor maken 
+  AUDIO_5_MIN_LEFT,   //TODO: Audio hier voor maken 
+  AUDIO_15_MIN_LEFT,  //TODO: Audio hier voor maken 
+  AUDIO_30_MIN_LEFT,  //TODO: Audio hier voor maken 
+  AUDIO_45_MIN_LEFT   //TODO: Audio hier voor maken 
 } audio_files_t;
 
 

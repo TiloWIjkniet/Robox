@@ -51,7 +51,7 @@ int main(void)
       updateGameTimer();
       updateSpecialActies();
       updateTimeGamePenaltyMillis();
-      updateTimeDependingAudio()
+      updateTimeDependingAudio();
       //Updates die alleen moeten lopen als er een bepaalde conditie is in de game is
       if(globalSettings.difficulty == WRONG_ANSWER_TIME_X2) 
       {
@@ -62,7 +62,6 @@ int main(void)
   }
 }
 
-//DOING: updateTimeDependingAudio() beter maken/ variabler maken
 
 //WARN : controleer of updateSpecialActies() werkt
 //WARN : De function voor gesenureert is to gevoegt maar moet nog getest worden

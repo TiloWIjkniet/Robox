@@ -41,7 +41,7 @@ uint32_t getWrongAnswerPenalty();
 
 void updateVirtualTime();
 uint32_t getVirtualElapsedTime();
-
+void updateTimeDependingAudio();
 
 void updateGameTimer();
 void setGameTimer(int32_t sec);
