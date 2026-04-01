@@ -92,6 +92,8 @@ typedef struct
 
 }globalSettings_t;
 
+//Om geen cordinaten te laten zien
+extern const uint8_t NO_COORDINATES[2];
 
 extern  globalSettings_t globalSettings;
 extern  runData_t runData;

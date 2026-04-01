@@ -11,8 +11,10 @@
 
 #define NUMBER_OF_HEX_NUMBERS 14
 
-
-void displayDigits(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t dot);
+const uint8_t IDLE_MODE_HEX[5] = {OFF, IDLE_MODE_HEX_DIS, OFF, IDLE_MODE_HEX_DIS, OFF};
+const uint8_t ERROR_HEX[5] = {OFF, ERROR_HEX_DIS, OFF, ERROR_HEX_DIS, OFF};
+const uint8_t DEV_MODE_HEX[5] = {OFF, DEV_MODE_HEX_DIS, OFF, DEV_MODE_HEX_DIS, OFF};
+const uint8_t ALL_OFF_HEX[5] = {OFF, OFF, OFF, OFF, OFF};
 
 void hexDisplay_init()
 {
@@ -38,7 +40,7 @@ void hexDisplay_setTime(uint8_t minutes, uint8_t seconds)
 
     char colom = 1;
     //printf("min:%d sec: %d\n",minutes, seconds);
-    displayDigits(hex0, hex1, hex2, hex3, colom);
+    displayDigitsValues(hex0, hex1, hex2, hex3, colom);
 }
 
 void setPintate_hexDisplay(uint8_t pin, bool value)
@@ -77,9 +79,10 @@ void writeByte(uint8_t b) {
   setPintate_hexDisplay(PIN_CLK, true);
 }
 
-void displayDigits(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t dot) 
+void displayDigitsValues(uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3, uint8_t dot) 
 {
-const uint8_t segments[NUMBER_OF_HEX_NUMBERS] = {
+  const uint8_t segments[NUMBER_OF_HEX_NUMBERS] = 
+  {
     0b00111111, // 0
     0b00000110, // 1
     0b01011011, // 2
@@ -94,7 +97,7 @@ const uint8_t segments[NUMBER_OF_HEX_NUMBERS] = {
     0b01111001, // E
     0b01011110, // D
     0b00000110  // I
-};
+  };
 
 
   uint8_t seg0 = segments[d0];
@@ -120,3 +123,8 @@ const uint8_t segments[NUMBER_OF_HEX_NUMBERS] = {
   writeByte(TM1637_CMD_DISP);
   stop();
 }
+
+void displayDigits(const uint8_t d[5])
+{
+    displayDigitsValues(d[0], d[1], d[2], d[3], d[4]);
+} 

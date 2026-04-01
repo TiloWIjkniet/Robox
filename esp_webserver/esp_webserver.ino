@@ -155,7 +155,7 @@ void beginServer()
   server.on("/load", HTTP_GET, handleLoad);
 
   server.onNotFound(handleNotFound);
-  Serial.println("Webserver gestart");
+ // Serial.println("Webserver gestart");
 
   
 }
@@ -246,7 +246,7 @@ void setServerOnline(bool online)
     {
         server.begin();
         serverRunning = true;
-        Serial.println("Webserver gestart via UART");
+        //Serial.println("Webserver gestart via UART");
     } 
     else if (!online && serverRunning) 
     {
@@ -258,7 +258,7 @@ void setServerOnline(bool online)
 
 void handleSave() 
 {
-  Serial.println("POST ontvangen!");
+  //Serial.println("POST ontvangen!");
 
   if (!server.hasArg("plain")) 
   {
@@ -290,7 +290,7 @@ void handleSave()
           rooms[i].openCompartment = (compartment_t)k["open-compartment"].as<int>();
           rooms[i].specialActies  = (specialActies_t)k["special-acties"].as<int>();
 
-          Serial.println(rooms[i].openCompartment);
+         // Serial.println(rooms[i].openCompartment);
           if (k["antwoord"].is<const char*>())  // "antwoord" is één string
           {
               String allAnswers = k["antwoord"].as<const char*>(); // bvb "1,2,3"
@@ -357,9 +357,10 @@ void handleSave()
   }
 
   server.send(200, "text/plain", "Data opgeslagen!");
-  Serial.println("Data opgeslagen!");
+  //Serial.println("Data opgeslagen!");
 
   saveToFlash();
+  Serial.write(0xDD);
 }
 
 void charArrayToJson(JsonArray& arr, char a[][MAX_CHAR_IN_STRING], int count) 
@@ -412,7 +413,7 @@ void saveToFlash()
   if (!f) { Serial.println("Fout bij openen bestand voor schrijven"); return; }
   serializeJson(doc, f);
   f.close();
-  Serial.println("Data opgeslagen in flash!");
+  //Serial.println("Data opgeslagen in flash!");
 }
 // Laden van flash
 void loadFromFlash() {
@@ -463,7 +464,7 @@ void loadFromFlash() {
 
     plattegrond = doc["plattegrond"] | "";
 
-    Serial.println("Data geladen uit flash!");
+  //  Serial.println("Data geladen uit flash!");
 }
 
 void loop() 
@@ -486,13 +487,13 @@ while(Serial.available())
           WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
           dnsServer.start(DNS_PORT, "*", myIP);
           networkRunning = true;
-          Serial.println("Netwerk ingeschakeld");
+          //Serial.println("Netwerk ingeschakeld");
           }
         if (!serverRunning) 
         {
           server.begin();
           serverRunning = true;
-          Serial.println("Server gestart");
+        //  Serial.println("Server gestart");
         }
     } 
     else if (byteIn == 0xEE) 
@@ -501,7 +502,7 @@ while(Serial.available())
       {
         server.close();
         serverRunning = false;
-        Serial.println("Server gestopt");
+        //Serial.println("Server gestopt");
       }
       if (networkRunning) 
       {
@@ -509,7 +510,7 @@ while(Serial.available())
         WiFi.softAPdisconnect(true);
         WiFi.disconnect(true);
         networkRunning = false;
-        Serial.println("Netwerk uitgeschakeld");
+       // Serial.println("Netwerk uitgeschakeld");
       }
       
     }
@@ -529,7 +530,7 @@ void sentSettingData(uint8_t byteIn)
   if (byteIn == 0xBB) 
   {
 
-      Serial.println(globalSettings.totalTime);
+    //  Serial.println(globalSettings.totalTime);
       Serial.write(0xAA);
       Serial.write((uint8_t*)&globalSettings, sizeof(globalSettings));
 
@@ -569,7 +570,7 @@ void getRunData(uint8_t byteIn)
   {
     receiving = false;  
     index = 0;
-    Serial.println("RunData volledig ontvangen!");
+  //  Serial.println("RunData volledig ontvangen!");
     for(int i = MAXS_RECORDINGS - 1; i > 0; i--)
     {
       recordings[i] = recordings[i-1];
@@ -614,7 +615,7 @@ void saveRecordingsToFlash()
 
     serializeJson(doc, f);
     f.close();
-    Serial.println("Recordings opgeslagen in flash!");
+ //   Serial.println("Recordings opgeslagen in flash!");
 }
 void loadRecordingsFromFlash()
 {
@@ -644,7 +645,7 @@ void loadRecordingsFromFlash()
         recordings[i].maxRooms = r["maxRooms"] | 0;
     }
 
-    Serial.println("Recordings geladen uit flash!");
+  //  Serial.println("Recordings geladen uit flash!");
 }
 
 void handleNotFound() 

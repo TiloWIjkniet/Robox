@@ -18,10 +18,11 @@
 #define START_BYTE_SEND_RUN_DATA 0xAA
 #define START_BYTE_GLOBAL_DATA 0xAA
 #define START_BYTE_ROOM_DATA   0xAB
+#define NEW_DATA_BYTE 0xDD
 
 #define EXIT_DEV_CODE "0000"
 #define OPEN_ALL_COMPARTMETS "9999"
-
+#define SET_AUDIO_VOLUME "1111"
 #define TIMEOUT_MS 500  
 
 #define RETRY_ATTEMPTS 5
@@ -47,37 +48,57 @@ runData_t runData =
 roomSettings_t roomsSettings[MAX_ROOMS];
 const char ROOM_CODES[20][2] = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"};
 
+bool niewData = false;
+
+void checkIfNewDataFromEsp();
+
 void dev_page_onEntry(void)
 {
-    lpuart1_putchar(WEBSERVER_ON); //Zet webserver aan
+    //Anable webserver on esp
+    lpuart1_putchar(WEBSERVER_ON); 
+
     forceDisplayTemplate(D_DEV_PAGE, 0);
-    displayDigits(OFF,DEV_MODE_HEX_DIS,OFF,DEV_MODE_HEX_DIS,OFF);
+    displayDigits(DEV_MODE_HEX);
     emptyInputBuffer();
 }
 
 void dev_page_onUpdate(void)
 {
+    checkIfNewDataFromEsp();
     updateInputBuffer();
     if(!hasNewAnswer) return;
 
     if(isInputMatching(answerBuffer, EXIT_DEV_CODE))
     {
+        //Exit dev mode
         FSM_addEvent(E_EXIT_DEV); 
         return;
     }
     else if(isInputMatching(answerBuffer, OPEN_ALL_COMPARTMETS))
     {
+        //Open al compartments for testing/ resetting
         openCompartment(NON_C);
         //TODO: Moet nog ge implementeerd worden
         return;
     }
-    char *pos = strstr(answerBuffer, "1111");
+    char *pos = strstr(answerBuffer, SET_AUDIO_VOLUME);
     if(pos != NULL)
     {
-        pos += 4;
-        int value = atoi(pos);
-        audioSetVolume((uint8_t)value);
-        playGlobelAudio(CORRECT_ANSWER);
+        //Set or get audio volume 
+        pos += strlen(SET_AUDIO_VOLUME);
+        if(*pos != '\0')
+        {
+            //If value is provided after command, set volume
+            int value = atoi(pos);
+            audioSetVolume((uint8_t)value);
+        }
+
+        //Display current volume
+        uint8_t roomFirstVolume = volume / 10;
+        uint8_t roomSecondVolume = volume % 10;
+        displayDigitsValues(OFF,OFF,roomFirstVolume > 0 ? roomFirstVolume : OFF, roomSecondVolume, OFF);
+
+        playGlobelAudio(AUDIO_CHECK);
         return;
     }
 
@@ -85,13 +106,16 @@ void dev_page_onUpdate(void)
     for(int room = 0; room < numberOfRooms; room++)
     {
         if(isInputMatching(answerBuffer, ROOM_CODES[room]))
-        {   
-            receive_room_settings_from_esp();                                   //Verkrijg ingestelde data van esp
-            setMapCoordinates(roomsSettings[room].coordinates);                 //Zet de codinate van de geslecteerde kamer aan
+        { 
+            //Recive room settings from the esp  
+            if(niewData) receive_room_settings_from_esp();       
+            //Zet de codinate van de geslecteerde kamer aan                            
+            setMapCoordinates(roomsSettings[room].coordinates);                
             
+            //Displyt de kamer nummer op de hex display
             uint8_t roomFirstDigit = room / 10;
             uint8_t roomSecondDigit = room % 10;
-            displayDigits(OFF,OFF,roomFirstDigit > 0 ? roomFirstDigit : OFF, roomSecondDigit, OFF); //disply het kamernummer op de hex display
+            displayDigitsValues(OFF,OFF,roomFirstDigit > 0 ? roomFirstDigit : OFF, roomSecondDigit, OFF); //disply het kamernummer op de hex display
             //TODO: Dispalys de settings voor die spesefieke room 
             break;
         }
@@ -100,8 +124,26 @@ void dev_page_onUpdate(void)
 
 void dev_page_onExit(void)
 {
-    receive_room_settings_from_esp();   //Verkrijg ingestelde data van esp
-    lpuart1_putchar(WEBSERVER_OFF);     // zet web servber uit 
+    //Verkrijg ingestelde data van esp
+    receive_room_settings_from_esp();  
+    
+    //Disble webserver on esp
+    lpuart1_putchar(WEBSERVER_OFF);    
+}
+
+
+void checkIfNewDataFromEsp()
+{
+    if(niewData) return;
+    if(lpuart1_rxcnt() > 0)
+    {
+        char byte = lpuart1_getchar();
+        if(byte == NEW_DATA_BYTE)
+        {
+            niewData = true;
+        }
+        
+    }
 }
 
 /**
@@ -231,12 +273,13 @@ void receive_room_settings_from_esp(void)
         if(attempts > RETRY_ATTEMPTS)
         {
             forceDisplayTemplate(D_ERROR, 10000); // Toon kritische error
-            displayDigits(ERROR_HEX_DIS,ERROR_HEX_DIS,ERROR_HEX_DIS,ERROR_HEX_DIS,OFF);
+            displayDigits(ERROR_HEX);
             while(true);
         }
         lpuart1_putchar(START_BYTE_GET_SETTINGS_DATA);
 
     }while(!receive_room_settings());
+    niewData = false;
 }
 
 /**

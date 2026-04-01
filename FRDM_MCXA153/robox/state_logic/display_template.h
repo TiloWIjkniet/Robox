@@ -3,6 +3,8 @@
 
 #define MAX_TEMPLATES 40
 
+#define DISPLAY_5S 5000
+#define DISPLAY_3S 3000
 
 #include <stdbool.h>
 #include <stdint.h>

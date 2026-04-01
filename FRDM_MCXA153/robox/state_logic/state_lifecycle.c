@@ -10,33 +10,37 @@
 #define BLINK_DURATION_DISARMT 500
 #define MAX_BLINK_DURATION_TIMEOUT 200
 #define MIN_BLINK_DURATION_TIMEOUT 25
-#define END_SCREEN_DURATION 5000
 #define FAST_BLINK_DURATION 1000
 uint32_t startRoomTimeMillis = 0;
 
+
 void completed_onEntry(void) 
 { 
+    //Ends the game 
     gameActiv = false;
-    startRoomTimeMillis = millis();
-    addDisplayTemplate(D_WIN, END_SCREEN_DURATION);
+
+    addDisplayTemplate(D_WIN, DISPLAY_5S);
     playAudio(BOM_HAS_BEEN_DEFUSED);
+
 }
+//BUG soms blijft hij hier in een onijnige loop hangen
 void completed_onUpdate(void) 
 { 
-    //BUG soms blijft hij hier in een onijnige loop hangen
     static uint32_t lastBlink = 0;
     static bool displayStatus = false;
 
     uint32_t now = millis();
-    if(now - lastBlink > BLINK_DURATION_DISARMT) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
+    if(now - lastBlink > BLINK_DURATION_DISARMT) 
     {
+        //makes the hex display blink between the time remaining  and emty screen when the game is completed
         lastBlink = now;
-        if(displayStatus) setGameTimer(getTimeRemaining() / 1000);
-        else displayDigits(OFF, OFF, OFF, OFF, OFF);
+        if(displayStatus) setGameTimer(getTimeRemaining() / 1000); //Convert milliseconds to seconds for display
+        else displayDigits(ALL_OFF_HEX);
         displayStatus = !displayStatus;   
     }
 
-    if(now - startRoomTimeMillis < END_SCREEN_DURATION) return; // wacht nog even met naar volgende scherm gaan zodat de spelers de tijd kunnen zien
+    //Waits until the win template is done playing before sending event to go to next screen
+    if(!isDisplayTemplateDonePlaying()) return; 
 
     FSM_addEvent(E_GAME_COMPLETED);
 }
@@ -46,24 +50,24 @@ void completed_onExit(void)
 
 void timeout_onEntry(void) 
 { 
+    //Ends the game
     gameActiv = false;
     startRoomTimeMillis = millis();
-    addDisplayTemplate(D_TIME_UP, END_SCREEN_DURATION);
-    playAudio(TIME_IS_UP);
+    addDisplayTemplate(D_TIME_UP, DISPLAY_5S);
 }
+//BUG soms blijft hij hier in een onijnige loop hangen
 void timeout_onUpdate(void) 
-{ 
-    //BUG soms blijft hij hier in een onijnige loop hangen
+{
     static uint32_t lastBlink = 0;
     static bool displayStatus = false;
     static uint32_t blinkDuration = MAX_BLINK_DURATION_TIMEOUT;
 
-
     uint32_t now = millis();
-    if(now - lastBlink > blinkDuration) // laat als de bom af gaat de buzzer pipen het het hex display knipperen
+    //Blinks the hex display exponentially faster as time goes on between the time remaining and emty screen when the time is up
+    if(now - lastBlink > blinkDuration) 
     {
-
-        float ratio = (float)(now - startRoomTimeMillis) /(float)(END_SCREEN_DURATION - FAST_BLINK_DURATION);
+        // Calculate the ratio of elapsed time to total end screen duration 
+        float ratio = (float)(now - startRoomTimeMillis) /(float)(DISPLAY_5S - FAST_BLINK_DURATION);
         if (ratio > 1.0f) ratio = 1.0f;
         blinkDuration = MAX_BLINK_DURATION_TIMEOUT - (MAX_BLINK_DURATION_TIMEOUT - MIN_BLINK_DURATION_TIMEOUT) * (ratio * ratio);
 
@@ -72,13 +76,17 @@ void timeout_onUpdate(void)
         buzzer_play(BUZZERT_DURATION);
 
         if(displayStatus) hexDisplay_setTime(0, 0);
-        else displayDigits(OFF, OFF, OFF, OFF, OFF);
+        else displayDigitsValues(OFF, OFF, OFF, OFF, OFF);
         displayStatus = !displayStatus;
         
     }
+    //Waits until the time up template is done playing before sending event to go to next screen
+    if(!isDisplayTemplateDonePlaying()) return;
 
-    if(now - startRoomTimeMillis < END_SCREEN_DURATION) return; // wacht nog even met naar volgende scherm gaan zodat de spelers de tijd kunnen zien
+    playAudio(TIME_IS_UP);
+
     FSM_addEvent(E_GAME_TIMEOUT);
+    
 }
 void timeout_onExit(void) 
 { 
@@ -87,7 +95,7 @@ void timeout_onExit(void)
 
 void reset_onEntry(void) 
 { 
-
+    
 }
 void reset_onUpdate(void) 
 { 

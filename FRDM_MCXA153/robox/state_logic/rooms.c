@@ -11,8 +11,7 @@
 #include "HM10.h"
 #include "audio.h"
 
-#define DISPLAY_5S 5000
-#define DISPLAY_3S 3000
+
 
 uint32_t startRoomMillis;
 bool hasAnwertCorrect = false;
@@ -82,21 +81,23 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay);
 void first_room_onEntry(void)
 {
     //Reset run data
+
     resetGameLogic();
 
     gameActiv = true;
     roomIndex = 0;
     memset(&runData, 0, sizeof(runData));
 
-    //Slaat wat eerste data op
+    //Saves global settings to run data
     runData.totalTime  = globalSettings.totalTime;
     runData.difficulty = globalSettings.difficulty;
     runData.maxRooms   = getNumRooms();
 
+    //Start timer
     uint32_t now = millis();   
-
     startGameMillis = now; 
     timeGamePanaltyMillis = 0;
+    timeGamePanaltyBuffer = 0;
 
     commonRoom_onEntry();
 
@@ -117,7 +118,6 @@ void room_loop_onEntry(void)
 {
     roomIndex ++; 
     commonRoom_onEntry();
-    forceDisplayTemplate(D_START_GAME, DISPLAY_5S);
 }
 void room_loop_onUpdate(void)
 { 
@@ -132,7 +132,6 @@ void last_room_onEntry(void)
 {   
     roomIndex ++; 
     commonRoom_onEntry();
-    forceDisplayTemplate(D_START_GAME, DISPLAY_5S);
 }
 void last_room_onUpdate(void)
 {
@@ -151,9 +150,9 @@ void commonRoom_onEntry()
     emptyInputBuffer();
     setMapCoordinates(roomsSettings[roomIndex].coordinates);
 
+    //Reset room specific variables
     startRoomMillis = startGameMillis; 
     hasAnwertCorrect = false;
-    
     state = STATE_WAIT_FOR_ROOM;
 }
 
@@ -162,16 +161,10 @@ void commonRoom_onEntry()
  */
 void commonRoom_onExit()
 {
+    //Update run data with room time
     uint32_t roomElapsedMillis = (startGameMillis - startRoomMillis);  
-    
     float elapsedMinutes = ((float)roomElapsedMillis) / 1000.0f / 60.0f;
     runData.roomTimes[roomIndex] = elapsedMinutes;
-
-    // uint32_t totalSec = roomElapsedMillis / 1000;   // alles naar seconden
-    // uint16_t minutes = totalSec / 60;               // minuten
-    // uint16_t seconds = totalSec % 60;               // resterende seconden
-
-
 }
 
 void commonRoom_Compartment(roomDisplayConfig_t roomDisplay)
@@ -189,24 +182,31 @@ bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
     specialActies_t requiredSpeciaAction = roomsSettings[roomIndex].specialActies;
     if(requiredSpeciaAction == NON_S)
     {
+        //Skip special action if not required
         return true;
     }
     setRequiredSpecialActies(requiredSpeciaAction, true);
 
+    //Set display template based on required special actie
     displayTemplate_t specialActieTemplate;
     if(requiredSpeciaAction == FINGER_PRINT_S)  specialActieTemplate = D_SCAN; 
     else if(requiredSpeciaAction == KEY_S)      specialActieTemplate = D_KEY; 
     else if(requiredSpeciaAction == SWITCH_S)   specialActieTemplate = D_SWITCH; 
-
     addDisplayTemplate(specialActieTemplate, DISPLAY_3S);
+
+    //handle special actie input and check if correct
     specialActies_t preformedAction = getSpecialActies();
     if(preformedAction == NON_S) return false;
     
+    //If a special actie is preformed
     if(preformedAction != requiredSpeciaAction)
     {
+        //if wrong special actie preformed
+        //NOTE: Time panelty for wrong special actie is handelt in game logic updateSpecialActies() 
         forceDisplayTemplate(roomDisplay.specialActionWrong, DISPLAY_3S);
         return false;
     }
+    //If correct special actie preformed
     forceDisplayTemplate(roomDisplay.specialActionCorrect, DISPLAY_3S);
     setRequiredSpecialActies(requiredSpeciaAction , false);
     playGlobelAudio(CORRECT_ANSWER);
@@ -218,13 +218,16 @@ bool commonRoom_AnswerCheck(roomDisplayConfig_t roomDisplay)
 {
     updateInputBuffer();
     if(!hasNewAnswer) return false;
+    //New answer is in answer buffer
     bool correct = isAnswerCorrect(answerBuffer); 
     if(correct)
     {
+        //If answer is correct
         forceDisplayTemplate(roomDisplay.answerCorrect, DISPLAY_3S); 
         playGlobelAudio(CORRECT_ANSWER);
         return true;
     }
+    //if answer is wrong
     applyWrongAnswerPenalty();
     forceDisplayTemplate(roomDisplay.answerWrong, DISPLAY_3S); 
     playGlobelAudio(WRONG_ANSWER);
@@ -237,53 +240,48 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay)
 
     switch (state)
     {
-        case STATE_WAIT_FOR_ROOM:
+        case STATE_WAIT_FOR_ROOM: //Wait for player to enter the correct room
         {
             bool inCorrectRoom = isInCorrectRoom(beconIp);
             addDisplayTemplate(roomDisplay.waitForRoom, 0);
             if(inCorrectRoom)
             {
+                //If in correct room go to next state and set display template and play audio
                 forceDisplayTemplate(roomDisplay.enteredRoom, DISPLAY_3S);
                 playGlobelAudio(CORRECT_ANSWER);
                 state = STATE_ENTER_ANSWER;
             }
             break;
         }
-        case STATE_ENTER_ANSWER:
+        case STATE_ENTER_ANSWER: //Wait for player to enter correct answer
         {
             addDisplayTemplate(roomDisplay.enterAnswer, 0);
             bool result = commonRoom_AnswerCheck(roomDisplay);
-            if     (result) state = STATE_SPECIAL_ACTION;
+            if     (result) state = STATE_SPECIAL_ACTION; //If answer correct go to next state
             break;
         }
-        case STATE_SPECIAL_ACTION:
+        case STATE_SPECIAL_ACTION: //Wait for player to perform special action if required
         {
             bool preformedAction =commonRoom_SpesialAction(roomDisplay);
-            if(preformedAction)
-            {
-                state = STATE_HANDLE_COMPARTMENT;
-            }
+            if(preformedAction) state = STATE_HANDLE_COMPARTMENT; //If special action correct go to next state
             break;
         }
-        case STATE_HANDLE_COMPARTMENT:
+        case STATE_HANDLE_COMPARTMENT: //Handle compartment opening
         {
             commonRoom_Compartment(roomDisplay);
-            state = STATE_FINISHED;
+            state = STATE_FINISHED; //Go to finished state
             break;
         }
-        case STATE_FINISHED:
+        case STATE_FINISHED: //Wait for display template to finish before sending event to go to next room
         {
-            if(isDisplayTemplateDonPlaying())
+            if(isDisplayTemplateDonePlaying())
             {
+                //If the finished template is done playing, got to the corect room based on how many rooms are in the game and how many rooms have been completed
                 if(roomIndex < getNumRooms() - 2)       FSM_addEvent(E_ROOM_COMPLETED);
                 else if (roomIndex < getNumRooms() - 1) FSM_addEvent(E_ROOM_LOOP_TO_LAST);
                 else                                    FSM_addEvent(E_LAST_ROOM_COMPLETED);
             }
  
-            break;
-        }
-        default:
-        {
             break;
         }
     }

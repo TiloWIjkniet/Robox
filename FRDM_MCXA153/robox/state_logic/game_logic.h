@@ -16,7 +16,7 @@
 void updateDisplayQueue();
 void forceDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis);
 void addDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis);
-bool isDisplayTemplateDonPlaying();
+bool isDisplayTemplateDonePlaying();
 
 
 // =======================

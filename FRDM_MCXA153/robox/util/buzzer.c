@@ -69,7 +69,7 @@ void buzzer_play(uint32_t my_durationMs)
  * Wanneer de ingestelde speeltijd van de buzzer is verstreken
  * wordt de buzzer automatisch uitgezet.
  */
-void buzzer_loop()
+void updateBuzzer()
 {
     if(!buzzerState) return;
     if(millis() - startBuzzer >= durationMs)

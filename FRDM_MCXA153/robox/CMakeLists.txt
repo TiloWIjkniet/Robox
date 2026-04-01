@@ -61,6 +61,8 @@ mcux_add_source(
             util/HM10.h
             util/audio.c
             util/audio.h
+            util/switch_and_key_sensors.c
+            util/switch_and_key_sensors.h
 
 
             board/board.h

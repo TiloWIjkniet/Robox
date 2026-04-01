@@ -17,7 +17,7 @@ typedef struct
 AudioCommand audioQueue[QUEUE_SIZE] = {};
 uint8_t queueHead = 0;
 uint8_t queueTail = 0;
-
+uint8_t volume = 20;
 
 uint8_t cmdBuffer[CMD_LENGTH] = 
 {
@@ -36,6 +36,7 @@ uint8_t cmdBuffer[CMD_LENGTH] =
 void audio_init()
 {
 
+    serial_init(9600);
     MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_PORT2(1);
     MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_GPIO2(1);
 
@@ -43,6 +44,8 @@ void audio_init()
     MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_GPIO2(1);
 
     PORT2->PCR[BUSY_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1);
+
+    audioSetVolume(volume);
 }
 
 void calculateChecksum() 
@@ -112,22 +115,23 @@ void audioPlayInFile(uint8_t file, uint8_t audio)
 
 
 
-void audioSetVolume(uint8_t volume)
+void audioSetVolume(uint8_t vol)
 {
-    if(volume > 30) volume = 30;
-    enqueueCommand(CMD_SET_VOLUME, volume);
+    if(vol > 30) vol = 30;
+    enqueueCommand(CMD_SET_VOLUME, vol);
+    volume = vol;
 }
 
 void playGlobelAudio(globel_audio_files_t audioFile)
 {
-    if(globalSettings.audio == AUDIO_OFF) return;
+    if(globalSettings.audio == AUDIO_OFF ||volume == 0 ) return;
     audioPlayInFile(GLOBEL_FOLDER, audioFile);
 }
 
 void playAudio(audio_files_t audioFile)
 {
 
-    if(globalSettings.audio == AUDIO_OFF) return;
+    if(globalSettings.audio == AUDIO_OFF || volume == 0) return;
     
     uint8_t file = (globalSettings.language == LANGUAGE_ENGLISH) ? ENGLISH_FOLDER : NEDERLANDS_FOLDER;
     audioPlayInFile(file + globalSettings.censorship, audioFile);

@@ -63,8 +63,10 @@ typedef enum
 void updateAudioQueue();
 void audio_init();
 
-void audioSetVolume(uint8_t volume);
+void audioSetVolume(uint8_t vol);
 void playGlobelAudio(globel_audio_files_t audioFile);
 void playAudio(audio_files_t audioFile);
+
+extern uint8_t volume;
 #endif
 

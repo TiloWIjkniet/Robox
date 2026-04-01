@@ -24,6 +24,9 @@ uint32_t lastRealTime = 0;
 specialActies_t requiredSpecialActies = NON_S;
 specialActies_t preformtSpecialAction = NON_S;
 uint8_t requiredActions = 0;
+uint16_t playedAudio = 0;
+
+const uint8_t NO_COORDINATES[2] = {INVALID_COORD, INVALID_COORD};
 
 uint32_t getWrongAnswerPenalty();
 bool isInputMatching(const  char *input, const char *correctInput);
@@ -49,9 +52,20 @@ typedef struct
     uint8_t y;
 }coordinates_t;
 
+
+void resetVirtualTime()
+{
+    virtualTime = 0;
+    lastRealTime = millis();
+    virtualTimeMultiplier = 1;
+    
+    
+}
+
 void resetGameLogic()
 {
-    requiredctions = 0;
+    playedAudio = 0;
+    requiredActions = 0;
     resetVirtualTime();
 }
 
@@ -218,15 +232,14 @@ void addDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t 
     }
 }
 /**
- * @brief Controleert of een display template momenteel actief is.
+ * @brief Checks if the current display template has finished playing.
  *
- * Returnt true als het template nog bezig is met tonen, false als het klaar is
- * of niet in de queue staat.
+ * This function determines whether al display template has completed
  *
- * @param displayTemplate Het template dat gecontroleerd moet worden.
- * @return true als het template klaar met speelen is.
+ * @return true  If the template done playing or if there is no active template. else false.
+ * 
  */
-bool isDisplayTemplateDonPlaying()
+bool isDisplayTemplateDonePlaying()
 {
     if(displayQueue[0].displayLoadTemplate != D_NONE && displayQueue[1].displayLoadTemplate != D_NONE) return true; // Template niet in buffer
 
@@ -234,8 +247,6 @@ bool isDisplayTemplateDonPlaying()
     if(now - displayQueue[0].displayStartMillis < displayQueue[0].displayDurationMillis) return false; // Template still dusy
     return true; // Template is don playing
 }
-
-
 /**
  * @brief Stelt wlke speciale actie gedaan moet worde
  *
@@ -263,7 +274,6 @@ void setRequiredSpecialActies(const specialActies_t required, const bool state)
         break;
     }
 }
-
 
 void updateSpecialActies()
 {     
@@ -481,6 +491,11 @@ void updateGameTimer()
 
 }
 
+/**
+ * @brief Sets the game timer display to the specified time in seconds.
+ * 
+ * @param sec The time to display in seconds.
+ */
 void setGameTimer(int32_t sec)
 {
     if(sec < 0)
@@ -564,7 +579,6 @@ uint32_t getWrongAnswerPenalty()
 
 }
 
-
 /**
  * @brief Reset de virtuele tijd naar beginwaarde.
  *
@@ -573,13 +587,6 @@ uint32_t getWrongAnswerPenalty()
  *
  * @note Na deze functie loopt de virtuele tijd weer synchroon met de echte tijd.
  */
-void resetVirtualTime()
-{
-    virtualTime = 0;
-    lastRealTime = millis();
-    virtualTimeMultiplier = 1;
-    
-}
 
 /**
  * @brief Update de virtuele tijd op basis van verstreken echte tijd.
@@ -611,4 +618,66 @@ void updateVirtualTime()
 uint32_t getVirtualElapsedTime()
 {
     return virtualTime;
+}
+
+#define TIME_DEPENDING_ADUIO_INTERVAL 5 * 60 * 1000
+#define HAFE_TIME 0
+#define FIVE_MINUTES_LEFT 1
+#define ONE_MINUTE_LEFT 2
+#define FIFTEEN_MINUTES_LEFT 3
+#define THIRTY_MINUTES_LEFT 4
+#define FORTYFIVE_MINUTES_LEFT 5
+
+typedef struct
+{
+    uint32_t checkTime;
+    audio_files_t audioToPlay;
+}time_audio_check_t;
+
+
+
+void updateTimeDependingAudio()
+{
+    static uint32_t lastTimeDependingAudio = 0;
+    audio_files_t audioToPlay = AUDIO_NONE;
+
+    uint32_t timeRemaining = getTimeRemaining();
+
+    if(timeRemaining <= globalSettings.totalTime * 60 * 1000 / 2 && !(playedAudio & (1 << HAFE_TIME)))
+    {
+        playedAudio |= (1 << HAFE_TIME);
+        audioToPlay = AUDIO_HALF_TIME;
+    }
+    else if(timeRemaining <= 1 * 60 * 1000 && !(playedAudio & (1 << ONE_MINUTE_LEFT)))
+    {
+        playedAudio |= (1 << ONE_MINUTE_LEFT);
+        audioToPlay = AUDIO_ONE_MINUTE_LEFT;
+    }
+    else if(timeRemaining <= 5 * 60 * 1000 && !(playedAudio & (1 << FIVE_MINUTES_LEFT)))
+    {
+        playedAudio |= (1 << FIVE_MINUTES_LEFT);
+        audioToPlay = AUDIO_FIVE_MINUTES_LEFT;
+    }
+    else if(timeRemaining <= 15 * 60 * 1000 && !(playedAudio & (1 << FIFTEEN_MINUTES_LEFT)))
+    {
+        playedAudio |= (1 << FIFTEEN_MINUTES_LEFT);
+        audioToPlay = AUDIO_FIFTEEN_MINUTES_LEFT;
+    }
+    else if(timeRemaining <= 30 * 60 * 1000 && !(playedAudio & (1 << THIRTY_MINUTES_LEFT)))
+    {
+        playedAudio |= (1 << THIRTY_MINUTES_LEFT);
+        audioToPlay = AUDIO_THIRTY_MINUTES_LEFT;
+    }
+    else if(timeRemaining <= 45 * 60 * 1000 && !(playedAudio & (1 << FORTYFIVE_MINUTES_LEFT)))
+    {
+        playedAudio |= (1 << FORTYFIVE_MINUTES_LEFT);
+        audioToPlay = AUDIO_FORTYFIVE_MINUTES_LEFT;
+    }
+    
+    if(audioToPlay == AUDIO_NONE) return;  
+    uint32_t now = millis();
+    if(now - lastTimeDependingAudio < TIME_DEPENDING_ADUIO_INTERVAL)  return;
+    lastTimeDependingAudio = now;
+
+    playAudio(audioToPlay);
 }

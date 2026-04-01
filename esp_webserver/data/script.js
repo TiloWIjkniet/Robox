@@ -748,7 +748,11 @@ function generateGridBtn(activeIndex = null)
 const kamerSettingsDiv1 = document.querySelector(".kamer-settings");
 const kamerSettingsDiv2 = document.querySelector(".global-settings");
 // Functie om settings tabel te genereren
-function generateSettingsTable(settings, kamerSettingsDiv) {
+// Houd bij welke speciale acties al zijn toegewezen
+const assignedSpecialActions = {};
+
+// Pas dit toe bij het genereren van de selectvelden
+function generateSettingsTable(settings, kamerSettingsDiv, kamerNaam) {
     kamerSettingsDiv.innerHTML = "";
 
     const table = document.createElement("table");
@@ -792,6 +796,28 @@ function generateSettingsTable(settings, kamerSettingsDiv) {
                 field.appendChild(option);
             });
 
+            // Event listener om dubbele speciale acties te voorkomen
+            field.addEventListener("change", () => {
+                const selectedValue = parseInt(field.value);
+                const selectedLabel = field.options[field.selectedIndex].text;
+
+                if (selectedValue !== 0) {
+                    // Controleer of deze actie al in een andere kamer is ingesteld
+                    for (const [otherKamer, action] of Object.entries(assignedSpecialActions)) {
+                        if (action === selectedValue && otherKamer !== kamerNaam) {
+                            alert(`Deze actie (${selectedLabel}) wordt al gedaan in andere kamer`);
+                            // Reset naar 0 (geen) als actie al gebruikt wordt
+                            field.value = 0;
+                            return;
+                        }
+                    }
+                    // Als oké, sla deze actie op voor deze kamer
+                    assignedSpecialActions[kamerNaam] = selectedValue;
+                } else {
+                    // Als gebruiker "Geen" kiest, verwijder de actie uit assigned
+                    delete assignedSpecialActions[kamerNaam];
+                }
+            });
         } else {
             field = document.createElement("input");
             field.type = setting.type || "text";
@@ -839,6 +865,9 @@ function generateSettingsTable(settings, kamerSettingsDiv) {
 
     kamerSettingsDiv.appendChild(table);
 
+
+  
+
     
 
     // ===== INPUT LISTENERS + CHECKS =====
@@ -846,7 +875,8 @@ function generateSettingsTable(settings, kamerSettingsDiv) {
         field.addEventListener("input", (e) => {
 
 
-            if (field.type === "text" && field.value.length > 50) {
+    if (field.type === "text" && field.value.length > 50) 
+    {
     alert("Mag maximaal 50 tekens bevatten.");
     field.value = field.value.slice(0, 50); // knip af op 50 chars
     return;
@@ -907,6 +937,8 @@ function generateSettingsTable(settings, kamerSettingsDiv) {
 
     globalSettings = getSettingsData(kamerSettingsDiv);
 }
+
+
             isDirty = true;
         });
     });
