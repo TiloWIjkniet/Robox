@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "touch_sensor.h"
 #include "game_logic.h"
+#include "audio.h"
 
 #define TOUCH_SENSOR_PIN 0
 #define G_PIN 10
@@ -55,7 +56,7 @@ bool mustPres = false;
 bool isTouchPressed()
 {
   // WARN: Heb dit niew toe gevoegt dus werkt mis niet goed
-  typedef enum {FIRST_PRES, PRESSING, RELEASE, FIRST_LONG_PRESSED, LONG_PRESSED} touchState_t;
+  typedef enum {RESET, FIRST_PRES, PRESSING, RELEASE, FIRST_LONG_PRESSED, LONG_PRESSED} touchState_t;
   static touchState_t touchState = RELEASE;
   static uint32_t pressStart = 0;
   static uint32_t lastValidPress = 0;
@@ -73,18 +74,32 @@ bool isTouchPressed()
   }
   switch (touchState)
   {
+  case RESET:
+  {
+    stopAudio();
+    touchState = RELEASE;
+    break;
+  }
   case RELEASE:
-    if(isPressing) touchState = FIRST_PRES;
+  {
+    if(isPressing) 
+    {
+      touchState = FIRST_PRES;
+    }
     setCollor(mustPres? WHITE : OFF);
     break;
+  }
   case FIRST_PRES:
+  {
     touchState = PRESSING;
     pressStart = now;
     setCollor(mustPres? GREEN : RED);
-
+    playGlobelAudio(AUDIO_TOUCH_SENSOR_RUNNING);
     break;
+  }
   case PRESSING:
-    if(now - lastValidPress > TOUCH_GLITCH_FILTER_MS) touchState = RELEASE;
+  {
+    if(now - lastValidPress > TOUCH_GLITCH_FILTER_MS) touchState = RESET;
     if(now - pressStart > TOUCH_HOLD_TIME_MS) touchState = FIRST_LONG_PRESSED;
 
     float ratio = (float)(now - pressStart) / (float)(TOUCH_HOLD_TIME_MS - FAST_BLINK_TIME);
@@ -99,17 +114,23 @@ bool isTouchPressed()
       
     }
     break;
+  }
   case FIRST_LONG_PRESSED:
+  {
     setCollor(mustPres? GREEN : RED);
+    stopAudio();
+    playGlobelAudio(mustPres ? AUDIO_TOUCH_SENSOR_CORRECT: AUDIO_TOUCH_SENSOR_WRONG);
     touchState = LONG_PRESSED;
      
     break;
+  }
   case LONG_PRESSED:
-    if(now - lastValidPress > TOUCH_GLITCH_FILTER_MS) touchState = RELEASE;
+  {
+    if(now - lastValidPress > TOUCH_GLITCH_FILTER_MS) touchState = RESET;
     mustPres = false;
     return true;
     break;
-    
+  }
   }
   return false;
 

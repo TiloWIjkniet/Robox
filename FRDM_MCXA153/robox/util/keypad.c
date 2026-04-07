@@ -4,6 +4,8 @@
 #include "time_millis.h"
 #include "buzzer.h"
 #include "audio.h"
+#include "serial.h"
+
 #define ROWS 4
 #define COLS 3
 
@@ -121,7 +123,7 @@ void updateInputBuffer()
   char key = getKey();
   switch (key) 
   {
-    case ' ':
+    case '\0':
       return;
     break;
     case '#':
@@ -144,10 +146,10 @@ void updateInputBuffer()
     break;
   }
   // NOTE: Mogelijk audio meten forseren om geen erg laten audio feedback te krijgen bij het indrukken van toetsen
-  playGlobelAudio(NUMPAD_INPUT);
+  forceGlobelAudio(AUDIO_NUMPAD_INPUT);
 
   //TEMP: Print de inhoud van de input buffer voor debug doeleinden
-  printf("Input buffer: %s\n", inputBuffer);
+ // printf("Input buffer: %s\n", inputBuffer);
 }
 
 /**
@@ -208,7 +210,15 @@ char getKey()
       
     }
   }
-  return ' ';
+
+    // 🔹 2. Fallback → Serial input
+  if (serial_rxcnt() > 0)
+  {
+    char c = serial_getchar();
+    if( c != '\n' && c != '\r') return c;
+  }
+  
+  return '\0';
 }
 
 

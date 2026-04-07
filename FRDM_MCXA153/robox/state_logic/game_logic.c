@@ -11,7 +11,7 @@
 #include "audio.h"
 #include "switch_and_key_sensors.h"
 #define MS_PER_TICK_PANALTY 10
-
+#define FROM_MIN_TO_MS 60 *1000
 uint32_t timeGamePanaltyBuffer=0;
 uint32_t timeGamePanaltyMillis=0;
 uint32_t startGameMillis=0;
@@ -311,6 +311,7 @@ void updateSpecialActies()
             {
                 requiredActions |= (1 << SWITCH_S);
                 actionCorect = true;
+                playGlobelAudio(AUDIO_CORRECT_ANSWER);
             }
             preformtSpecialAction = SWITCH_S;
         }
@@ -323,6 +324,7 @@ void updateSpecialActies()
             {
                 requiredActions |= (1 << KEY_S);
                 actionCorect = true;
+                playGlobelAudio(AUDIO_CORRECT_ANSWER);
             }
             preformtSpecialAction = KEY_S;
         }
@@ -620,8 +622,9 @@ uint32_t getVirtualElapsedTime()
     return virtualTime;
 }
 
-#define TIME_DEPENDING_ADUIO_INTERVAL 5 * 60 * 1000
+#define TIME_DEPENDING_ADUIO_INTERVAL 5 * FROM_MIN_TO_MS
 #define TIME_AUDIO_CHECK_LEN 5
+#define DELAY_FROM_START_TO_FIRST_AUDIO 15 * FROM_MIN_TO_MS
 typedef struct
 {
     uint32_t checkTimeSec;
@@ -630,16 +633,18 @@ typedef struct
 
 const time_audio_check_t time_audio_check[TIME_AUDIO_CHECK_LEN] = 
 {
-    {.checkTimeSec = 1  * 60 * 1000, .audioToPlay = AUDIO_1_MIN_LEFT},
-    {.checkTimeSec = 5  * 60 * 1000, .audioToPlay = AUDIO_5_MIN_LEFT},
-    {.checkTimeSec = 15 * 60 * 1000, .audioToPlay = AUDIO_15_MIN_LEFT},
-    {.checkTimeSec = 30 * 60 * 1000, .audioToPlay = AUDIO_30_MIN_LEFT},
-    {.checkTimeSec = 45 * 60 * 1000, .audioToPlay = AUDIO_45_MIN_LEFT},
+    {.checkTimeSec = 1  * FROM_MIN_TO_MS, .audioToPlay = AUDIO_1_MIN_LEFT},
+    {.checkTimeSec = 5  * FROM_MIN_TO_MS, .audioToPlay = AUDIO_5_MIN_LEFT},
+    {.checkTimeSec = 15 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_15_MIN_LEFT},
+    {.checkTimeSec = 30 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_30_MIN_LEFT},
+    {.checkTimeSec = 45 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_45_MIN_LEFT},
 };
 
 void updateTimeDependingAudio()
 {
     static uint32_t lastTimeDependingAudio = 0;
+    if(globalSettings.audio == AUDIO_OFF) return;
+
     audio_files_t audioToPlay = AUDIO_NONE;
 
     uint32_t timeRemaining = getTimeRemaining();
@@ -648,7 +653,7 @@ void updateTimeDependingAudio()
         if(timeRemaining <= time_audio_check[i].checkTimeSec && !(playedAudio & (1<<i)))
         {
             playedAudio |= (1 <<i);
-            audioToPlay = time_audio_check[i].audioToPlay;
+            if(time_audio_check[i].checkTimeSec + DELAY_FROM_START_TO_FIRST_AUDIO < globalSettings.totalTime  * FROM_MIN_TO_MS) audioToPlay = time_audio_check[i].audioToPlay;
             break;
         }
     }

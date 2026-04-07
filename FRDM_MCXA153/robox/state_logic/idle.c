@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "hexDisplay.h"
 #include "switch_and_key_sensors.h"
+#include "audio.h"
 #define ENTER_DEV_CODE "0000"
 
 void idle_onEntry(void)
@@ -21,7 +22,6 @@ void idle_onUpdate(void)
 {
     addDisplayTemplate(D_IDLE, 0);
 
-    updateInputBuffer();
     if(!hasNewAnswer) return;
 
     if(isInputMatching(answerBuffer, ENTER_DEV_CODE)) {FSM_addEvent(E_START_DEV); return;} 
@@ -32,6 +32,7 @@ void idle_onUpdate(void)
     if(rawKeyState || rawSwitchState) 
     {
         displayDigits(ERROR_HEX);
+        playGlobelAudio(AUDIO_ERROR);
         forceDisplayTemplate(D_ERROR_SWITCH_OR_KEY_NEETST_TO_BE_RESET, DISPLAY_5S);
         return;
     }

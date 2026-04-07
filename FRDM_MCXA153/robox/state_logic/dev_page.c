@@ -31,7 +31,7 @@
 globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_STOP,
-    60,
+    1,
     AUDIO_ON,
     LANGUAGE_ENGLISH,
     NOT_CENSORED
@@ -45,7 +45,12 @@ runData_t runData =
     .maxRooms = 51
 };
 
-roomSettings_t roomsSettings[MAX_ROOMS];
+roomSettings_t roomsSettings[MAX_ROOMS] = 
+{
+    {{0,1}, "0000", {"0000"}, NON_C, NON_S, "Room 1"},
+    {{1,0}, "1111", {"1111"}, NON_C, NON_S, "Room 2"},
+    {{1,1}, "2222", {"2222"}, NON_C, NON_S, "Room 3"}
+};
 const char ROOM_CODES[20][2] = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"};
 
 bool newData = false;
@@ -65,7 +70,6 @@ void dev_page_onEntry(void)
 void dev_page_onUpdate(void)
 {
     checkIfNewDataFromEsp();
-    updateInputBuffer();
     if(!hasNewAnswer) return;
 
     if(isInputMatching(answerBuffer, EXIT_DEV_CODE))
@@ -90,7 +94,8 @@ void dev_page_onUpdate(void)
         {
             //If value is provided after command, set volume
             int value = atoi(pos);
-            audioSetVolume((uint8_t)value);
+            if (volume != value) audioSetVolume((uint8_t)value);
+            volume = value;
         }
 
         //Display current volume
@@ -98,7 +103,7 @@ void dev_page_onUpdate(void)
         uint8_t roomSecondVolume = volume % 10;
         displayDigitsValues(OFF,OFF,roomFirstVolume > 0 ? roomFirstVolume : OFF, roomSecondVolume, OFF);
 
-        playGlobelAudio(AUDIO_CHECK);
+        playGlobelAudio(AUDIO_AUDIO_CHECK);
         return;
     }
 

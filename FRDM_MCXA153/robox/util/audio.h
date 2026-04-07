@@ -46,18 +46,23 @@
 
 typedef enum
 {
-  WRONG_ANSWER = 1,   
-  CORRECT_ANSWER, 
-  AUDIO_CHECK,
-  NUMPAD_INPUT
+  AUDIO_NONE_G,
+  AUDIO_WRONG_ANSWER = 1,   
+  AUDIO_CORRECT_ANSWER, 
+  AUDIO_AUDIO_CHECK,
+  AUDIO_NUMPAD_INPUT,
+  AUDIO_ERROR,                //TODO: Audio hier voor maken 
+  AUDIO_TOUCH_SENSOR_RUNNING, //TODO: Audio hier voor maken 
+  AUDIO_TOUCH_SENSOR_CORRECT, //TODO: Audio hier voor maken 
+  AUDIO_TOUCH_SENSOR_WRONG    //TODO: Audio hier voor maken 
 } globel_audio_files_t;
 
 typedef enum
 {
   AUDIO_NONE,
-  BOM_HAS_BEEN_PLANTED = 1, 
-  BOM_HAS_BEEN_DEFUSED, 
-  TIME_IS_UP,
+  AUDIO_BOM_HAS_BEEN_PLANTED = 1, 
+  AUDIO_BOM_HAS_BEEN_DEFUSED, 
+  AUDIO_TIME_IS_UP,
   AUDIO_1_MIN_LEFT,   //TODO: Audio hier voor maken 
   AUDIO_5_MIN_LEFT,   //TODO: Audio hier voor maken 
   AUDIO_15_MIN_LEFT,  //TODO: Audio hier voor maken 
@@ -72,6 +77,8 @@ void audio_init();
 void audioSetVolume(uint8_t vol);
 void playGlobelAudio(globel_audio_files_t audioFile);
 void playAudio(audio_files_t audioFile);
+void forceGlobelAudio(globel_audio_files_t audioFile);
+void stopAudio();
 
 extern uint8_t volume;
 #endif

@@ -34,7 +34,7 @@ int main(void)
   audio_init();
 
   //Voor dat programa kan starten
-  receive_room_settings_from_esp();
+  //receive_room_settings_from_esp();
   
   while(1)
   {
@@ -44,6 +44,7 @@ int main(void)
     updateDisplayQueue();
     updateBuzzer();
     updateAudioQueue();
+    updateInputBuffer();
 
     if(gameActiv)
     {
@@ -67,6 +68,8 @@ int main(void)
 //WARN : De function voor gesenureert is to gevoegt maar moet nog getest worden
 //WARN : audio module is toegevoegd, moet nog goed getest worden en geintergreert/ audio aan toe gevoegt worden
 
+
+
 //TODO: pin inishilation van de key en switch sensor toevoegen in switch_and_key_sensors_init() en de read functies invullen
 //DONE: Taal van display templates wort nu aan gepast aan de hand van de audio instelling, hier voor een aparte instelling voor maken dat je hebt audio aan/ uit en taal NL/EN
 //DONE: uitzoeken hoe lupart0 werkt.
@@ -78,4 +81,5 @@ int main(void)
 //IDEA: MS_PER_TICK_PANALTY variable maken tot betrekking tot globalSetting.difeculty //DONE: gelijk gemaakt als Time.DeltaTime
 //IDEA: ver gezocht maar voor de website audio kunnen uploden, zeggen welke audio hij moet vervangen b.v nederlants dom has bin planted en die dan vervangen
 
+//NOTE: Meschien forceGlobelAudio de audio niet forseren maar direct na vorige bericht paltesen of allen afspelen als niks in de queae moet even testen
 //NOTE: Meschien de receive_room_settings_from_esp() ook allen uit voeren als de data verandert is (riziko hier van is dat je een keer de data verandert bit mis loopt en niet de actuele data hebt)

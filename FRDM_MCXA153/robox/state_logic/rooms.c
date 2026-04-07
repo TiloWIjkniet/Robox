@@ -103,7 +103,7 @@ void first_room_onEntry(void)
 
     forceDisplayTemplate(D_START_GAME, DISPLAY_5S);
 
-    playAudio(BOM_HAS_BEEN_PLANTED);
+    playAudio(AUDIO_BOM_HAS_BEEN_PLANTED);
 }
 void first_room_onUpdate(void)
 {
@@ -209,14 +209,14 @@ bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
     //If correct special actie preformed
     forceDisplayTemplate(roomDisplay.specialActionCorrect, DISPLAY_3S);
     setRequiredSpecialActies(requiredSpeciaAction , false);
-    playGlobelAudio(CORRECT_ANSWER);
+    playGlobelAudio(AUDIO_CORRECT_ANSWER);
 
     return true;
     
 }
 bool commonRoom_AnswerCheck(roomDisplayConfig_t roomDisplay)
 {
-    updateInputBuffer();
+    
     if(!hasNewAnswer) return false;
     //New answer is in answer buffer
     bool correct = isAnswerCorrect(answerBuffer); 
@@ -224,13 +224,13 @@ bool commonRoom_AnswerCheck(roomDisplayConfig_t roomDisplay)
     {
         //If answer is correct
         forceDisplayTemplate(roomDisplay.answerCorrect, DISPLAY_3S); 
-        playGlobelAudio(CORRECT_ANSWER);
+        playGlobelAudio(AUDIO_CORRECT_ANSWER);
         return true;
     }
     //if answer is wrong
     applyWrongAnswerPenalty();
     forceDisplayTemplate(roomDisplay.answerWrong, DISPLAY_3S); 
-    playGlobelAudio(WRONG_ANSWER);
+    playGlobelAudio(AUDIO_WRONG_ANSWER);
     return false;  
 }
   
@@ -243,12 +243,15 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay)
         case STATE_WAIT_FOR_ROOM: //Wait for player to enter the correct room
         {
             bool inCorrectRoom = isInCorrectRoom(beconIp);
+
+            //TEMP: voor debug options/ voor def mode 
+            if(hasNewAnswer) {inCorrectRoom = inCorrectRoom || isInputMatching(answerBuffer, "0000");}
             addDisplayTemplate(roomDisplay.waitForRoom, 0);
             if(inCorrectRoom)
             {
                 //If in correct room go to next state and set display template and play audio
                 forceDisplayTemplate(roomDisplay.enteredRoom, DISPLAY_3S);
-                playGlobelAudio(CORRECT_ANSWER);
+                playGlobelAudio(AUDIO_CORRECT_ANSWER);
                 state = STATE_ENTER_ANSWER;
             }
             break;

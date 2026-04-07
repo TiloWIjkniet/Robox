@@ -7,18 +7,20 @@
 
 #define BUSY_PIN 2
 #define QUEUE_SIZE 20
-
+#define SEND_DELAY 50
+#define MAX_VOLUME 30
 typedef struct 
 {
     uint8_t  command;
     uint16_t param;
-} AudioCommand;
+} audio_command_t;
 
-AudioCommand audioQueue[QUEUE_SIZE] = {};
+audio_command_t audioQueue[QUEUE_SIZE] = {};
+audio_command_t forceCommand = {};
 uint8_t queueHead = 0;
 uint8_t queueTail = 0;
-uint8_t volume = 20;
-
+uint8_t volume = 5;
+uint32_t lastSendTime = 0;
 uint8_t cmdBuffer[CMD_LENGTH] = 
 {
     0x7E,  // Start byte
@@ -33,6 +35,8 @@ uint8_t cmdBuffer[CMD_LENGTH] =
     0xEF   // End byte
 };
 
+bool isForceCommand = false;
+
 void audio_init()
 {
 
@@ -46,6 +50,7 @@ void audio_init()
     PORT2->PCR[BUSY_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1);
 
     audioSetVolume(volume);
+    playGlobelAudio(AUDIO_AUDIO_CHECK);
 }
 
 void calculateChecksum() 
@@ -59,7 +64,7 @@ void calculateChecksum()
     cmdBuffer[CHECKSUM_LOW] = checksum & 0xFF;
 }
 
-void sendCommand(AudioCommand cmdData) 
+void sendCommand(audio_command_t cmdData) 
 {
     cmdBuffer[COMMAND] = cmdData.command;
     cmdBuffer[PARAM_HIGH] = (cmdData.param >> 8) & 0xFF;
@@ -90,14 +95,21 @@ bool getPinStateAudio()
 // Verwerk queue: stuur volgend commando als DFPlayer klaar is
 void updateAudioQueue()
 {
-    static uint32_t lastSendTime = 0;
+    
 
-    if (queueHead == queueTail) return;
+    if (queueHead == queueTail && !isForceCommand ) return;
 
     // Kleine vertraging tussen commando's
     uint32_t now = millis();
-    if (now - lastSendTime < 100) return;
+    if (now - lastSendTime < SEND_DELAY) return;
     lastSendTime = now;
+
+    if(isForceCommand)
+    {
+        isForceCommand = false;
+        sendCommand(forceCommand);
+        return;
+    }
 
     if (!getPinStateAudio()) return;
     
@@ -117,14 +129,14 @@ void audioPlayInFile(uint8_t file, uint8_t audio)
 
 void audioSetVolume(uint8_t vol)
 {
-    if(vol > 30) vol = 30;
+    if(vol > MAX_VOLUME) vol = MAX_VOLUME;
     enqueueCommand(CMD_SET_VOLUME, vol);
     volume = vol;
 }
 
 void playGlobelAudio(globel_audio_files_t audioFile)
 {
-    if(globalSettings.audio == AUDIO_OFF ||volume == 0 ) return;
+    if(globalSettings.audio == AUDIO_OFF || volume == 0 ) return;
     audioPlayInFile(GLOBEL_FOLDER, audioFile);
 }
 
@@ -135,4 +147,35 @@ void playAudio(audio_files_t audioFile)
     
     uint8_t file = (globalSettings.language == LANGUAGE_ENGLISH) ? ENGLISH_FOLDER : NEDERLANDS_FOLDER;
     audioPlayInFile(file + globalSettings.censorship, audioFile);
+}
+
+void stopAudio()
+{
+    if(globalSettings.audio == AUDIO_OFF || volume == 0) return;
+    isForceCommand = true;
+
+    forceCommand.command    = CMD_STOP;
+    forceCommand.param      = 0;
+    
+}
+
+void forceGlobelAudio(globel_audio_files_t audioFile)
+{
+    if(globalSettings.audio == AUDIO_OFF || volume == 0 || audioFile == AUDIO_NONE_G) return;
+    isForceCommand = true;
+
+    forceCommand.command    = CMD_SPECIFIC_FOLDER;
+    forceCommand.param      = ((uint16_t)GLOBEL_FOLDER << 8) | audioFile;
+  
+}
+
+void forceplayAudio(audio_files_t audioFile)
+{
+    if(globalSettings.audio == AUDIO_OFF || volume == 0 || audioFile == AUDIO_NONE) return;
+    isForceCommand = true;
+    uint8_t file = (globalSettings.language == LANGUAGE_ENGLISH) ? ENGLISH_FOLDER : NEDERLANDS_FOLDER;
+
+    forceCommand.command    = CMD_SPECIFIC_FOLDER;
+    forceCommand.param      = ((uint16_t)file << 8) | audioFile;
+
 }
