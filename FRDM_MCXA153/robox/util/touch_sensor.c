@@ -6,7 +6,7 @@
 #include "game_logic.h"
 #include "audio.h"
 
-#define TOUCH_SENSOR_PIN 0
+#define TOUCH_SENSOR_PIN 4
 #define G_PIN 10
 #define R_PIN 12
 #define B_PIN 13
@@ -31,11 +31,6 @@ void touchSensor_init()
     MRCC0->MRCC_GLB_RST0_SET = MRCC_MRCC_GLB_RST0_PORT1(1);
     MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_GPIO1(1);
 
-    MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_PORT2(1);
-    MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_GPIO2(1);
-
-    MRCC0->MRCC_GLB_RST0_SET = MRCC_MRCC_GLB_RST0_PORT2(1);
-    MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_GPIO2(1);
 
     PORT1->PCR[G_PIN] = PORT_PCR_LK(1);
     PORT1->PCR[R_PIN] = PORT_PCR_LK(1);
@@ -45,7 +40,7 @@ void touchSensor_init()
     GPIO1->PDDR |= (1<<G_PIN) | (1<<R_PIN) | (1<<B_PIN);
     GPIO1->PCOR =  (1<<G_PIN) | (1<<R_PIN) | (1<<B_PIN);
 
-    PORT2->PCR[TOUCH_SENSOR_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1);
+    PORT1->PCR[TOUCH_SENSOR_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1);
 
 
     setCollor(OFF);

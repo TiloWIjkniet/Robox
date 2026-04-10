@@ -5,12 +5,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "time_millis.h"
-
+#include "HM10.h"
 
 char beconIp[50];
 
 #define LINE_BUFFER_SIZE 128
 #define BEACON_TIMEOUT 20000
+
 char line_buffer[LINE_BUFFER_SIZE];
 uint32_t line_index = 0;
 uint32_t lastReseaftMasige = 0;
@@ -25,7 +26,7 @@ typedef struct
     uint8_t beconStrengt;   
 }beacon_t;
 
-beacon_t becons[20];
+beacon_t becons[MAX_BEACONS];
 uint8_t beconIndex = 0;
 
 
@@ -129,6 +130,30 @@ void getBeconData()
             }
         }
 }
+
+int compare(const void *a, const void *b)
+{
+    beacon_t *ia = (beacon_t *)a;
+    beacon_t *ib = (beacon_t *)b;
+
+    return ib->beconStrengt - ia->beconStrengt; // aflopend (hoog → laag)
+}
+
+void getLowestBecons(char *pLowestBeconsString, uint16_t size)
+{
+    qsort(becons, beconIndex, sizeof(beacon_t), compare);
+    uint16_t offset = 0;
+    uint8_t beconsInLowest = beconIndex < MAX_BEACONS_IN_LIST? beconIndex : MAX_BEACONS_IN_LIST;
+    for(uint8_t i = 0; i < beconsInLowest; i++)
+    {
+        offset += snprintf(pLowestBeconsString + offset, size - offset,"Beacon: %s, Strength: %d\n", becons[i].beaconIp, becons[i].beconStrengt);
+    }
+    if(beconIndex <= 0)
+    {
+        snprintf(pLowestBeconsString, size, "No beacons found");
+    }
+}
+
 
 
 void updateHM10()

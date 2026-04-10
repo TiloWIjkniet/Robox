@@ -197,7 +197,6 @@ bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
     //handle special actie input and check if correct
     specialActies_t preformedAction = getSpecialActies();
     if(preformedAction == NON_S) return false;
-    
     //If a special actie is preformed
     if(preformedAction != requiredSpeciaAction)
     {

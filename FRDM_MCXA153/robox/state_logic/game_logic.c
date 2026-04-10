@@ -141,6 +141,14 @@ void loadDisplayTemplate(displayTemplate_t template)
         else printf(displayTemplatesSafeEn[template]);   
     }
 }
+void printCustomDisplay(char *customDisplay)
+{
+     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
+     //TODO: Beter manier maken om customDisplays aan de que toe te voegen
+    printf("Lowest becons:\n");
+    printf(customDisplay);
+}
+
 /**
  * @brief Update de display queue en verwerkt de timers.
  *
@@ -168,7 +176,7 @@ void updateDisplayQueue()
     }
     else if(now - displayQueue[0].displayStartMillis >= displayQueue[0].displayDurationMillis)
     {
-        if(displayQueue[1].displayLoadTemplate == D_NONE) return;
+        if(displayQueue[1].displayLoadTemplate == D_NONE)return;
 
         displayQueue[0] = displayQueue[1];
         displayQueue[1] = emptyDisplayItem;
@@ -241,10 +249,13 @@ void addDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t 
  */
 bool isDisplayTemplateDonePlaying()
 {
-    if(displayQueue[0].displayLoadTemplate != D_NONE && displayQueue[1].displayLoadTemplate != D_NONE) return true; // Template niet in buffer
-
+    if(displayQueue[0].displayLoadTemplate == D_NONE && displayQueue[1].displayLoadTemplate == D_NONE) return true; // Template niet in buffer
+   
     uint32_t now = millis();
+    if(displayQueue[0].displayLoadTemplate != D_NONE && displayQueue[0].displayStartMillis == 0) return false; // Template is net geladen, dus nog niet klaar
+    if(displayQueue[1].displayLoadTemplate != D_NONE && displayQueue[1].displayStartMillis == 0) return false; // Template is net geladen, dus nog niet klaar
     if(now - displayQueue[0].displayStartMillis < displayQueue[0].displayDurationMillis) return false; // Template still dusy
+    if(now - displayQueue[1].displayStartMillis < displayQueue[1].displayDurationMillis) return false; // Template still dusy
     return true; // Template is don playing
 }
 /**
@@ -279,19 +290,18 @@ void updateSpecialActies()
 {     
     static bool lastTouchPressed = false;
     bool touchPressed = isTouchPressed();
-    if(touchPressed && touchPressed != lastTouchPressed) 
+    if(touchPressed && !lastTouchPressed) 
     {
 
         if(requiredSpecialActies != NON_S)
         {
             preformtSpecialAction = FINGER_PRINT_S;
+            if(requiredSpecialActies != FINGER_PRINT_S)
+            {
+                applyWrongAnswerPenalty();
+            }
         }
-        
-        if(requiredSpecialActies != FINGER_PRINT_S)
-        {
-            applyWrongAnswerPenalty();
-        }
-        
+
     }    
     lastTouchPressed = touchPressed;
 
@@ -303,7 +313,7 @@ void updateSpecialActies()
     if(readSwitchSensor())    lastingActions |= (1 << SWITCH_S);
     if(lastingActions == requiredActions) return;
     
-    if((lastingActions & (1 << SWITCH_S)))
+    if((lastingActions & (1 << SWITCH_S)) != (requiredActions & (1 << SWITCH_S)))
     {
         if(requiredSpecialActies != NON_S)
         {
@@ -312,11 +322,12 @@ void updateSpecialActies()
                 requiredActions |= (1 << SWITCH_S);
                 actionCorect = true;
                 playGlobelAudio(AUDIO_CORRECT_ANSWER);
+                printf("Switch sensor activated\n"); // Debug output
             }
             preformtSpecialAction = SWITCH_S;
         }
     }
-    if((lastingActions & (1 << KEY_S)))
+    if((lastingActions & (1 << KEY_S))!= (requiredActions & (1 << KEY_S)))
     {
         if(requiredSpecialActies != NON_S)
         {
@@ -332,10 +343,8 @@ void updateSpecialActies()
 
     if(!actionCorect)
     {
-        static uint32_t lastPanaltyUpdate = 0;
-        uint32_t now = millis();
-        timeGamePanaltyMillis += MS_PER_TICK_PANALTY * (now - lastPanaltyUpdate);
-        lastPanaltyUpdate = now;
+       
+        timeGamePanaltyMillis += MS_PER_TICK_PANALTY;
     }
 }
 
@@ -395,13 +404,11 @@ void updateTimeGamePenaltyMillis()
 {
   
     if(timeGamePanaltyBuffer <= 0) return;
-    static uint32_t lastPanaltyUpdate = 0;
-    uint32_t now = millis();
-    if(timeGamePanaltyBuffer >= MS_PER_TICK_PANALTY * (now - lastPanaltyUpdate))
+
+    if(timeGamePanaltyBuffer >= MS_PER_TICK_PANALTY)
     {
-        timeGamePanaltyBuffer -= MS_PER_TICK_PANALTY * (now - lastPanaltyUpdate);
-        timeGamePanaltyMillis += MS_PER_TICK_PANALTY * (now - lastPanaltyUpdate);
-        lastPanaltyUpdate = now;
+        timeGamePanaltyBuffer -= MS_PER_TICK_PANALTY;
+        timeGamePanaltyMillis += MS_PER_TICK_PANALTY;
     }
     else
     {
@@ -471,7 +478,7 @@ bool isInputMatching(const  char *input, const char *correctInput)
 bool isWithinTimeLimit(void)
 {
     uint32_t elapsedTime = getElapsedTime(); 
-    return  (elapsedTime  <= globalSettings.totalTime * 60UL * 1000UL) || (globalSettings.difficulty <= 2);
+    return  (elapsedTime  <= globalSettings.totalTime * 60UL * 1000UL) || (globalSettings.difficulty < 2);
 }
 
 /**
@@ -507,6 +514,7 @@ void setGameTimer(int32_t sec)
 
     uint16_t minutes = sec / 60;
     uint16_t seconds = sec % 60;
+   printf("Time Remaining: %02d:%02d\n", minutes, seconds); // Debug output
     hexDisplay_setTime(minutes, seconds);
 }
 

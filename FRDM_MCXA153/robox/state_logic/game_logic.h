@@ -73,4 +73,5 @@ void send_run_data_to_esp(void);
 void receive_room_settings_from_esp(void);
 
 
+void printCustomDisplay(char *customDisplay);
 #endif

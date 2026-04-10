@@ -1,13 +1,23 @@
 #include "time_millis.h"
+#include "board.h"
 
-
-#define KEY_SENSOR_PIN 0
+#define KEY_SENSOR_PIN 15
 #define SWITCH_SENSOR_PIN 1
 
 #define BOUNCE_DELAY 50
 
 void switch_and_key_sensors_init()
 {
+
+
+    MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_PORT3(1);
+    MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_GPIO3(1);
+
+    MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_PORT3(1);
+    MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_GPIO3(1);
+
+    PORT3->PCR[KEY_SENSOR_PIN] =    PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
+    PORT3->PCR[SWITCH_SENSOR_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
     // init key sensor pin
     //inti switch sensor pin
 }
@@ -15,7 +25,7 @@ void switch_and_key_sensors_init()
 bool readRawKeySensor()
 {
     // read key sensor pin
-    return false;
+    return ((GPIO3->PDIR & (1<<KEY_SENSOR_PIN)) == 0);
 }
 
 bool readKeySensor()
@@ -41,7 +51,7 @@ bool readKeySensor()
 bool readRawSwitchSensor()
 {
     // read switch sensor pin
-    return false;
+    return ((GPIO3->PDIR & (1<<SWITCH_SENSOR_PIN)) == 0);
 }
 
 bool readSwitchSensor()

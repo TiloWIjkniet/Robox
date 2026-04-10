@@ -12,6 +12,8 @@
 #include "audio.h"
 #include <string.h>
 #include <stdlib.h>
+#include "HM10.h"
+
 #define WEBSERVER_ON  0xCC
 #define WEBSERVER_OFF 0xEE
 #define START_BYTE_GET_SETTINGS_DATA 0xBB
@@ -23,6 +25,7 @@
 #define EXIT_DEV_CODE "0000"
 #define OPEN_ALL_COMPARTMETS "9999"
 #define SET_AUDIO_VOLUME "1111"
+#define RECEIVE_ROOM_SETTINGS "2222"
 #define TIMEOUT_MS 500  
 
 #define RETRY_ATTEMPTS 5
@@ -31,24 +34,16 @@
 globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_STOP,
-    1,
-    AUDIO_ON,
+    10,
+    AUDIO_OFF,
     LANGUAGE_ENGLISH,
     NOT_CENSORED
 };
-runData_t runData = 
-{
-    .roomTimes = {20.5, 10.5, 10,8,2},
-    .wrongAnswerCount = 5,
-    .totalTime = 60,
-    .difficulty = 3,
-    .maxRooms = 51
-};
-
+runData_t runData;
 roomSettings_t roomsSettings[MAX_ROOMS] = 
 {
-    {{0,1}, "0000", {"0000"}, NON_C, NON_S, "Room 1"},
-    {{1,0}, "1111", {"1111"}, NON_C, NON_S, "Room 2"},
+    {{0,1}, "0000", {"0000"}, NON_C, KEY_S, "Room 1"},
+    {{1,0}, "1111", {"1111"}, NON_C, SWITCH_S, "Room 2"},
     {{1,1}, "2222", {"2222"}, NON_C, NON_S, "Room 3"}
 };
 const char ROOM_CODES[20][2] = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"};
@@ -67,25 +62,43 @@ void dev_page_onEntry(void)
     emptyInputBuffer();
 }
 
-void dev_page_onUpdate(void)
+bool handleExit(void)
 {
-    checkIfNewDataFromEsp();
-    if(!hasNewAnswer) return;
-
     if(isInputMatching(answerBuffer, EXIT_DEV_CODE))
     {
         //Exit dev mode
         FSM_addEvent(E_EXIT_DEV); 
-        return;
+        return true;
     }
-    else if(isInputMatching(answerBuffer, OPEN_ALL_COMPARTMETS))
+    return false;
+};
+bool handleOpenAll(void)
+{
+    if(isInputMatching(answerBuffer, OPEN_ALL_COMPARTMETS))
     {
         //Open al compartments for testing/ resetting
         openCompartment(NON_C);
         //TODO: Moet nog ge implementeerd worden
-        return;
+        return true;
     }
+    return false;
+}
+bool handleDebugBeacons(void)
+{
+    if(isInputMatching(answerBuffer, RECEIVE_ROOM_SETTINGS))
+    {
+        char lowestBeconsString[MAX_BEACONS_IN_LIST * 30]; 
+        
+        getLowestBecons(lowestBeconsString, sizeof(lowestBeconsString));
+        printCustomDisplay(lowestBeconsString);
+        return true;
+    }
+    return false;
+}
+bool handleVolume(void)
+{
     char *pos = strstr(answerBuffer, SET_AUDIO_VOLUME);
+    hasNewAnswer = false;
     if(pos != NULL)
     {
         //Set or get audio volume 
@@ -104,9 +117,12 @@ void dev_page_onUpdate(void)
         displayDigitsValues(OFF,OFF,roomFirstVolume > 0 ? roomFirstVolume : OFF, roomSecondVolume, OFF);
 
         playGlobelAudio(AUDIO_AUDIO_CHECK);
-        return;
+        return true;
     }
-
+    return false;
+}
+void handleRoomSelection(void)
+{
     uint8_t numberOfRooms = getNumRooms();
     for(int room = 0; room < numberOfRooms; room++)
     {
@@ -122,9 +138,22 @@ void dev_page_onUpdate(void)
             uint8_t roomSecondDigit = room % 10;
             displayDigitsValues(OFF,OFF,roomFirstDigit > 0 ? roomFirstDigit : OFF, roomSecondDigit, OFF); //disply het kamernummer op de hex display
             //TODO: Dispalys de settings voor die spesefieke room 
-            break;
+            return;
         }
     }
+}
+
+void dev_page_onUpdate(void)
+{
+    checkIfNewDataFromEsp();
+    if(!hasNewAnswer) return;
+    
+    if (handleExit()) return;
+    if (handleOpenAll()) return;
+    if (handleDebugBeacons()) return;
+    if (handleVolume()) return;
+
+    handleRoomSelection();
 }
 
 void dev_page_onExit(void)

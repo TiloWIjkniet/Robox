@@ -14,13 +14,14 @@
 #include "lpuart2.h"
 #include "HM10.h"
 #include "audio.h"
+#include "switch_and_key_sensors.h"
 int main(void)
 {
 
 
-  //serial_init(9600); Word gezet in audio_init() 
-  lpuart1_init(115200); // word gebruik voor cominication naar esp
-  //lpuart2_init word in void HM10_init() ingesteld 
+  //serial_init(9600); //Word gezet in audio_init() 
+ lpuart1_init(115200); // word gebruik voor cominication naar esp
+ // lpuart2_init //word in void HM10_init() ingesteld 
 
 
   //Initialisatie van alle modules
@@ -32,10 +33,14 @@ int main(void)
   hexDisplay_init();
   HM10_init();
   audio_init();
+  switch_and_key_sensors_init();
 
   //Voor dat programa kan starten
   //receive_room_settings_from_esp();
-  
+
+  printf("Start\n");
+
+
   while(1)
   {
     //Standaard updates die altijd moeten lopen
@@ -63,14 +68,14 @@ int main(void)
   }
 }
 
-
+//WARN: controller of tutchsensor op pin 2_16 werkt
 //WARN : controleer of updateSpecialActies() werkt
 //WARN : De function voor gesenureert is to gevoegt maar moet nog getest worden
 //WARN : audio module is toegevoegd, moet nog goed getest worden en geintergreert/ audio aan toe gevoegt worden
 
 
 
-//TODO: pin inishilation van de key en switch sensor toevoegen in switch_and_key_sensors_init() en de read functies invullen
+//DONE: pin inishilation van de key en switch sensor toevoegen in switch_and_key_sensors_init() en de read functies invullen
 //DONE: Taal van display templates wort nu aan gepast aan de hand van de audio instelling, hier voor een aparte instelling voor maken dat je hebt audio aan/ uit en taal NL/EN
 //DONE: uitzoeken hoe lupart0 werkt.
 //DONE: audio uitzoeken en triggers voor die aurio maken.

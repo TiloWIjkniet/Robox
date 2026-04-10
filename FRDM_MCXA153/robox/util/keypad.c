@@ -148,8 +148,7 @@ void updateInputBuffer()
   // NOTE: Mogelijk audio meten forseren om geen erg laten audio feedback te krijgen bij het indrukken van toetsen
   forceGlobelAudio(AUDIO_NUMPAD_INPUT);
 
-  //TEMP: Print de inhoud van de input buffer voor debug doeleinden
- // printf("Input buffer: %s\n", inputBuffer);
+
 }
 
 /**
@@ -215,6 +214,7 @@ char getKey()
   if (serial_rxcnt() > 0)
   {
     char c = serial_getchar();
+  //  printf("Received char from serial: %c\n", c); // Debug output
     if( c != '\n' && c != '\r') return c;
   }
   

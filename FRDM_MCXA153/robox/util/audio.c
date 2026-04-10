@@ -49,8 +49,8 @@ void audio_init()
 
     PORT2->PCR[BUSY_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1);
 
-    audioSetVolume(volume);
-    playGlobelAudio(AUDIO_AUDIO_CHECK);
+   // audioSetVolume(volume);
+   // playGlobelAudio(AUDIO_AUDIO_CHECK);
 }
 
 void calculateChecksum() 

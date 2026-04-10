@@ -20,7 +20,6 @@ void completed_onEntry(void)
     gameActiv = false;
 
     addDisplayTemplate(D_WIN, DISPLAY_5S);
-    playAudio(AUDIO_BOM_HAS_BEEN_DEFUSED);
 
 }
 void completed_onUpdate(void) 
@@ -84,7 +83,6 @@ void timeout_onUpdate(void)
     if(!isDisplayTemplateDonePlaying()) return;
 
     playAudio(AUDIO_TIME_IS_UP);
-
     FSM_addEvent(E_GAME_TIMEOUT);
     
 }

@@ -1,60 +1,13 @@
-/*! ***************************************************************************
- *
- * \brief     Low-Power UART interrupt driver for serial communication
- * \file      serial.c
- * \author    Hugo Arends
- * \date      January 2026
- *
- * \see       NXP. (2024). MCX A153, A152, A143, A142 Reference Manual. Rev. 4,
- *            01/2024. From:
- *            https://www.nxp.com/docs/en/reference-manual/MCXAP64M96FS3RM.pdf
- *
- * \copyright 2026 HAN University of Applied Sciences. All Rights Reserved.
- *            \n\n
- *            Permission is hereby granted, free of charge, to any person
- *            obtaining a copy of this software and associated documentation
- *            files (the "Software"), to deal in the Software without
- *            restriction, including without limitation the rights to use,
- *            copy, modify, merge, publish, distribute, sublicense, and/or sell
- *            copies of the Software, and to permit persons to whom the
- *            Software is furnished to do so, subject to the following
- *            conditions:
- *            \n\n
- *            The above copyright notice and this permission notice shall be
- *            included in all copies or substantial portions of the Software.
- *            \n\n
- *            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- *            EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- *            OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- *            NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- *            HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- *            WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- *            FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- *            OTHER DEALINGS IN THE SOFTWARE.
- *
- *****************************************************************************/
 #include "serial.h"
 #include "fifo.h"
 
-// -----------------------------------------------------------------------------
-// Local type definitions
-// -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Local function prototypes
-// -----------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------
-// Local variables
-// -----------------------------------------------------------------------------
 static fifo_t tx;
 static fifo_t rx;
 static uint8_t tx_buffer[128];
 static uint8_t rx_buffer[128];
 
-// -----------------------------------------------------------------------------
-// Local function implementation
-// -----------------------------------------------------------------------------
+
 void serial_init(const uint32_t baudrate)
 {
     // Initialize FIFOs
@@ -95,7 +48,7 @@ void serial_init(const uint32_t baudrate)
     // PE:  [0] = Disables
     // PS:  [0] = n.a.
     PORT0->PCR[2] = PORT_PCR_LK(1) | PORT_PCR_MUX(2) | PORT_PCR_IBE(1);
-    PORT2->PCR[0] = PORT_PCR_LK(1) | PORT_PCR_MUX(2) | PORT_PCR_IBE(1);
+   // PORT2->PCR[0] = PORT_PCR_LK(1) | PORT_PCR_MUX(2) | PORT_PCR_IBE(1);
     // Configure P0_3
     // LK : [1] = Locks this PCR
     // INV: [0] = Does not invert
@@ -140,6 +93,7 @@ void serial_init(const uint32_t baudrate)
     // Globally enable interrupts
     __enable_irq();
 }
+
 
 void serial_putchar(int data)
 {
