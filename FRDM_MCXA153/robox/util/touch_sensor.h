@@ -9,9 +9,9 @@ typedef enum
   GREEN
 }collors_t;
 
-void touchSensor_init();
+void touchSensor_init(void);
 
 void setCollor(collors_t collor);
-bool isTouchPressed();
+bool isTouchPressed(void);
 void setMustTouchSensor(bool must);
 #endif

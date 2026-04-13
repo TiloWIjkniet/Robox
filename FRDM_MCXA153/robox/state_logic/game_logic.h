@@ -7,43 +7,43 @@
 
 #include "game_data.h"
 #include "display_template.h"
-
+#include "board.h"
 
 // =======================
 // 🖥️ DISPLAY / UI
 // =======================
 
-void updateDisplayQueue();
+void updateDisplayQueue(void);
 void forceDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis);
 void addDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis);
-bool isDisplayTemplateDonePlaying();
+bool isDisplayTemplateDonePlaying(void);
 
 
 // =======================
 // 🎮 GAME FLOW / LOGIC
 // =======================
 
-void resetGameLogic();
-specialActies_t getSpecialActies();
-void applyWrongAnswerPenalty();
-void updateSpecialActies();
+void resetGameLogic(void);
+specialActies_t getSpecialActies(void);
+void applyWrongAnswerPenalty(void);
+void updateSpecialActies(void);
 
 bool isWithinTimeLimit(void);
-uint32_t getElapsedTime();
-int32_t getTimeRemaining();
+uint32_t getElapsedTime(void);
+int32_t getTimeRemaining(void);
 
 // =======================
 // ⏱️ TIME SYSTEM
 // =======================
 
-void updateTimeGamePenaltyMillis();
-uint32_t getWrongAnswerPenalty();
+void updateTimeGamePenaltyMillis(void);
+uint32_t getWrongAnswerPenalty(void);
 
-void updateVirtualTime();
-uint32_t getVirtualElapsedTime();
-void updateTimeDependingAudio();
+void updateVirtualTime(void);
+uint32_t getVirtualElapsedTime(void);
+void updateTimeDependingAudio(void);
 
-void updateGameTimer();
+void updateGameTimer(void);
 void setGameTimer(int32_t sec);
 
 // =======================
@@ -74,4 +74,24 @@ void receive_room_settings_from_esp(void);
 
 
 void printCustomDisplay(char *customDisplay);
+
+static inline bool getPinState(const GPIO_Type *port, const uint8_t pin)
+{
+    return !((port->PDIR & (1<<pin)) == 0);
+}
+
+static inline void setPinState(GPIO_Type *port, const uint8_t pin, const bool value)
+{
+    if (value) 
+    {
+        port->PSOR = (1 << pin);
+    } 
+    else 
+    {
+        port->PCOR  = (1 << pin);
+    }
+}
+
+
+
 #endif

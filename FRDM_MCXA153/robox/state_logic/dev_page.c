@@ -23,7 +23,7 @@
 #define NEW_DATA_BYTE 0xDD
 
 #define EXIT_DEV_CODE "0000"
-#define OPEN_ALL_COMPARTMETS "9999"
+#define OPEN_ALL_COMPARTMETS "3333"
 #define SET_AUDIO_VOLUME "1111"
 #define RECEIVE_ROOM_SETTINGS "2222"
 #define TIMEOUT_MS 500  
@@ -50,7 +50,7 @@ const char ROOM_CODES[20][2] = {"0","1","2","3","4","5","6","7","8","9","10","11
 
 bool newData = false;
 
-void checkIfNewDataFromEsp();
+void checkIfNewDataFromEsp(void);
 
 void dev_page_onEntry(void)
 {
@@ -165,8 +165,7 @@ void dev_page_onExit(void)
     lpuart1_putchar(WEBSERVER_OFF);    
 }
 
-
-void checkIfNewDataFromEsp()
+void checkIfNewDataFromEsp(void)
 {
     if(newData) return;
     if(lpuart1_rxcnt() > 0)

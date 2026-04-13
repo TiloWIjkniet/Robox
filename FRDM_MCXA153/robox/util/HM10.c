@@ -41,13 +41,13 @@ void sentDataToHM10(const char *mesag)
 
 }
 
-void askForBeacons()
+void askForBeacons(void)
 {
     sentDataToHM10("AT+DISI?\r\n"); // AT+DISI?
     
 }
 
-void HM10_init()
+void HM10_init(void)
 {
     // WARN: Heb dit niew toe gevoegt dus werkt mis niet goed
     lpuart2_init(9600);
@@ -62,7 +62,7 @@ void HM10_init()
     askForBeacons();
 }
 
-void getBeconData()
+void getBeconData(void)
 {
         while(lpuart2_rxcnt() > 0)
         {
@@ -156,7 +156,7 @@ void getLowestBecons(char *pLowestBeconsString, uint16_t size)
 
 
 
-void updateHM10()
+void updateHM10(void)
 {
     
    
@@ -206,6 +206,4 @@ void updateHM10()
     {
         strcpy(beconIp, becons[lowestBeaconIndex].beaconIp);
     }
-
-   // printf("Lowest: %s\n", beconIp);
 }

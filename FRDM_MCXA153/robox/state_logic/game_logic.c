@@ -28,9 +28,9 @@ uint16_t playedAudio = 0;
 
 const uint8_t NO_COORDINATES[2] = {INVALID_COORD, INVALID_COORD};
 
-uint32_t getWrongAnswerPenalty();
+uint32_t getWrongAnswerPenalty(void);
 bool isInputMatching(const  char *input, const char *correctInput);
-int32_t getTimeRemaining();
+int32_t getTimeRemaining(void);
 
 typedef struct 
 {
@@ -53,7 +53,7 @@ typedef struct
 }coordinates_t;
 
 
-void resetVirtualTime()
+void resetVirtualTime(void)
 {
     virtualTime = 0;
     lastRealTime = millis();
@@ -62,7 +62,7 @@ void resetVirtualTime()
     
 }
 
-void resetGameLogic()
+void resetGameLogic(void)
 {
     playedAudio = 0;
     requiredActions = 0;
@@ -132,21 +132,31 @@ void loadDisplayTemplate(displayTemplate_t template)
     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
     if(globalSettings.censorship == NOT_CENSORED)
     {
+        #if DEBUG_ON_PC
+        //DEBUG Display on pc
         if(globalSettings.language == LANGUAGE_NEDERLANDS)printf(displayTemplatesNL[template]);
         else printf(displayTemplatesEn[template]);
+        #endif
     }
     else
     {
-        if(globalSettings.language == LANGUAGE_ENGLISH)printf(displayTemplatesSafeNL[template]);
-        else printf(displayTemplatesSafeEn[template]);   
+        #if DEBUG_ON_PC
+        //DEBUG Display on pc
+        if(globalSettings.language == LANGUAGE_ENGLISH) printf(displayTemplatesSafeNL[template]);
+        else printf(displayTemplatesSafeEn[template]);  
+        #endif 
     }
 }
 void printCustomDisplay(char *customDisplay)
 {
      //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
      //TODO: Beter manier maken om customDisplays aan de que toe te voegen
+
+    #if DEBUG_ON_PC
+    //DEBUG Display on pc
     printf("Lowest becons:\n");
     printf(customDisplay);
+    #endif
 }
 
 /**
@@ -163,7 +173,7 @@ void printCustomDisplay(char *customDisplay)
  *
  * @note Alleen de eerste twee slots van de queue worden ondersteund.
  */
-void updateDisplayQueue()
+void updateDisplayQueue(void)
 {
     
     if(displayQueue[0].displayLoadTemplate == D_NONE) return;
@@ -247,7 +257,7 @@ void addDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t 
  * @return true  If the template done playing or if there is no active template. else false.
  * 
  */
-bool isDisplayTemplateDonePlaying()
+bool isDisplayTemplateDonePlaying(void)
 {
     if(displayQueue[0].displayLoadTemplate == D_NONE && displayQueue[1].displayLoadTemplate == D_NONE) return true; // Template niet in buffer
    
@@ -286,7 +296,7 @@ void setRequiredSpecialActies(const specialActies_t required, const bool state)
     }
 }
 
-void updateSpecialActies()
+void updateSpecialActies(void)
 {     
     static bool lastTouchPressed = false;
     bool touchPressed = isTouchPressed();
@@ -322,7 +332,6 @@ void updateSpecialActies()
                 requiredActions |= (1 << SWITCH_S);
                 actionCorect = true;
                 playGlobelAudio(AUDIO_CORRECT_ANSWER);
-                printf("Switch sensor activated\n"); // Debug output
             }
             preformtSpecialAction = SWITCH_S;
         }
@@ -361,7 +370,7 @@ void updateSpecialActies()
  * 
  * @warning mogelijk lokia toe voegen voor als 2 actions tegelijktijd uitgevoert worden
  */
-specialActies_t getSpecialActies()
+specialActies_t getSpecialActies(void)
 {
     specialActies_t specialAction = preformtSpecialAction;
     preformtSpecialAction = NON_S;
@@ -371,7 +380,7 @@ specialActies_t getSpecialActies()
 /**
  * @brief Past de straf toe voor een fout antwoord.
  */
-void applyWrongAnswerPenalty()
+void applyWrongAnswerPenalty(void)
 {
     runData.wrongAnswerCount++;
     uint32_t penalty = getWrongAnswerPenalty();
@@ -384,7 +393,7 @@ void applyWrongAnswerPenalty()
  * Calculates the time passed since the game started and adds any
  * accumulated penalty time.
  */
-uint32_t getElapsedTime()
+uint32_t getElapsedTime(void)
 {
     uint32_t elapsedTime = (millis() - startGameMillis) + timeGamePanaltyMillis;
     return globalSettings.difficulty == WRONG_ANSWER_TIME_X2 ? getVirtualElapsedTime() : elapsedTime;
@@ -400,7 +409,7 @@ uint32_t getElapsedTime()
  *
  * @note Intended to be called in the main loop
  */
-void updateTimeGamePenaltyMillis()
+void updateTimeGamePenaltyMillis(void)
 {
   
     if(timeGamePanaltyBuffer <= 0) return;
@@ -485,7 +494,7 @@ bool isWithinTimeLimit(void)
  * @brief Updates and prints the remaining game time once per second.
  *
  */
-void updateGameTimer()
+void updateGameTimer(void)
 {
 
     static int16_t lastSec =0;
@@ -514,7 +523,6 @@ void setGameTimer(int32_t sec)
 
     uint16_t minutes = sec / 60;
     uint16_t seconds = sec % 60;
-   printf("Time Remaining: %02d:%02d\n", minutes, seconds); // Debug output
     hexDisplay_setTime(minutes, seconds);
 }
 
@@ -527,7 +535,7 @@ void setGameTimer(int32_t sec)
  *
  * @return int32_t Remaining time in milliseconds.
  */
-int32_t getTimeRemaining()
+int32_t getTimeRemaining(void)
 {
   uint32_t elapsedTime = getElapsedTime();
   int32_t timeRemaining = (globalSettings.totalTime * 60 * 1000) - elapsedTime;
@@ -556,7 +564,7 @@ uint8_t getNumRooms(void)
  * *
  * @return uint32_t De tijdsstraffen in milliseconden die moeten worden toegepast.
  */
-uint32_t getWrongAnswerPenalty()
+uint32_t getWrongAnswerPenalty(void)
 {
     uint32_t timePanalty = 0;
     switch (globalSettings.difficulty)
@@ -610,7 +618,7 @@ uint32_t getWrongAnswerPenalty()
  * @warning Als deze functie niet regelmatig wordt aangeroepen, zal de virtuele tijd
  *          onnauwkeurig worden.
  */
-void updateVirtualTime()
+void updateVirtualTime(void)
 {
     uint32_t now = millis() ;
     virtualTime += (uint32_t)((now - lastRealTime) * virtualTimeMultiplier);
@@ -625,7 +633,7 @@ void updateVirtualTime()
  * @note De waarde is afhankelijk van hoe vaak `updateVirtualTime()` wordt aangeroepen
  *       en de ingestelde `virtualTimeMultiplier`.
  */
-uint32_t getVirtualElapsedTime()
+uint32_t getVirtualElapsedTime(void)
 {
     return virtualTime;
 }
@@ -648,7 +656,7 @@ const time_audio_check_t time_audio_check[TIME_AUDIO_CHECK_LEN] =
     {.checkTimeSec = 45 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_45_MIN_LEFT},
 };
 
-void updateTimeDependingAudio()
+void updateTimeDependingAudio(void)
 {
     static uint32_t lastTimeDependingAudio = 0;
     if(globalSettings.audio == AUDIO_OFF) return;
@@ -674,3 +682,4 @@ void updateTimeDependingAudio()
 
     playAudio(audioToPlay);
 }
+

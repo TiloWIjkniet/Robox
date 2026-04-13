@@ -5,6 +5,8 @@
 #include "buzzer.h"
 #include "audio.h"
 #include "serial.h"
+#include "game_logic.h"
+#include "game_data.h"
 
 #define ROWS 4
 #define COLS 3
@@ -44,9 +46,9 @@ char answerBuffer[CHAR_IN_STRING];
 bool hasNewAnswer;
 uint8_t inputBufferIndex = 0;
 
-char getKey();
+char getKey(void);
 
-void keyPad_init()
+void keyPad_init(void)
 {
 
 
@@ -71,17 +73,6 @@ void keyPad_init()
 
 }
 
-bool getPinState(uint8_t pin)
-{
-  return ((GPIO3->PDIR & (1<<pin)) == 0);
-}
-
-void setPintate(uint8_t pin, bool value)
-{
-  if(!value)GPIO3->PCOR = (1<<pin);
-  else GPIO3->PSOR = (1<<pin);
-}
-
 /**
  * @brief Leegt de volledige inputbuffer en reset de index.
  *
@@ -93,7 +84,7 @@ void setPintate(uint8_t pin, bool value)
  * Na aanroep is inputBuffer een lege, geldige C-string.
  *
  */
-void emptyInputBuffer()
+void emptyInputBuffer(void)
 {
   memset(&inputBuffer, 0, sizeof(inputBuffer));
   inputBufferIndex = 0;
@@ -118,7 +109,7 @@ void emptyInputBuffer()
  * als C-string gebruikt kan worden.
  *
  */
-void updateInputBuffer()
+void updateInputBuffer(void)
 {
   char key = getKey();
   switch (key) 
@@ -145,7 +136,6 @@ void updateInputBuffer()
       inputBuffer[inputBufferIndex] = '\0';
     break;
   }
-  // NOTE: Mogelijk audio meten forseren om geen erg laten audio feedback te krijgen bij het indrukken van toetsen
   forceGlobelAudio(AUDIO_NUMPAD_INPUT);
 
 
@@ -173,7 +163,7 @@ void updateInputBuffer()
  *   van de keypad-pinnen.
  * - Deze functie moet regelmatig aangeroepen worden in de loop() voor correcte detectie.
  */
-char getKey()
+char getKey(void)
 { 
   const uint8_t pin_coloms[COLS]  = {PIN_COLOM_0, PIN_COLOM_1, PIN_COLOM_2};
   const uint8_t pin_rows[ROWS]    = {PIN_ROW_0, PIN_ROW_1, PIN_ROW_2, PIN_ROW_3};
@@ -181,11 +171,12 @@ char getKey()
   for(uint8_t col = 0; col < COLS; col++)
   {
 
-    for(int c = 0; c < COLS; c++) setPintate(pin_coloms[c], true);
-    setPintate(pin_coloms[col], false);
+    for(int c = 0; c < COLS; c++) setPinState(GPIO3, pin_coloms[c], true);
+
     for (uint8_t row =0; row < ROWS; row++)
     {
-      bool pinState = getPinState(pin_rows[row]);
+      bool pinState = getPinState(GPIO3, pin_rows[row]);
+
        uint32_t now  = millis();
       if(pinState != keys[row][col].lastRawState) 
       {
@@ -210,14 +201,14 @@ char getKey()
     }
   }
 
-    // 🔹 2. Fallback → Serial input
+  #if DEBUG_ON_PC
+  // 2. Fallback → Serial input
   if (serial_rxcnt() > 0)
   {
     char c = serial_getchar();
-  //  printf("Received char from serial: %c\n", c); // Debug output
     if( c != '\n' && c != '\r') return c;
   }
-  
+  #endif
   return '\0';
 }
 

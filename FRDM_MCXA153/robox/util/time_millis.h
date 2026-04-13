@@ -10,11 +10,11 @@
  * @return uint32_t Aantal milliseconden sinds start.
  */
 extern uint32_t ms;
-static inline uint32_t millis()
+static inline uint32_t millis(void)
 {
     return ms;
 }
 
-void millis_init();
+void millis_init(void);
 
 #endif

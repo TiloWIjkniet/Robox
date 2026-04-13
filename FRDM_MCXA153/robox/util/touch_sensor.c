@@ -23,7 +23,7 @@ bool getPinState_touchSensor(uint8_t pin);
 /**
  * @brief Initialiseert de touch sensor en RGB LED hardware.
  */
-void touchSensor_init()
+void touchSensor_init(void)
 {
     MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_PORT1(1);
     MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_GPIO1(1);
@@ -48,9 +48,8 @@ void touchSensor_init()
 
 bool mustPres = false;
 
-bool isTouchPressed()
+bool isTouchPressed(void)
 {
-  // WARN: Heb dit niew toe gevoegt dus werkt mis niet goed
   typedef enum {RESET, FIRST_PRES, PRESSING, RELEASE, FIRST_LONG_PRESSED, LONG_PRESSED} touchState_t;
   static touchState_t touchState = RELEASE;
   static uint32_t pressStart = 0;
@@ -58,7 +57,7 @@ bool isTouchPressed()
   static uint32_t blinkTime = 0;
   static bool blinkeState = false;
 
-  bool isPressing = getPinState_touchSensor(TOUCH_SENSOR_PIN);
+  bool isPressing = getPinState(GPIO2,TOUCH_SENSOR_PIN);
 
 
 
@@ -143,32 +142,6 @@ void setMustTouchSensor(bool must)
 
 
 /**
- * @brief Leest de huidige status van een GPIO pin voor de touch sensor.
- * *
- * @param pin GPIO pin nummer dat gelezen moet worden
- *
- * @return true  wanneer de pin HIGH is
- * @return false wanneer de pin LOW is
- */
-bool getPinState_touchSensor(uint8_t pin)
-{
-  return !((GPIO2->PDIR & (1<<pin)) == 0);
-}
-
-/**
- * @brief Zet een GPIO pin hoog of laag.
- *
- * @param pin   GPIO pin nummer
- * @param state true  = HIGH
- *              false = LOW
- */
-void pin_set(uint8_t pin, bool state)
-{
-    if(!state)GPIO1->PCOR = (1<<pin);
-    else GPIO1->PSOR = (1<<pin);
-}
-
-/**
  * @brief Zet de RGB LED op een bepaalde kleur.
  *
  * Deze functie schakelt de RGB LED pins aan of uit afhankelijk
@@ -207,7 +180,7 @@ void setCollor(collors_t collor)
 
     break;
   }
-  pin_set(R_PIN, r);
-  pin_set(G_PIN, g);
-  pin_set(B_PIN, b);
+  setPinState(GPIO1, R_PIN, r);
+  setPinState(GPIO1, G_PIN, g);
+  setPinState(GPIO1, B_PIN, b);
 }

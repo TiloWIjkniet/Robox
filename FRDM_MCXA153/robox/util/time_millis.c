@@ -5,7 +5,7 @@ volatile uint32_t ms = 0;
 /**
  * @brief Initialiseert de milliseconde timer met behulp van de SysTick.
  */
-void millis_init()
+void millis_init(void)
 {
     SysTick_Config(48000);
     __enable_irq();

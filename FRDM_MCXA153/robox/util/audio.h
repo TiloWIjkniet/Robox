@@ -71,14 +71,14 @@ typedef enum
 } audio_files_t;
 
 
-void updateAudioQueue();
-void audio_init();
+void updateAudioQueue(void);
+void audio_init(void);
 
 void audioSetVolume(uint8_t vol);
 void playGlobelAudio(globel_audio_files_t audioFile);
 void playAudio(audio_files_t audioFile);
 void forceGlobelAudio(globel_audio_files_t audioFile);
-void stopAudio();
+void stopAudio(void);
 
 extern uint8_t volume;
 #endif

@@ -4,12 +4,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void switch_and_key_sensors_init();
+void switch_and_key_sensors_init(void);
 
 
-bool readKeySensor();
-bool readSwitchSensor();
-bool readRawKeySensor();
-bool readRawSwitchSensor();
+bool readKeySensor(void);
+bool readSwitchSensor(void);
+bool readRawKeySensor(void);
+bool readRawSwitchSensor(void);
 
 #endif

@@ -4,6 +4,7 @@
 #include "time_millis.h"
 #include "serial.h"
 #include <stdio.h>
+#include "game_logic.h"
 
 #define BUSY_PIN 2
 #define QUEUE_SIZE 20
@@ -37,10 +38,11 @@ uint8_t cmdBuffer[CMD_LENGTH] =
 
 bool isForceCommand = false;
 
-void audio_init()
+void audio_init(void)
 {
 
     serial_init(9600);
+
     MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_PORT2(1);
     MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_GPIO2(1);
 
@@ -49,14 +51,14 @@ void audio_init()
 
     PORT2->PCR[BUSY_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1);
 
-   // audioSetVolume(volume);
-   // playGlobelAudio(AUDIO_AUDIO_CHECK);
+   
 }
 
-void calculateChecksum() 
+void calculateChecksum(void) 
 {
     uint16_t sum = 0;
-    for (uint8_t i = VERSION_INFORMATION; i <= PARAM_LOW; i++) {
+    for (uint8_t i = VERSION_INFORMATION; i <= PARAM_LOW; i++) 
+    {
         sum += cmdBuffer[i];
     }
     uint16_t checksum = 0 - sum;
@@ -88,10 +90,6 @@ void enqueueCommand(uint8_t  command, uint16_t param)
     queueHead = nextHead;
 }
 
-bool getPinStateAudio()
-{
-    return !((GPIO2->PDIR & (1<<BUSY_PIN)) == 0);
-}
 // Verwerk queue: stuur volgend commando als DFPlayer klaar is
 void updateAudioQueue()
 {
@@ -111,7 +109,7 @@ void updateAudioQueue()
         return;
     }
 
-    if (!getPinStateAudio()) return;
+    if (!getPinState(GPIO2, BUSY_PIN)) return;
     
     // Stuur volgende commando in queue
     // printf("head %d, tail %d\n", queueHead, queueTail);
@@ -149,7 +147,7 @@ void playAudio(audio_files_t audioFile)
     audioPlayInFile(file + globalSettings.censorship, audioFile);
 }
 
-void stopAudio()
+void stopAudio(void)
 {
     if(globalSettings.audio == AUDIO_OFF || volume == 0) return;
     isForceCommand = true;

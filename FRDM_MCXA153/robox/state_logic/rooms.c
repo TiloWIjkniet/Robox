@@ -71,8 +71,8 @@ const roomDisplayConfig_t lastRoom =
 typedef enum {STATE_WAIT_FOR_ROOM, STATE_ENTER_ANSWER, STATE_SPECIAL_ACTION, STATE_HANDLE_COMPARTMENT, STATE_FINISHED}room_stat_t;
 room_stat_t state = STATE_WAIT_FOR_ROOM; 
 
-void commonRoom_onEntry();
-void commonRoom_onExit();
+void commonRoom_onEntry(void);
+void commonRoom_onExit(void);
 void commonRoom_Compartment(roomDisplayConfig_t roomDisplay);
 bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay);
 bool commonRoom_AnswerCheck(roomDisplayConfig_t roomDisplay);
@@ -145,7 +145,7 @@ void last_room_onExit(void)
 /**
  * @brief Common onEntry function for all room states.
  */
-void commonRoom_onEntry()
+void commonRoom_onEntry(void)
 {
     emptyInputBuffer();
     setMapCoordinates(roomsSettings[roomIndex].coordinates);
@@ -159,7 +159,7 @@ void commonRoom_onEntry()
 /**
  * @brief Common onExit function for all room states.
  */
-void commonRoom_onExit()
+void commonRoom_onExit(void)
 {
     //Update run data with room time
     uint32_t roomElapsedMillis = (startGameMillis - startRoomMillis);  

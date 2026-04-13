@@ -6,9 +6,10 @@
 #include <stdbool.h>
 
 #define BUZZERT_DURATION 100 // Pas dit aan naar de juiste pin voor de buzzer
+
 void buzzer_init(void);
 void buzzer_play(uint32_t my_durationMs);
-void updateBuzzer();
+void updateBuzzer(void);
 void buzzer_set(bool state);
 
 #endif

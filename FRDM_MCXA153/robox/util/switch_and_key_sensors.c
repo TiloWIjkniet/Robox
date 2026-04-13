@@ -1,12 +1,12 @@
 #include "time_millis.h"
 #include "board.h"
-
+#include "game_logic.h"
 #define KEY_SENSOR_PIN 15
 #define SWITCH_SENSOR_PIN 1
 
 #define BOUNCE_DELAY 50
 
-void switch_and_key_sensors_init()
+void switch_and_key_sensors_init(void)
 {
 
 
@@ -22,13 +22,13 @@ void switch_and_key_sensors_init()
     //inti switch sensor pin
 }
 
-bool readRawKeySensor()
+bool readRawKeySensor(void)
 {
     // read key sensor pin
-    return ((GPIO3->PDIR & (1<<KEY_SENSOR_PIN)) == 0);
+    return getPinState(GPIO3, KEY_SENSOR_PIN);
 }
 
-bool readKeySensor()
+bool readKeySensor(void)
 {
     static bool lastKeyState = false;
     static bool debouncedKeyState = false;
@@ -48,13 +48,15 @@ bool readKeySensor()
     return debouncedKeyState;
 }
 
-bool readRawSwitchSensor()
+bool readRawSwitchSensor(void)
 {
     // read switch sensor pin
-    return ((GPIO3->PDIR & (1<<SWITCH_SENSOR_PIN)) == 0);
+
+    return getPinState(GPIO3, SWITCH_SENSOR_PIN);
+
 }
 
-bool readSwitchSensor()
+bool readSwitchSensor(void)
 {
     static bool lastSwitchState = false;
     static bool debouncedSwitchState = false;
