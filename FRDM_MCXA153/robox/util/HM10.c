@@ -40,11 +40,16 @@ void sentDataToHM10(const char *mesag)
     }
 
 }
-
-void askForBeacons(void)
+/**
+ * @brief Request beacon scan from HM-10 module.
+ *
+ * Sends the AT command to start or request a device discovery scan.
+ *
+ * @note Transmits "AT+DISI?" over UART to the HM-10 module.
+ */
+static inline void askForBeacons(void)
 {
     sentDataToHM10("AT+DISI?\r\n"); // AT+DISI?
-    
 }
 
 void HM10_init(void)
@@ -62,6 +67,12 @@ void HM10_init(void)
     askForBeacons();
 }
 
+/**
+ * @brief Read and process beacon data from UART.
+ *
+ * Reads incoming UART data line-by-line and parses iBeacon frames.
+ * Extracts beacon ID and signal strength, then updates the beacon list.
+ */
 void getBeconData(void)
 {
         while(lpuart2_rxcnt() > 0)
@@ -75,19 +86,24 @@ void getBeconData(void)
 
             if (data == '\n')
             {
-                lastReseaftMasige = millis();
+                //Er is een volledige regel ontvangen, deze verwerken
+
+                lastReseaftMasige = millis(); // reset timeout timer
+
                 line_buffer[line_index] = '\0';
               
                 if (strstr(line_buffer, "4C000215") != NULL)
                 {   
-                    //printf("%s",line_buffer);
+                    //Komt overeen met iBeacon formaat, dus beacon data uitlezen
+
+                    //Extract strenght en beaconIp uit de regel
                     char strength[4];
                     strength[0] = line_buffer[75];
                     strength[1] = line_buffer[76];
                     strength[2] = line_buffer[77];
                     strength[3] = '\0';
 
-
+                    //Ibecon aderes 
                     char beaconIp[11] = "          ";
                     for(int i = 0; i < 8; i++)
                     {
@@ -95,6 +111,7 @@ void getBeconData(void)
                     }
                     beaconIp[8] = '\0';
 
+                    //Controleer of deze beacon al in de lijst staat, zo ja update dan de sterkte en last seen tijd
                     bool found = false;
                     for (uint8_t i = 0; i < beconIndex; i++)
                     {
@@ -103,42 +120,51 @@ void getBeconData(void)
                             becons[i].beconStrengt = (uint8_t)atoi(strength);
                             becons[i].lastSeen = millis();
                             found = true;
-                            // printf("ip: %s    Strengt:", becons[i].beaconIp);
-                            //  printf("%d\n", becons[i].beconStrengt);
                             break;
                         }
                     }
-
+                    //Als nog niet in de lijst, voeg deze dan toe aan de lijst met beacons
                     if (!found)
                     {
                         strcpy(becons[beconIndex].beaconIp, beaconIp);
                         becons[beconIndex].beconStrengt = (uint8_t)atoi(strength);
                         becons[beconIndex].lastSeen = millis();
-                        // printf("found: %s    Strengt:", becons[beconIndex].beaconIp);
-                        // printf("%d\n", becons[beconIndex].beconStrengt);
                         beconIndex++;
                     }
                     
                 }
-
+                //Controleer of regel het einde van een scan is
                 if (strstr(line_buffer, "OK+DISCE") != NULL)
                 {
                     scanInProgress = false;
-                    printf("\n");
                 }
                 line_index = 0;
             }
         }
 }
 
-int compare(const void *a, const void *b)
+static inline int compare(const void *a, const void *b)
 {
     beacon_t *ia = (beacon_t *)a;
     beacon_t *ib = (beacon_t *)b;
 
-    return ib->beconStrengt - ia->beconStrengt; // aflopend (hoog → laag)
+    return ib->beconStrengt - ia->beconStrengt; 
 }
 
+/**
+ * @brief Get formatted list of strongest beacons.
+ *
+ * Sorts the beacon list by signal strength and writes up to
+ * MAX_BEACONS_IN_LIST strongest beacons into the provided buffer.
+ *
+ * Output format per beacon:
+ * "Beacon: <IP>, Strength: <value>\n"
+ *
+ * If no beacons are available, writes "No beacons found".
+ *
+ * @param[out] pLowestBeconsString Output buffer for formatted string.
+ * @param[in]  size                Size of the output buffer.
+ */
 void getLowestBecons(char *pLowestBeconsString, uint16_t size)
 {
     qsort(becons, beconIndex, sizeof(beacon_t), compare);
@@ -154,27 +180,20 @@ void getLowestBecons(char *pLowestBeconsString, uint16_t size)
     }
 }
 
-
-
-void updateHM10(void)
+/**
+ * @brief Remove expired beacons from the list.
+ *
+ * Iterates through the beacon array and removes entries that
+ * have not been seen within BEACON_TIMEOUT. Remaining elements
+ * are shifted to keep the array contiguous.
+ *
+ */
+void removeOldBecons(void)
 {
-    
-   
-    if(millis() - lastReseaftMasige > 500) scanInProgress = false; // meschein sneller mis langzaamer
-    if(scanInProgress) 
-    {
-        getBeconData();
-        return;
-    }
-    lastReseaftMasige = millis();
-    scanInProgress = true;
-    askForBeacons();
-
-    
-
+    uint32_t now = millis();
     for (int i = 0; i < beconIndex; i++)
     {
-        if (millis() - becons[i].lastSeen > BEACON_TIMEOUT)
+        if (now - becons[i].lastSeen > BEACON_TIMEOUT)
         {
             for (int j = i + 1; j < beconIndex; j++)
             {
@@ -184,6 +203,24 @@ void updateHM10(void)
             beconIndex--;
             i--; 
         }
+    }
+}
+/**
+ * @brief Get IP of the strongest beacon.
+ *
+ * Searches the beacon list for the beacon with the highest signal strength
+ * (lowest strength value) and copies its IP into the provided buffer.
+ * If no beacons are available, an empty string is returned.
+ *
+ * @param[out] pBeconIp Buffer where the beacon IP will be stored.
+ */
+void getStrongestBeconIp(char *pBeconIp)
+{
+
+    if(beconIndex <= 0) 
+    {
+        strcpy(pBeconIp, " ");
+        return;
     }
 
     uint16_t lowesStrenght = 1000;
@@ -196,14 +233,29 @@ void updateHM10(void)
             lowestBeaconIndex = i;
 
         }
+    }
+    strcpy(pBeconIp, becons[lowestBeaconIndex].pBeconIp);
 
-    }
-    if(lowestBeaconIndex == -1) 
+}
+void updateHM10(void)
+{
+    
+   //Controleer of er een scan bezig is, als dit het geval is, dan de beacons data uitlezen en verwerken
+   //Als er al een tijd geen data meer is ontvangen, dan aannemen dat de scan klaar is en de volgende scan starten
+    if(millis() - lastReseaftMasige > 500) scanInProgress = false; 
+    if(scanInProgress) 
     {
-        strcpy(beconIp, " ");
+        getBeconData();
+        return;
     }
-    else
-    {
-        strcpy(beconIp, becons[lowestBeaconIndex].beaconIp);
-    }
+    lastReseaftMasige = millis();
+    scanInProgress = true;
+    askForBeacons();
+
+    
+    removeOldBecons();
+
+    getStrongestBeconIp(beconIp);
+
+
 }

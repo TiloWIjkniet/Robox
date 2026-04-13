@@ -18,7 +18,7 @@
 #define MAX_CHAR_IN_STRING_S 50
 #define MAX_ANSWERS 5
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
-
+#define FROM_MIN_TO_MS 60 *1000
 
 
 typedef struct 

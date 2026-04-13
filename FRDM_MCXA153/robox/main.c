@@ -58,6 +58,7 @@ int main(void)
       updateSpecialActies();
       updateTimeGamePenaltyMillis();
       updateTimeDependingAudio();
+      
       //Updates die alleen moeten lopen als er een bepaalde conditie is in de game is
       if(globalSettings.difficulty == WRONG_ANSWER_TIME_X2) 
       {
@@ -68,7 +69,7 @@ int main(void)
   }
 }
 
-//WARN: controller of tutchsensor op pin 2_16 werkt
+//WARN: controller of tutchsensor op pin 1_4 werkt
 //WARN : controleer of updateSpecialActies() werkt
 //WARN : De function voor gesenureert is to gevoegt maar moet nog getest worden
 //WARN : audio module is toegevoegd, moet nog goed getest worden en geintergreert/ audio aan toe gevoegt worden
@@ -83,7 +84,7 @@ int main(void)
 //DONE : In global setting bool maken voor gesensureert en uit audio halen. dit ook aanpassen in websiten en esp na aanlijding hier van de juiste template en audio evecten gebruiken.
 //DONE: De esp een byte late stuuren als er setting verandert zijn, en allen dan de settings opnieuw laten ophalen, dit voorkomt dat er onnodig vaak settings opgehaald worden van de esp of de nxp late vragen of er niewe settings zijn
 //IDEA: In send run data rety function maken
-//IDEA: MS_PER_TICK_PANALTY variable maken tot betrekking tot globalSetting.difeculty //DONE: gelijk gemaakt als Time.DeltaTime
+//IDEA: MS_PER_TICK_PANALTY variable maken tot betrekking tot globalSetting.difeculty
 //IDEA: ver gezocht maar voor de website audio kunnen uploden, zeggen welke audio hij moet vervangen b.v nederlants dom has bin planted en die dan vervangen
 
 //NOTE: Meschien forceGlobelAudio de audio niet forseren maar direct na vorige bericht paltesen of allen afspelen als niks in de queae moet even testen

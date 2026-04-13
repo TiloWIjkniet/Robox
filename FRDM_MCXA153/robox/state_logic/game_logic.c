@@ -10,8 +10,10 @@
 #include "game_logic.h"
 #include "audio.h"
 #include "switch_and_key_sensors.h"
+
 #define MS_PER_TICK_PANALTY 10
-#define FROM_MIN_TO_MS 60 *1000
+
+
 uint32_t timeGamePanaltyBuffer=0;
 uint32_t timeGamePanaltyMillis=0;
 uint32_t startGameMillis=0;
@@ -57,9 +59,7 @@ void resetVirtualTime(void)
 {
     virtualTime = 0;
     lastRealTime = millis();
-    virtualTimeMultiplier = 1;
-    
-    
+    virtualTimeMultiplier = 1;    
 }
 
 void resetGameLogic(void)
@@ -90,10 +90,10 @@ void setMapCoordinates(const uint8_t coordinates[2])
     lastCoordinates.x = my_coordinates.x;
     lastCoordinates.y = my_coordinates.y;
 
-    if(my_coordinates.x == INVALID_COORD || my_coordinates.y == INVALID_COORD) 
-    {
-        return;
-    }
+    if(my_coordinates.x == INVALID_COORD || my_coordinates.y == INVALID_COORD) return;
+
+    //TODO: moet nog echt gezet worden
+
 }
 
 //TODO: Moet nog logia aan toe gevoegt woden
@@ -175,17 +175,21 @@ void printCustomDisplay(char *customDisplay)
  */
 void updateDisplayQueue(void)
 {
-    
+   
+    //kijkt of er een display in de queue staat, zo niet return
     if(displayQueue[0].displayLoadTemplate == D_NONE) return;
     
     uint32_t now = millis();
     if(displayQueue[0].displayStartMillis == 0) 
     {
+        // Tem plate is net toegevoegd, start timer en laad het display
         displayQueue[0].displayStartMillis = now;
         loadDisplayTemplate(displayQueue[0].displayLoadTemplate);
     }
     else if(now - displayQueue[0].displayStartMillis >= displayQueue[0].displayDurationMillis)
     {
+        //Display is klaar, schuif volgende display door
+
         if(displayQueue[1].displayLoadTemplate == D_NONE)return;
 
         displayQueue[0] = displayQueue[1];
@@ -206,6 +210,7 @@ void updateDisplayQueue(void)
  */
 void forceDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t durationMillis)
 {
+    //Controleren of het nieuwe template al actief is, zo ja geen update nodig
     if(displayQueue[0].displayLoadTemplate == displayTemplate) return;
 
     displayQueueItem_t newItem = 
@@ -230,8 +235,8 @@ void forceDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_
  */
 void addDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t durationMillis)
 {
-    if(displayQueue[0].displayLoadTemplate == displayTemplate) return; // Template is al actief, geen update nodig
-    if(displayQueue[1].displayLoadTemplate == displayTemplate) return; // Template is al actief, geen update nodig
+    if(displayQueue[0].displayLoadTemplate == displayTemplate) return; // Tem plate is al actief, geen update nodig
+    if(displayQueue[1].displayLoadTemplate == displayTemplate) return; // Tem plate is al actief, geen update nodig
 
     displayQueueItem_t newItem = 
     {
@@ -259,14 +264,14 @@ void addDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t 
  */
 bool isDisplayTemplateDonePlaying(void)
 {
-    if(displayQueue[0].displayLoadTemplate == D_NONE && displayQueue[1].displayLoadTemplate == D_NONE) return true; // Template niet in buffer
+    if(displayQueue[0].displayLoadTemplate == D_NONE && displayQueue[1].displayLoadTemplate == D_NONE) return true; // Tem plate niet in buffer
    
     uint32_t now = millis();
-    if(displayQueue[0].displayLoadTemplate != D_NONE && displayQueue[0].displayStartMillis == 0) return false; // Template is net geladen, dus nog niet klaar
-    if(displayQueue[1].displayLoadTemplate != D_NONE && displayQueue[1].displayStartMillis == 0) return false; // Template is net geladen, dus nog niet klaar
-    if(now - displayQueue[0].displayStartMillis < displayQueue[0].displayDurationMillis) return false; // Template still dusy
-    if(now - displayQueue[1].displayStartMillis < displayQueue[1].displayDurationMillis) return false; // Template still dusy
-    return true; // Template is don playing
+    if(displayQueue[0].displayLoadTemplate != D_NONE && displayQueue[0].displayStartMillis == 0) return false; // Tem plate is net geladen, dus nog niet klaar
+    if(displayQueue[1].displayLoadTemplate != D_NONE && displayQueue[1].displayStartMillis == 0) return false; // Te mplate is net geladen, dus nog niet klaar
+    if(now - displayQueue[0].displayStartMillis < displayQueue[0].displayDurationMillis) return false; // Tem plate still dusy
+    if(now - displayQueue[1].displayStartMillis < displayQueue[1].displayDurationMillis) return false; // Tem plate still dusy
+    return true; // Tem plate is don playing
 }
 /**
  * @brief Stelt wlke speciale actie gedaan moet worde
@@ -302,15 +307,19 @@ void updateSpecialActies(void)
     bool touchPressed = isTouchPressed();
     if(touchPressed && !lastTouchPressed) 
     {
-
+        //Rising edge van touch sensor, dus actie uitvoeren
         if(requiredSpecialActies != NON_S)
         {
+            //Als er een speciale actie vereist is
             preformtSpecialAction = FINGER_PRINT_S;
-            if(requiredSpecialActies != FINGER_PRINT_S)
-            {
-                applyWrongAnswerPenalty();
-            }
         }
+
+        if(requiredSpecialActies != FINGER_PRINT_S)
+        {
+            //Fout antwoord, straf toepassen
+            applyWrongAnswerPenalty();
+        }
+        
 
     }    
     lastTouchPressed = touchPressed;
@@ -321,14 +330,18 @@ void updateSpecialActies(void)
 
     if(readKeySensor())       lastingActions |= (1 << KEY_S);
     if(readSwitchSensor())    lastingActions |= (1 << SWITCH_S);
+
     if(lastingActions == requiredActions) return;
+    //Er is een verandering in de status van de acties, dus controleren welke actie veranderd is en of dit correct is
     
+    //De verandering is switch sensor
     if((lastingActions & (1 << SWITCH_S)) != (requiredActions & (1 << SWITCH_S)))
     {
         if(requiredSpecialActies != NON_S)
         {
             if(requiredSpecialActies == SWITCH_S)
             {
+                //Speciale actie is correct uitgevoerd
                 requiredActions |= (1 << SWITCH_S);
                 actionCorect = true;
                 playGlobelAudio(AUDIO_CORRECT_ANSWER);
@@ -336,12 +349,15 @@ void updateSpecialActies(void)
             preformtSpecialAction = SWITCH_S;
         }
     }
+
+    //De verandering is key sensor
     if((lastingActions & (1 << KEY_S))!= (requiredActions & (1 << KEY_S)))
     {
         if(requiredSpecialActies != NON_S)
         {
             if(requiredSpecialActies == KEY_S)
             {
+                //Speciale actie is correct uitgevoerd
                 requiredActions |= (1 << KEY_S);
                 actionCorect = true;
                 playGlobelAudio(AUDIO_CORRECT_ANSWER);
@@ -352,7 +368,6 @@ void updateSpecialActies(void)
 
     if(!actionCorect)
     {
-       
         timeGamePanaltyMillis += MS_PER_TICK_PANALTY;
     }
 }
@@ -374,6 +389,7 @@ specialActies_t getSpecialActies(void)
 {
     specialActies_t specialAction = preformtSpecialAction;
     preformtSpecialAction = NON_S;
+    //Reset preformtSpecialAction zodat dezelfde actie niet meerdere keren achter elkaar wordt teruggegeven
     return specialAction;
 }
 
@@ -395,8 +411,11 @@ void applyWrongAnswerPenalty(void)
  */
 uint32_t getElapsedTime(void)
 {
-    uint32_t elapsedTime = (millis() - startGameMillis) + timeGamePanaltyMillis;
-    return globalSettings.difficulty == WRONG_ANSWER_TIME_X2 ? getVirtualElapsedTime() : elapsedTime;
+    if(globalSettings.difficulty == WRONG_ANSWER_TIME_X2)
+    {
+        return getVirtualElapsedTime() + timeGamePanaltyMillis;
+    }
+    return  (millis() - startGameMillis) + timeGamePanaltyMillis
 }
 
 /**
@@ -416,11 +435,13 @@ void updateTimeGamePenaltyMillis(void)
 
     if(timeGamePanaltyBuffer >= MS_PER_TICK_PANALTY)
     {
+        //Er is nog genoeg buffer over voor een volledige tick penalty, dus deze toepassen
         timeGamePanaltyBuffer -= MS_PER_TICK_PANALTY;
         timeGamePanaltyMillis += MS_PER_TICK_PANALTY;
     }
     else
     {
+        //Er is nog maar een gedeeltelijke tick penalty over in de buffer, dus deze volledig toepassen en buffer leeg maken
         timeGamePanaltyMillis += timeGamePanaltyBuffer;
         timeGamePanaltyBuffer = 0;
     }
@@ -478,7 +499,7 @@ bool isInputMatching(const  char *input, const char *correctInput)
 /**
  * @brief Checks whether the game is still within the allowed time limit.
  *
- * If the difficulty level is 2 or lower, the time limit is ignored
+ * If the difficulty level is 1 or lower, the time limit is ignored
  * and the function will always return true.
  *
  * @return true  If there is still time remaining OR time limit is disabled.
@@ -487,12 +508,11 @@ bool isInputMatching(const  char *input, const char *correctInput)
 bool isWithinTimeLimit(void)
 {
     uint32_t elapsedTime = getElapsedTime(); 
-    return  (elapsedTime  <= globalSettings.totalTime * 60UL * 1000UL) || (globalSettings.difficulty < 2);
+    return  (elapsedTime  <= globalSettings.totalTime * FROM_MIN_TO_MS) || (globalSettings.difficulty <= WRONG_ANSWER_MINUS_5MIN_CONTINUE);
 }
 
 /**
  * @brief Updates and prints the remaining game time once per second.
- *
  */
 void updateGameTimer(void)
 {
@@ -501,7 +521,7 @@ void updateGameTimer(void)
     int32_t timeRemaining = getTimeRemaining();
 
     int32_t totalSec = timeRemaining / 1000;
-    if(totalSec == lastSec && gameActiv) return;
+    if(totalSec == lastSec) return; 
     lastSec = totalSec;
 
     setGameTimer(lastSec);
@@ -516,10 +536,8 @@ void updateGameTimer(void)
  */
 void setGameTimer(int32_t sec)
 {
-    if(sec < 0)
-    {
-        sec = -sec;  // maak positief voor berekening
-    }
+    if(sec < 0) sec = -sec;  // maak positief voor berekening
+    
 
     uint16_t minutes = sec / 60;
     uint16_t seconds = sec % 60;
@@ -538,7 +556,7 @@ void setGameTimer(int32_t sec)
 int32_t getTimeRemaining(void)
 {
   uint32_t elapsedTime = getElapsedTime();
-  int32_t timeRemaining = (globalSettings.totalTime * 60 * 1000) - elapsedTime;
+  int32_t timeRemaining = (globalSettings.totalTime * FROM_MIN_TO_MS) - elapsedTime;
   return timeRemaining;
 }
 
@@ -551,7 +569,7 @@ int32_t getTimeRemaining(void)
 uint8_t getNumRooms(void) 
 {
     uint8_t count = 0;
-    for(uint8_t i = 0; i <MAX_ROOMS; i++) 
+    for(uint8_t i = 0; i < MAX_ROOMS; i++) 
     {
         if(roomsSettings[i].beconIp[0] == '\0') break;
         count++;
@@ -570,22 +588,23 @@ uint32_t getWrongAnswerPenalty(void)
     switch (globalSettings.difficulty)
     {
         case WRONG_ANSWER_MINUS_1MIN_CONTINUE:
-            timePanalty = 60 * 1000; // 1 minuut
+            timePanalty = 1 * FROM_MIN_TO_MS; // 1 minuut
             break;
 
         case WRONG_ANSWER_MINUS_5MIN_CONTINUE:
-            timePanalty = 5 * 60 * 1000; // 5 minuten
+            timePanalty = 5 * FROM_MIN_TO_MS; // 5 minuten
             break;
 
         case WRONG_ANSWER_MINUS_5MIN_STOP:
-            timePanalty = 5 * 60 * 1000; // 5 minuten, spel stopt bij 0
+            timePanalty = 5 * FROM_MIN_TO_MS; // 5 minuten, spel stopt bij 0
             break;
 
         case WRONG_ANSWER_MINUS_15MIN_STOP:
-            timePanalty = 15 * 60 * 1000; // 15 minuten, spel stopt bij 0
+            timePanalty = 15 * FROM_MIN_TO_MS; // 15 minuten, spel stopt bij 0
             break;
 
         case WRONG_ANSWER_TIME_X2:
+            //Gebruikt in virtuele tijd, dus geen vaste tijdsstraffen maar een vermenigvuldiger die de virtuele tijd sneller laat lopen
             virtualTimeMultiplier ++;
             break;
 
@@ -596,15 +615,6 @@ uint32_t getWrongAnswerPenalty(void)
     return timePanalty;
 
 }
-
-/**
- * @brief Reset de virtuele tijd naar beginwaarde.
- *
- * Zet de virtuele tijd terug naar 0 en synchroniseert deze met de huidige
- * echte tijd (`millis()`). Ook wordt de tijdsvermenigvuldiger teruggezet naar 1.
- *
- * @note Na deze functie loopt de virtuele tijd weer synchroon met de echte tijd.
- */
 
 /**
  * @brief Update de virtuele tijd op basis van verstreken echte tijd.
@@ -661,15 +671,17 @@ void updateTimeDependingAudio(void)
     static uint32_t lastTimeDependingAudio = 0;
     if(globalSettings.audio == AUDIO_OFF) return;
 
-    audio_files_t audioToPlay = AUDIO_NONE;
 
+    audio_files_t audioToPlay = AUDIO_NONE;
     uint32_t timeRemaining = getTimeRemaining();
     for(uint8_t i = 0; i < TIME_AUDIO_CHECK_LEN; i++)
     {
         if(timeRemaining <= time_audio_check[i].checkTimeSec && !(playedAudio & (1<<i)))
         {
+            //kijkt of er audio afgespeeld moet worden voor deze tijdsgrens en of deze nog niet afgespeeld is
             playedAudio |= (1 <<i);
             if(time_audio_check[i].checkTimeSec + DELAY_FROM_START_TO_FIRST_AUDIO < globalSettings.totalTime  * FROM_MIN_TO_MS) audioToPlay = time_audio_check[i].audioToPlay;
+            //controleert of de tijdsgrens voor deze audio niet te dicht bij het begin van het spel ligt, om te voorkomen dat er meteen al audio wordt afgespeeld aan het begin van het spel
             break;
         }
     }
@@ -678,6 +690,7 @@ void updateTimeDependingAudio(void)
     if(audioToPlay == AUDIO_NONE) return;  
     uint32_t now = millis();
     if(now - lastTimeDependingAudio < TIME_DEPENDING_ADUIO_INTERVAL)  return;
+    //Delay tussen audio afhankelijk van tijd om te voorkomen dat er meerdere audio's snel achter elkaar worden afgespeeld als er meerdere tijdsgrenzen in korte tijd worden gepasseerd
     lastTimeDependingAudio = now;
 
     playAudio(audioToPlay);

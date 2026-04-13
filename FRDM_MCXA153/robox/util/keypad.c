@@ -141,6 +141,32 @@ void updateInputBuffer(void)
 
 }
 
+
+char debounceKeys(uint8_t col, uint8_t row)
+{
+  bool pinState = getPinState(GPIO3, pin_rows[row]);
+  uint32_t now  = millis();
+  if(pinState != keys[row][col].lastRawState) 
+  {
+      keys[row][col].lastRawState = pinState;
+      keys[row][col].lastChange = now;
+  }
+
+  if(now - keys[row][col].lastChange >= DEBOUNCE_TIME)
+  {
+    
+    if (pinState && !keys[row][col].pressed)
+    {
+        keys[row][col].pressed = true;
+        return keymap[row][col];
+    }
+    else if (!pinState)
+    {
+        keys[row][col].pressed = false;
+    }
+  }
+  return '\0';
+}
 /**
  * @brief Scant het keypad en geeft de toets terug die stabiel ingedrukt is.
  * 
@@ -165,41 +191,31 @@ void updateInputBuffer(void)
  */
 char getKey(void)
 { 
-  const uint8_t pin_coloms[COLS]  = {PIN_COLOM_0, PIN_COLOM_1, PIN_COLOM_2};
-  const uint8_t pin_rows[ROWS]    = {PIN_ROW_0, PIN_ROW_1, PIN_ROW_2, PIN_ROW_3};
+  static const  uint8_t pin_coloms[COLS]  = {PIN_COLOM_0, PIN_COLOM_1, PIN_COLOM_2};
+  static const uint8_t pin_rows[ROWS]    = {PIN_ROW_0, PIN_ROW_1, PIN_ROW_2, PIN_ROW_3};
+
+
+  for (uint8_t c = 0; c < COLS; c++)
+  {
+      setPinState(GPIO3, pin_coloms[c], true); // alles HIGH
+  }
 
   for(uint8_t col = 0; col < COLS; col++)
   {
 
-    for(int c = 0; c < COLS; c++) setPinState(GPIO3, pin_coloms[c], true);
+    
+    setPinState(GPIO3, pin_coloms[col], false);
+    //Zet de huidige kolom laag en de andere hoog, zodat we kunnen detecteren welke toets in deze kolom ingedrukt is
 
     for (uint8_t row =0; row < ROWS; row++)
     {
-      bool pinState = getPinState(GPIO3, pin_rows[row]);
-
-       uint32_t now  = millis();
-      if(pinState != keys[row][col].lastRawState) 
-      {
-         keys[row][col].lastRawState = pinState;
-         keys[row][col].lastChange = now;
-      }
-
-      if(now - keys[row][col].lastChange >= DEBOUNCE_TIME)
-      {
-        
-        if(keys[row][col].pressed != pinState)
-        {
-            keys[row][col].pressed = pinState;
-
-            if(pinState)
-            {
-              return keymap[row][col];
-            }
-        }
-      }
-      
+      char retrunKey = debounceKeys(col, row);
+      if(retrunKey != '\0') return retrunKey;
     }
+    setPinState(GPIO3, pin_coloms[col], true);
   }
+    
+  
 
   #if DEBUG_ON_PC
   // 2. Fallback → Serial input

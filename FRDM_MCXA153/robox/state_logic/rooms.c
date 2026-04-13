@@ -86,6 +86,8 @@ void first_room_onEntry(void)
 
     gameActiv = true;
     roomIndex = 0;
+
+    //leegt run data 
     memset(&runData, 0, sizeof(runData));
 
     //Saves global settings to run data
@@ -163,7 +165,7 @@ void commonRoom_onExit(void)
 {
     //Update run data with room time
     uint32_t roomElapsedMillis = (startGameMillis - startRoomMillis);  
-    float elapsedMinutes = ((float)roomElapsedMillis) / 1000.0f / 60.0f;
+    float elapsedMinutes = ((float)roomElapsedMillis) / (float)(1 * FROM_MIN_TO_MS);
     runData.roomTimes[roomIndex] = elapsedMinutes;
 }
 
@@ -174,7 +176,7 @@ void commonRoom_Compartment(roomDisplayConfig_t roomDisplay)
     {
         addDisplayTemplate(roomDisplay.openCompartment, DISPLAY_3S);
         openCompartment(compartment);
-
+        playAudio(AUDIO_OPEN_COMPARTMENT);
     }
 }
 bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
@@ -208,10 +210,9 @@ bool commonRoom_SpesialAction(roomDisplayConfig_t roomDisplay)
     //If correct special actie preformed
     forceDisplayTemplate(roomDisplay.specialActionCorrect, DISPLAY_3S);
     setRequiredSpecialActies(requiredSpeciaAction , false);
-    playGlobelAudio(AUDIO_CORRECT_ANSWER);
+    
 
     return true;
-    
 }
 bool commonRoom_AnswerCheck(roomDisplayConfig_t roomDisplay)
 {
@@ -250,7 +251,7 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay)
             {
                 //If in correct room go to next state and set display template and play audio
                 forceDisplayTemplate(roomDisplay.enteredRoom, DISPLAY_3S);
-                playGlobelAudio(AUDIO_CORRECT_ANSWER);
+                playGlobelAudio(AUDIO_CORRECT_ROOM);
                 state = STATE_ENTER_ANSWER;
             }
             break;
@@ -264,7 +265,7 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay)
         }
         case STATE_SPECIAL_ACTION: //Wait for player to perform special action if required
         {
-            bool preformedAction =commonRoom_SpesialAction(roomDisplay);
+            bool preformedAction = commonRoom_SpesialAction(roomDisplay);
             if(preformedAction) state = STATE_HANDLE_COMPARTMENT; //If special action correct go to next state
             break;
         }
@@ -279,8 +280,8 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay)
             if(isDisplayTemplateDonePlaying())
             {
                 //If the finished template is done playing, got to the corect room based on how many rooms are in the game and how many rooms have been completed
-                if(roomIndex < getNumRooms() - 2)       FSM_addEvent(E_ROOM_COMPLETED);
-                else if (roomIndex < getNumRooms() - 1) FSM_addEvent(E_ROOM_LOOP_TO_LAST);
+                if(roomIndex < getNumRooms() - 2)       FSM_addEvent(E_ROOM_COMPLETED);// - 2 because room index is numRooms -1 and we want the second last room so -2
+                else if (roomIndex < getNumRooms() - 1) FSM_addEvent(E_ROOM_LOOP_TO_LAST); // - 1 because room index is numRooms -1
                 else                                    FSM_addEvent(E_LAST_ROOM_COMPLETED);
             }
  
