@@ -5,7 +5,7 @@
 
 #define DISPLAY_5S 5000
 #define DISPLAY_3S 3000
-
+#define DISPLAY_LEN 150
 #include <stdbool.h>
 #include <stdint.h>
     // TODO: Maak de startfunctie af
@@ -76,8 +76,8 @@ typedef enum
     D_MAX
 }displayTemplate_t;
 
-extern  const char *displayTemplatesNL[MAX_TEMPLATES];
-extern  const char *displayTemplatesSafeNL[MAX_TEMPLATES];
-extern  const char *displayTemplatesEn[MAX_TEMPLATES];
-extern  const char *displayTemplatesSafeEn[MAX_TEMPLATES];
+extern  const char displayTemplatesNL[MAX_TEMPLATES][DISPLAY_LEN];
+extern  const char displayTemplatesSafeNL[MAX_TEMPLATES][DISPLAY_LEN];
+extern  const char displayTemplatesEn[MAX_TEMPLATES][DISPLAY_LEN];
+extern  const char displayTemplatesSafeEn[MAX_TEMPLATES][DISPLAY_LEN];
 #endif

@@ -234,7 +234,7 @@ void getStrongestBeconIp(char *pBeconIp)
 
         }
     }
-    strcpy(pBeconIp, becons[lowestBeaconIndex].pBeconIp);
+    strcpy(pBeconIp, becons[lowestBeaconIndex].beaconIp);
 
 }
 void updateHM10(void)

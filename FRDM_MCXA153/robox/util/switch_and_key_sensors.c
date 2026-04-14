@@ -25,7 +25,7 @@ void switch_and_key_sensors_init(void)
 bool readRawKeySensor(void)
 {
     // read key sensor pin
-    return getPinState(GPIO3, KEY_SENSOR_PIN);
+    return !getPinState(GPIO3, KEY_SENSOR_PIN);
 }
 
 bool readKeySensor(void)
@@ -39,7 +39,7 @@ bool readKeySensor(void)
     uint32_t now = millis();
     
     if(lastKeyState != keyState) lastDebounceTime = now;
-
+    //Debonce key sensor
     if(now - lastDebounceTime > BOUNCE_DELAY) 
     {
         debouncedKeyState = keyState;  
@@ -52,7 +52,7 @@ bool readRawSwitchSensor(void)
 {
     // read switch sensor pin
 
-    return getPinState(GPIO3, SWITCH_SENSOR_PIN);
+    return !getPinState(GPIO3, SWITCH_SENSOR_PIN);
 
 }
 
@@ -67,7 +67,7 @@ bool readSwitchSensor(void)
     uint32_t now = millis();
     
     if(lastSwitchState != switchState) lastDebounceTime = now;
-
+    //Debonce key sensor
     if(now - lastDebounceTime > BOUNCE_DELAY) 
     {
         debouncedSwitchState = switchState;

@@ -10,9 +10,17 @@
 #include "game_logic.h"
 #include "audio.h"
 #include "switch_and_key_sensors.h"
-
+#include "display.h"
 #define MS_PER_TICK_PANALTY 10
+#define TIME_DEPENDING_ADUIO_INTERVAL 5 * FROM_MIN_TO_MS
+#define TIME_AUDIO_CHECK_LEN 6
+#define DELAY_FROM_START_TO_FIRST_AUDIO 15 * FROM_MIN_TO_MS
 
+typedef struct
+{
+    uint32_t checkTimeSec;
+    audio_files_t audioToPlay;
+}time_audio_check_t;
 
 uint32_t timeGamePanaltyBuffer=0;
 uint32_t timeGamePanaltyMillis=0;
@@ -29,6 +37,16 @@ uint8_t requiredActions = 0;
 uint16_t playedAudio = 0;
 
 const uint8_t NO_COORDINATES[2] = {INVALID_COORD, INVALID_COORD};
+
+time_audio_check_t time_audio_check[TIME_AUDIO_CHECK_LEN] = 
+{
+    {.checkTimeSec = 0  * FROM_MIN_TO_MS, .audioToPlay = AUDIO_HAFE_WAY},
+    {.checkTimeSec = 1  * FROM_MIN_TO_MS, .audioToPlay = AUDIO_1_MIN_LEFT},
+    {.checkTimeSec = 5  * FROM_MIN_TO_MS, .audioToPlay = AUDIO_5_MIN_LEFT},
+    {.checkTimeSec = 15 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_15_MIN_LEFT},
+    {.checkTimeSec = 30 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_30_MIN_LEFT},
+    {.checkTimeSec = 45 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_45_MIN_LEFT},
+};
 
 uint32_t getWrongAnswerPenalty(void);
 bool isInputMatching(const  char *input, const char *correctInput);
@@ -66,6 +84,7 @@ void resetGameLogic(void)
 {
     playedAudio = 0;
     requiredActions = 0;
+    time_audio_check[0].checkTimeSec = ((uint32_t)globalSettings.totalTime * FROM_MIN_TO_MS) /2;
     resetVirtualTime();
 }
 
@@ -130,22 +149,33 @@ displayQueueItem_t displayQueue[2] = {emptyDisplayItem, emptyDisplayItem};
 void loadDisplayTemplate(displayTemplate_t template)
 {
     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
+    const char *displayStr = NULL;
     if(globalSettings.censorship == NOT_CENSORED)
     {
-        #if DEBUG_ON_PC
-        //DEBUG Display on pc
-        if(globalSettings.language == LANGUAGE_NEDERLANDS)printf(displayTemplatesNL[template]);
-        else printf(displayTemplatesEn[template]);
-        #endif
+        if(globalSettings.language == LANGUAGE_NEDERLANDS)displayStr = (displayTemplatesNL[template]);
+        else displayStr = (displayTemplatesEn[template]);
     }
     else
     {
-        #if DEBUG_ON_PC
-        //DEBUG Display on pc
-        if(globalSettings.language == LANGUAGE_ENGLISH) printf(displayTemplatesSafeNL[template]);
-        else printf(displayTemplatesSafeEn[template]);  
-        #endif 
+
+        if(globalSettings.language == LANGUAGE_ENGLISH) displayStr = (displayTemplatesSafeNL[template]);
+        else displayStr = (displayTemplatesSafeEn[template]);  
     }
+
+    cmd_display_clear();
+    for (uint32_t i = 0; i < 1000; i++);
+    
+    st7920_set_cursor(0, 0);
+    for (uint16_t i = 0; i < DISPLAY_LEN; i++)
+    {
+        char c = displayStr[i];
+        if(c == '\0') break;
+        st7920_writeb(c);
+    }
+    
+    #if DEBUG_ON_PC
+   // printf("%s", displayStr);
+    #endif
 }
 void printCustomDisplay(char *customDisplay)
 {
@@ -415,7 +445,7 @@ uint32_t getElapsedTime(void)
     {
         return getVirtualElapsedTime() + timeGamePanaltyMillis;
     }
-    return  (millis() - startGameMillis) + timeGamePanaltyMillis
+    return  (millis() - startGameMillis) + timeGamePanaltyMillis;
 }
 
 /**
@@ -648,23 +678,9 @@ uint32_t getVirtualElapsedTime(void)
     return virtualTime;
 }
 
-#define TIME_DEPENDING_ADUIO_INTERVAL 5 * FROM_MIN_TO_MS
-#define TIME_AUDIO_CHECK_LEN 5
-#define DELAY_FROM_START_TO_FIRST_AUDIO 15 * FROM_MIN_TO_MS
-typedef struct
-{
-    uint32_t checkTimeSec;
-    audio_files_t audioToPlay;
-}time_audio_check_t;
 
-const time_audio_check_t time_audio_check[TIME_AUDIO_CHECK_LEN] = 
-{
-    {.checkTimeSec = 1  * FROM_MIN_TO_MS, .audioToPlay = AUDIO_1_MIN_LEFT},
-    {.checkTimeSec = 5  * FROM_MIN_TO_MS, .audioToPlay = AUDIO_5_MIN_LEFT},
-    {.checkTimeSec = 15 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_15_MIN_LEFT},
-    {.checkTimeSec = 30 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_30_MIN_LEFT},
-    {.checkTimeSec = 45 * FROM_MIN_TO_MS, .audioToPlay = AUDIO_45_MIN_LEFT},
-};
+
+
 
 void updateTimeDependingAudio(void)
 {

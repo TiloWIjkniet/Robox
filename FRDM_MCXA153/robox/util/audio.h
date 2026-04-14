@@ -65,6 +65,7 @@ typedef enum
   AUDIO_BOM_HAS_BEEN_PLANTED = 1, 
   AUDIO_BOM_HAS_BEEN_DEFUSED, 
   AUDIO_TIME_IS_UP,
+  AUDIO_HAFE_WAY,     //TODO: Audio hier voor maken 
   AUDIO_1_MIN_LEFT,   //TODO: Audio hier voor maken 
   AUDIO_5_MIN_LEFT,   //TODO: Audio hier voor maken 
   AUDIO_15_MIN_LEFT,  //TODO: Audio hier voor maken 

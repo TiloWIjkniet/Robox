@@ -82,7 +82,7 @@ void lpuart2_init(const uint32_t baudrate)
     MRCC0->MRCC_GLB_RST0_SET = MRCC_MRCC_GLB_RST0_LPUART2(1);
     MRCC0->MRCC_GLB_RST0_SET = MRCC_MRCC_GLB_RST0_PORT1(1);
 
-    // Configure P1_4
+    // Configure P1_12
     // LK : [1] = Locks this PCR
     // INV: [0] = Does not invert
     // IBE: [1] = Digital Input Buffer Enable, otherwise pin is used for analog
@@ -94,9 +94,9 @@ void lpuart2_init(const uint32_t baudrate)
     // SRE: [0] = Fast
     // PE:  [0] = Disables
     // PS:  [0] = n.a.
-    PORT1->PCR[4] = PORT_PCR_LK(1) | PORT_PCR_MUX(3) | PORT_PCR_IBE(1);
+    PORT1->PCR[12] = PORT_PCR_LK(1) | PORT_PCR_MUX(3) | PORT_PCR_IBE(1);
 
-    // Configure P1_5
+    // Configure P1_13
     // LK : [1] = Locks this PCR
     // INV: [0] = Does not invert
     // IBE: [0] = Input buffer disable
@@ -107,7 +107,7 @@ void lpuart2_init(const uint32_t baudrate)
     // SRE: [0] = Fast
     // PE:  [0] = Disables
     // PS:  [0] = n.a.
-    PORT1->PCR[5] = PORT_PCR_LK(1) | PORT_PCR_MUX(3);
+    PORT1->PCR[13] = PORT_PCR_LK(1) | PORT_PCR_MUX(3);
 
     // Configure LPUART2. Although there are a lot of configuration options, the
     // default configuration takes the following steps:

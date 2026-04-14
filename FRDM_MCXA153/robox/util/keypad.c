@@ -23,6 +23,9 @@
 #define PIN_ROW_2 11
 #define PIN_ROW_3 9
 
+const  uint8_t pin_coloms[COLS]  = {PIN_COLOM_0, PIN_COLOM_1, PIN_COLOM_2};
+const uint8_t pin_rows[ROWS]    = {PIN_ROW_0, PIN_ROW_1, PIN_ROW_2, PIN_ROW_3};
+
 const uint8_t keymap[ROWS][COLS] =
 {
   {'3','2','1'},
@@ -43,7 +46,7 @@ keyState_t keys[ROWS][COLS];
 char inputBuffer[CHAR_IN_STRING] ="";
 
 char answerBuffer[CHAR_IN_STRING];
-bool hasNewAnswer;
+bool hasNewAnswer = false;
 uint8_t inputBufferIndex = 0;
 
 char getKey(void);
@@ -115,26 +118,35 @@ void updateInputBuffer(void)
   switch (key) 
   {
     case '\0':
+    {
       return;
-    break;
+      break;
+    }
     case '#':
+    {
         strncpy(answerBuffer, inputBuffer, sizeof(answerBuffer) - 1);
         answerBuffer[sizeof(answerBuffer) - 1] = '\0';
-        if(inputBufferIndex <= 0) return;
+        if(inputBufferIndex <= 0) break;
         hasNewAnswer = true;
 
         inputBufferIndex = 0;
         inputBuffer[inputBufferIndex] = '\0';
-    break;
+    
+      break;
+    }
     case '*':
+    {
       if(inputBufferIndex > 0 )inputBufferIndex --;
       inputBuffer[inputBufferIndex] = '\0';
-    break;
+      break;
+    }
     default:
+    {
       inputBuffer[inputBufferIndex] = key;
       if(inputBufferIndex < CHAR_IN_STRING )inputBufferIndex ++;
       inputBuffer[inputBufferIndex] = '\0';
-    break;
+      break;
+    }
   }
   forceGlobelAudio(AUDIO_NUMPAD_INPUT);
 
@@ -152,6 +164,7 @@ char debounceKeys(uint8_t col, uint8_t row)
       keys[row][col].lastChange = now;
   }
 
+  //Debonce buttons
   if(now - keys[row][col].lastChange >= DEBOUNCE_TIME)
   {
     
@@ -191,10 +204,6 @@ char debounceKeys(uint8_t col, uint8_t row)
  */
 char getKey(void)
 { 
-  static const  uint8_t pin_coloms[COLS]  = {PIN_COLOM_0, PIN_COLOM_1, PIN_COLOM_2};
-  static const uint8_t pin_rows[ROWS]    = {PIN_ROW_0, PIN_ROW_1, PIN_ROW_2, PIN_ROW_3};
-
-
   for (uint8_t c = 0; c < COLS; c++)
   {
       setPinState(GPIO3, pin_coloms[c], true); // alles HIGH
@@ -217,14 +226,14 @@ char getKey(void)
     
   
 
-  #if DEBUG_ON_PC
-  // 2. Fallback → Serial input
-  if (serial_rxcnt() > 0)
-  {
-    char c = serial_getchar();
-    if( c != '\n' && c != '\r') return c;
-  }
-  #endif
+  // #if DEBUG_ON_PC
+  // // 2. Fallback → Serial input
+  // if (serial_rxcnt() > 0)
+  // {
+  //   char c = serial_getchar();
+  //   if( c != '\n' && c != '\r') return c;
+  // }
+  // #endif
   return '\0';
 }
 

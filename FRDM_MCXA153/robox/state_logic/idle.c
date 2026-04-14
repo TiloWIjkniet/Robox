@@ -29,6 +29,7 @@ void idle_onUpdate(void)
     //Zorgt ervoor dat als de switch of key nog niet gereset is, het spel niet start en er een foutmelding komt te staan.
     bool rawKeyState = readRawKeySensor();
     bool rawSwitchState = readRawSwitchSensor();
+
     if(rawKeyState || rawSwitchState) 
     {
         displayDigits(ERROR_HEX);

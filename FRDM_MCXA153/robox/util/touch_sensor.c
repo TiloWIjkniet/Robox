@@ -6,8 +6,8 @@
 #include "game_logic.h"
 #include "audio.h"
 
-#define TOUCH_SENSOR_PIN 4
-#define G_PIN 10
+#define TOUCH_SENSOR_PIN 14
+#define G_PIN 0
 #define R_PIN 12
 #define B_PIN 13
 #define TOUCH_GLITCH_FILTER_MS  500
@@ -25,22 +25,24 @@ bool getPinState_touchSensor(uint8_t pin);
  */
 void touchSensor_init(void)
 {
-    MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_PORT1(1);
-    MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_GPIO1(1);
-
-    MRCC0->MRCC_GLB_RST0_SET = MRCC_MRCC_GLB_RST0_PORT1(1);
-    MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_GPIO1(1);
 
 
-    PORT1->PCR[G_PIN] = PORT_PCR_LK(1);
-    PORT1->PCR[R_PIN] = PORT_PCR_LK(1);
-    PORT1->PCR[B_PIN] = PORT_PCR_LK(1);
+    MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_PORT3(1);
+    MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_GPIO3(1);
 
-    GPIO1->PDOR |= (1<<G_PIN) | (1<<R_PIN) | (1<<B_PIN);
-    GPIO1->PDDR |= (1<<G_PIN) | (1<<R_PIN) | (1<<B_PIN);
-    GPIO1->PCOR =  (1<<G_PIN) | (1<<R_PIN) | (1<<B_PIN);
+    MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_PORT3(1);
+    MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_GPIO3(1);
 
-    PORT1->PCR[TOUCH_SENSOR_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1);
+    PORT3->PCR[G_PIN] = PORT_PCR_LK(1);
+    PORT3->PCR[R_PIN] = PORT_PCR_LK(1);
+    PORT3->PCR[B_PIN] = PORT_PCR_LK(1);
+    GPIO3->PDOR |= (1<<G_PIN) |  (1<<R_PIN) | (1<<B_PIN);
+    GPIO3->PDDR |= (1<<G_PIN) |  (1<<R_PIN) | (1<<B_PIN);
+    GPIO3->PCOR =  (1<<G_PIN) |  (1<<R_PIN) | (1<<B_PIN);
+
+
+
+    PORT3->PCR[TOUCH_SENSOR_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1);
 
 
     setCollor(OFF);
@@ -57,8 +59,8 @@ bool isTouchPressed(void)
   static uint32_t blinkTime = 0;
   static bool blinkeState = false;
 
-  bool isPressing = getPinState(GPIO2,TOUCH_SENSOR_PIN);
-
+  bool isPressing = getPinState(GPIO3,TOUCH_SENSOR_PIN);
+ 
 
 
   uint32_t now = millis();
@@ -180,7 +182,7 @@ void setCollor(collors_t collor)
 
     break;
   }
-  setPinState(GPIO1, R_PIN, r);
-  setPinState(GPIO1, G_PIN, g);
-  setPinState(GPIO1, B_PIN, b);
+  setPinState(GPIO3, R_PIN, r);
+  setPinState(GPIO3, G_PIN, g);
+  setPinState(GPIO3, B_PIN, b);
 }

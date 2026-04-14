@@ -105,13 +105,14 @@ void setup()
 {
   Serial.begin(115200);
 
-  // WiFi.mode(WIFI_AP);
-  // WiFi.softAP(ssid, password);
-  // WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
-  // myIP = WiFi.softAPIP();
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid, password);
+  WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
+  myIP = WiFi.softAPIP();
 
-  // dnsServer.start(DNS_PORT, "*", myIP);
+  dnsServer.start(DNS_PORT, "*", myIP);
 
+  setServerOnline(true);
   Serial.println("Access Point gestart");
   Serial.print("Web adres: http://");
   Serial.println(myIP);
@@ -155,7 +156,7 @@ void beginServer()
   server.on("/load", HTTP_GET, handleLoad);
 
   server.onNotFound(handleNotFound);
- // Serial.println("Webserver gestart");
+  Serial.println("Webserver gestart");
 
   
 }
@@ -246,7 +247,7 @@ void setServerOnline(bool online)
     {
         server.begin();
         serverRunning = true;
-        //Serial.println("Webserver gestart via UART");
+        Serial.println("Webserver gestart via UART");
     } 
     else if (!online && serverRunning) 
     {

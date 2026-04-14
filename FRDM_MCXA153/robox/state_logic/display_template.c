@@ -1,788 +1,245 @@
 #include "display_template.h"
-const char* displayTemplatesNL[MAX_TEMPLATES] = {
+const char displayTemplatesNL[MAX_TEMPLATES][DISPLAY_LEN] = 
+{
 
-    "NON\n",
+"NON\n",
 
-    // D_IDLE
-    "|--------------------------------------------------------|\n"
-    "|   De bom staat klaar                                   |\n"
-    "|   Durf jij hem te stoppen?                             |\n"
-    "|   Druk op een toets om te starten                      |\n"
-    "|--------------------------------------------------------|\n",
+"De bom staat klaar\nDurf jij hem te stoppen?\nDruk op een toets om te starten\n",
 
-    // D_DEV_PAGE
-    "|--------------------------------------------------------|\n"
-    "|   DEVELOPMENT MODE                                     |\n"
-    "|   Voer kamernummer in voor data                        |\n"
-    "|   9999 = open alles | 0000 = exit                      |\n"
-    "|--------------------------------------------------------|\n",
+"DEVELOPMENT MODE\nVoer kamernummer in voor data\n9999 = open alles | 0000 = exit\n",
 
-    // D_START_GAME
-    "|--------------------------------------------------------|\n"
-    "|   De bom is geactiveerd                                |\n"
-    "|   Je hebt [tijd] min                                   |\n"
-    "|   Maak geen fouten...                                  |\n"
-    "|--------------------------------------------------------|\n",
+"De bom is geactiveerd\nJe hebt [tijd] min\nMaak geen fouten...\n",
 
-    // GO TO ROOM - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Verkeerde kamer                                      |\n"
-    "|   Ga naar: [kamer naam]                                |\n"
-    "|   Blijf niet hangen                                    |\n"
-    "|--------------------------------------------------------|\n",
+"Verkeerde kamer\nGa naar: [kamer naam]\nBlijf niet hangen\n",
 
-    // GO TO ROOM - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Dit klopt niet                                       |\n"
-    "|   Zoek: [kamer naam]                                   |\n"
-    "|   Je zit op het verkeerde spoor                        |\n"
-    "|--------------------------------------------------------|\n",
+"Dit klopt niet\nZoek: [kamer naam]\nJe zit op het verkeerde spoor\n",
 
-    // GO TO ROOM - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   Foute plek                                           |\n"
-    "|   Ga snel naar: [kamer naam]                           |\n"
-    "|   Elke seconde telt                                    |\n"
-    "|--------------------------------------------------------|\n",
+"Foute plek\nGa snel naar: [kamer naam]\nElke seconde telt\n",
 
-        // D_GO_TO_FINAL_ROOM
-    "|--------------------------------------------------------|\n"
-    "|   Bijna klaar                                          |\n"
-    "|   Ga naar de laatste kamer: [kamer naam]               |\n"
-    "|   Maak het af                                          |\n"
-    "|--------------------------------------------------------|\n",
+"Bijna klaar\nGa naar de laatste kamer: [kamer naam]\nMaak het af\n",
 
-    // IN ROOM
-    "|--------------------------------------------------------|\n"
-    "|   Kamer: [kamer naam]                                  |\n"
-    "|   Hier moet het gebeuren                               |\n"
-    "|   Maak geen fouten                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Kamer: [kamer naam]\nHier moet het gebeuren\nMaak geen fouten\n",
 
-        // D_FINAL_ROOM_ENTER
-    "|--------------------------------------------------------|\n"
-    "|   Dit is de laatste kamer                              |\n"
-    "|   Hier beslist alles                                   |\n"
-    "|   Geen fouten meer                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Dit is de laatste kamer\nHier beslist alles\nGeen fouten meer\n",
 
-    // ENTER ANSWER
-    "|--------------------------------------------------------|\n"
-    "|   Voer het antwoord in                                 |\n"
-    "|   Denk goed na                                         |\n"
-    "|   Een fout kan fataal zijn                             |\n"
-    "|--------------------------------------------------------|\n",
+"Voer het antwoord in\nDenk goed na\nEen fout kan fataal zijn\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Dit is het moment                                    |\n"
-    "|   Alles hangt hiervan af                               |\n"
-    "|   Voer het antwoord in                                 |\n"
-    "|--------------------------------------------------------|\n",
+"Dit is het moment\nAlles hangt hiervan af\nVoer het antwoord in\n",
 
-    // CORRECT - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Correct                                              |\n"
-    "|   Dat was scherp                                       |\n"
-    "|   Ga verder                                            |\n"
-    "|--------------------------------------------------------|\n",
+"Correct\nDat was scherp\nGa verder\n",
 
-    // CORRECT - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Goed antwoord                                        |\n"
-    "|   Je zit op het juiste pad                             |\n"
-    "|   Volgende stap                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Goed antwoord\nJe zit op het juiste pad\nVolgende stap\n",
 
-    // CORRECT - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   Dat klopt                                            |\n"
-    "|   Nog even doorgaan                                    |\n"
-    "|   Je bent dichtbij                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Dat klopt\nNog even doorgaan\nJe bent dichtbij\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Eerste stap gelukt                                   |\n"
-    "|   Je bent begonnen                                     |\n"
-    "|   Blijf doorgaan                                       |\n"
-    "|--------------------------------------------------------|\n",
+"Eerste stap gelukt\nJe bent begonnen\nBlijf doorgaan\n",
 
-    // WRONG - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Fout antwoord                                        |\n"
-    "|   Pas op...                                            |\n"
-    "|   Nog zo'n fout en het gaat mis                        |\n"
-    "|--------------------------------------------------------|\n",
+"Fout antwoord\nPas op...\nNog zo'n fout en het gaat mis\n",
 
-    // WRONG - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Niet correct                                         |\n"
-    "|   Dat zag er niet goed uit                             |\n"
-    "|   Probeer het opnieuw                                  |\n"
-    "|--------------------------------------------------------|\n",
+"Niet correct\nDat zag er niet goed uit\nProbeer het opnieuw\n",
 
-    // WRONG - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   Dat klopt niet                                       |\n"
-    "|   De bom tikt door...                                  |\n"
-    "|   Denk sneller                                         |\n"
-    "|--------------------------------------------------------|\n",
+"Dat klopt niet\nDe bom tikt door...\nDenk sneller\n",
 
-    // SCAN
-    "|--------------------------------------------------------|\n"
-    "|   Scan je vinger                                       |\n"
-    "|   Wacht op bevestiging                                 |\n"
-    "|   Niet bewegen                                         |\n"
-    "|--------------------------------------------------------|\n",
+"Scan je vinger\nWacht op bevestiging\nNiet bewegen\n",
 
-    // KEY
-    "|--------------------------------------------------------|\n"
-    "|   Draai de sleutel                                     |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Draai de sleutel\n\n\n",
 
-    // SWITCH
-    "|--------------------------------------------------------|\n"
-    "|   Zet de schakelaar om                                 |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Zet de schakelaar om\n\n\n",
 
-    // D_SPECIAL_WRONG
-    "|--------------------------------------------------------|\n"
-    "|   Verkeerde handeling                                  |\n"
-    "|   Dit had niet moeten gebeuren                         |\n"
-    "|   Probeer iets anders                                  |\n"
-    "|--------------------------------------------------------|\n",
+"Verkeerde handeling\nDit had niet moeten gebeuren\nProbeer iets anders\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Goede handeling                                      |\n"
-    "|   Dit is correct                                       |\n"
-    "|   Ga door                                              |\n"
-    "|--------------------------------------------------------|\n",
+"Goede handeling\nDit is correct\nGa door\n",
 
-    // D_OPEN_COMPARTMENT
-    "|--------------------------------------------------------|\n"
-    "|   Compartiment geopend                                 |\n"
-    "|   Er is iets vrijgegeven                               |\n"
-    "|   Kijk snel wat er is veranderd                        |\n"
-    "|--------------------------------------------------------|\n",
+"Compartiment geopend\nEr is iets vrijgegeven\nKijk snel wat er is veranderd\n",
 
-    // TIME UP
-    "|--------------------------------------------------------|\n"
-    "|   Te laat                                              |\n"
-    "|   De bom is afgegaan                                   |\n"
-    "|   Einde spel                                           |\n"
-    "|--------------------------------------------------------|\n",
+"Te laat\nDe bom is afgegaan\nEinde spel\n",
 
-    // WIN
-    "|--------------------------------------------------------|\n"
-    "|   Gelukt                                               |\n"
-    "|   De bom is ontmanteld                                 |\n"
-    "|   Net op tijd                                          |\n"
-    "|--------------------------------------------------------|\n",
+"Gelukt\nDe bom is ontmanteld\nNet op tijd\n",
 
-    // ERROR
-    "|--------------------------------------------------------|\n"
-    "|   Kritische fout                                       |\n"
-    "|   Systeem gestopt                                      |\n"
-    "|   Herstart vereist                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Kritische fout\nSysteem gestopt\nHerstart vereist\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Schakelaar en/of sleutel niet gereset                |\n"
-    "|   Reset alstublieft de schakelaar en/of sleutel        |\n"
-    "|   Probeer het daarna opnieuw                           |\n"
-    "|--------------------------------------------------------|\n"
+"Schakelaar en/of sleutel niet gereset\nReset alstublieft de schakelaar en/of sleutel\nProbeer het daarna opnieuw\n"
 };
 
-const char* displayTemplatesSafeNL[MAX_TEMPLATES] = {
+const char displayTemplatesSafeNL[MAX_TEMPLATES][DISPLAY_LEN] = {
 
-    "NON\n",
+"NON\n",
 
-    // D_IDLE
-    "|--------------------------------------------------------|\n"
-    "|   Het systeem staat klaar                              |\n"
-    "|   Durf jij de uitdaging aan?                           |\n"
-    "|   Druk op een toets om te starten                      |\n"
-    "|--------------------------------------------------------|\n",
+"Het systeem staat klaar\nDurf jij de uitdaging aan?\nDruk op een toets om te starten\n",
 
-    // D_DEV_PAGE
-    "|--------------------------------------------------------|\n"
-    "|   DEVELOPMENT MODE                                     |\n"
-    "|   Voer kamernummer in voor data                        |\n"
-    "|   9999 = open alles | 0000 = exit                      |\n"
-    "|--------------------------------------------------------|\n",
+"DEVELOPMENT MODE\nVoer kamernummer in voor data\n9999 = open alles | 0000 = exit\n",
 
-    // D_START_GAME
-    "|--------------------------------------------------------|\n"
-    "|   Het systeem is geactiveerd                           |\n"
-    "|   Je hebt [tijd] min                                   |\n"
-    "|   Maak geen fouten...                                  |\n"
-    "|--------------------------------------------------------|\n",
+"Het systeem is geactiveerd\nJe hebt [tijd] min\nMaak geen fouten...\n",
 
-    // GO TO ROOM - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Verkeerde kamer                                      |\n"
-    "|   Ga naar: [kamer naam]                                |\n"
-    "|   Blijf niet hangen                                    |\n"
-    "|--------------------------------------------------------|\n",
+"Verkeerde kamer\nGa naar: [kamer naam]\nBlijf niet hangen\n",
 
-    // GO TO ROOM - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Dit klopt niet                                       |\n"
-    "|   Zoek: [kamer naam]                                   |\n"
-    "|   Je zit op het verkeerde spoor                        |\n"
-    "|--------------------------------------------------------|\n",
+"Dit klopt niet\nZoek: [kamer naam]\nJe zit op het verkeerde spoor\n",
 
-    // GO TO ROOM - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   Foute plek                                           |\n"
-    "|   Ga snel naar: [kamer naam]                           |\n"
-    "|   Elke seconde telt                                    |\n"
-    "|--------------------------------------------------------|\n",
+"Foute plek\nGa snel naar: [kamer naam]\nElke seconde telt\n",
 
-    // D_GO_TO_FINAL_ROOM
-    "|--------------------------------------------------------|\n"
-    "|   Bijna klaar                                          |\n"
-    "|   Ga naar de laatste kamer: [kamer naam]               |\n"
-    "|   Maak het af                                          |\n"
-    "|--------------------------------------------------------|\n",
+"Bijna klaar\nGa naar de laatste kamer: [kamer naam]\nMaak het af\n",
 
-    // IN ROOM
-    "|--------------------------------------------------------|\n"
-    "|   Kamer: [kamer naam]                                  |\n"
-    "|   Hier moet het gebeuren                               |\n"
-    "|   Maak geen fouten                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Kamer: [kamer naam]\nHier moet het gebeuren\nMaak geen fouten\n",
 
-    // D_FINAL_ROOM_ENTER
-    "|--------------------------------------------------------|\n"
-    "|   Dit is de laatste kamer                              |\n"
-    "|   Hier beslist alles                                   |\n"
-    "|   Geen fouten meer                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Dit is de laatste kamer\nHier beslist alles\nGeen fouten meer\n",
 
-    // ENTER ANSWER
-    "|--------------------------------------------------------|\n"
-    "|   Voer het antwoord in                                 |\n"
-    "|   Denk goed na                                         |\n"
-    "|   Een fout kan gevolgen hebben                         |\n"
-    "|--------------------------------------------------------|\n",
+"Voer het antwoord in\nDenk goed na\nEen fout kan gevolgen hebben\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Dit is het moment                                    |\n"
-    "|   Alles hangt hiervan af                               |\n"
-    "|   Voer het antwoord in                                 |\n"
-    "|--------------------------------------------------------|\n",
+"Dit is het moment\nAlles hangt hiervan af\nVoer het antwoord in\n",
 
-    // CORRECT - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Correct                                              |\n"
-    "|   Dat was scherp                                       |\n"
-    "|   Ga verder                                            |\n"
-    "|--------------------------------------------------------|\n",
+"Correct\nDat was scherp\nGa verder\n",
 
-    // CORRECT - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Goed antwoord                                        |\n"
-    "|   Je zit op het juiste pad                             |\n"
-    "|   Volgende stap                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Goed antwoord\nJe zit op het juiste pad\nVolgende stap\n",
 
-    // CORRECT - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   Dat klopt                                            |\n"
-    "|   Nog even doorgaan                                    |\n"
-    "|   Je bent dichtbij                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Dat klopt\nNog even doorgaan\nJe bent dichtbij\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Eerste stap gelukt                                   |\n"
-    "|   Je bent begonnen                                     |\n"
-    "|   Blijf doorgaan                                       |\n"
-    "|--------------------------------------------------------|\n",
+"Eerste stap gelukt\nJe bent begonnen\nBlijf doorgaan\n",
 
-    // WRONG - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Fout antwoord                                        |\n"
-    "|   Pas op...                                            |\n"
-    "|   Nog zo'n fout en het gaat mis                        |\n"
-    "|--------------------------------------------------------|\n",
+"Fout antwoord\nPas op...\nNog zo'n fout en het kan misgaan\n",
 
-    // WRONG - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Niet correct                                         |\n"
-    "|   Dat zag er niet goed uit                             |\n"
-    "|   Probeer het opnieuw                                  |\n"
-    "|--------------------------------------------------------|\n",
+"Niet correct\nDat zag er niet goed uit\nProbeer het opnieuw\n",
 
-    // WRONG - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   Dat klopt niet                                       |\n"
-    "|   De tijd tikt door...                                 |\n"
-    "|   Denk sneller                                         |\n"
-    "|--------------------------------------------------------|\n",
+"Dat klopt niet\nDe tijd tikt door...\nDenk sneller\n",
 
-    // SCAN
-    "|--------------------------------------------------------|\n"
-    "|   Scan je vinger                                       |\n"
-    "|   Wacht op bevestiging                                 |\n"
-    "|   Niet bewegen                                         |\n"
-    "|--------------------------------------------------------|\n",
+"Scan je vinger\nWacht op bevestiging\nNiet bewegen\n",
 
-    // KEY
-    "|--------------------------------------------------------|\n"
-    "|   Draai de sleutel                                     |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Draai de sleutel\n\n\n",
 
-    // SWITCH
-    "|--------------------------------------------------------|\n"
-    "|   Zet de schakelaar om                                 |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Zet de schakelaar om\n\n\n",
 
-    // D_SPECIAL_WRONG
-    "|--------------------------------------------------------|\n"
-    "|   Verkeerde handeling                                  |\n"
-    "|   Dit had niet moeten gebeuren                         |\n"
-    "|   Probeer iets anders                                  |\n"
-    "|--------------------------------------------------------|\n",
+"Verkeerde handeling\nDit had niet moeten gebeuren\nProbeer iets anders\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Goede handeling                                      |\n"
-    "|   Dit is correct                                       |\n"
-    "|   Ga door                                              |\n"
-    "|--------------------------------------------------------|\n",
+"Goede handeling\nDit is correct\nGa door\n",
 
-    // D_OPEN_COMPARTMENT
-    "|--------------------------------------------------------|\n"
-    "|   Compartiment geopend                                 |\n"
-    "|   Er is iets vrijgegeven                               |\n"
-    "|   Kijk snel wat er is veranderd                        |\n"
-    "|--------------------------------------------------------|\n",
+"Compartiment geopend\nEr is iets vrijgegeven\nKijk snel wat er is veranderd\n",
 
-    // TIME UP
-    "|--------------------------------------------------------|\n"
-    "|   Tijd voorbij                                         |\n"
-    "|   De opdracht is mislukt                               |\n"
-    "|   Einde spel                                           |\n"
-    "|--------------------------------------------------------|\n",
+"Tijd voorbij\nDe opdracht is mislukt\nEinde spel\n",
 
-    // WIN
-    "|--------------------------------------------------------|\n"
-    "|   Gelukt                                               |\n"
-    "|   De opdracht is voltooid                              |\n"
-    "|   Net op tijd                                          |\n"
-    "|--------------------------------------------------------|\n",
+"Gelukt\nDe opdracht is voltooid\nNet op tijd\n",
 
-    // ERROR
-    "|--------------------------------------------------------|\n"
-    "|   Kritische fout                                       |\n"
-    "|   Systeem gestopt                                      |\n"
-    "|   Herstart vereist                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Kritische fout\nSysteem gestopt\nHerstart vereist\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Schakelaar en/of sleutel niet gereset                |\n"
-    "|   Reset alstublieft de schakelaar en/of sleutel        |\n"
-    "|   Probeer het daarna opnieuw                           |\n"
-    "|--------------------------------------------------------|\n"
+"Schakelaar en/of sleutel niet gereset\nReset alstublieft de schakelaar en/of sleutel\nProbeer het daarna opnieuw\n"
 };
 
-const char* displayTemplatesEn[MAX_TEMPLATES] = {
+const char displayTemplatesEn[MAX_TEMPLATES][DISPLAY_LEN] = {
 
-    "NONE\n",
+"NONE\n",
 
-    // D_IDLE
-    "|--------------------------------------------------------|\n"
-    "|   The bomb is ready                                    |\n"
-    "|   Do you dare to stop it?                               |\n"
-    "|   Press any key to start                                |\n"
-    "|--------------------------------------------------------|\n",
+"The bomb is ready\nDo you dare to stop it?\nPress any key to start\n",
 
-    // D_DEV_PAGE
-    "|--------------------------------------------------------|\n"
-    "|   DEVELOPMENT MODE                                     |\n"
-    "|   Enter room number for data                            |\n"
-    "|   9999 = unlock all | 0000 = exit                       |\n"
-    "|--------------------------------------------------------|\n",
+"DEVELOPMENT MODE\nEnter room number for data\n9999 = unlock all | 0000 = exit\n",
 
-    // D_START_GAME
-    "|--------------------------------------------------------|\n"
-    "|   The bomb is activated                                 |\n"
-    "|   You have [time] min                                   |\n"
-    "|   No mistakes allowed...                                 |\n"
-    "|--------------------------------------------------------|\n",
+"The bomb is activated\nYou have [time] min\nNo mistakes allowed...\n",
 
-    // GO TO ROOM - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Wrong room                                           |\n"
-    "|   Go to: [room name]                                   |\n"
-    "|   Don’t linger                                         |\n"
-    "|--------------------------------------------------------|\n",
+"Wrong room\nGo to: [room name]\nDon’t linger\n",
 
-    // GO TO ROOM - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   That’s not correct                                   |\n"
-    "|   Look for: [room name]                                |\n"
-    "|   You’re on the wrong track                             |\n"
-    "|--------------------------------------------------------|\n",
+"That’s not correct\nLook for: [room name]\nYou’re on the wrong track\n",
 
-    // GO TO ROOM - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   Wrong spot                                           |\n"
-    "|   Hurry to: [room name]                                |\n"
-    "|   Every second counts                                  |\n"
-    "|--------------------------------------------------------|\n",
+"Wrong spot\nHurry to: [room name]\nEvery second counts\n",
 
-    // D_GO_TO_FINAL_ROOM
-    "|--------------------------------------------------------|\n"
-    "|   Almost there                                         |\n"
-    "|   Head to the final room: [room name]                  |\n"
-    "|   Finish it                                             |\n"
-    "|--------------------------------------------------------|\n",
+"Almost there\nHead to the final room: [room name]\nFinish it\n",
 
-    // IN ROOM
-    "|--------------------------------------------------------|\n"
-    "|   Room: [room name]                                    |\n"
-    "|   This is where it happens                              |\n"
-    "|   No mistakes allowed                                   |\n"
-    "|--------------------------------------------------------|\n",
+"Room: [room name]\nThis is where it happens\nNo mistakes allowed\n",
 
-    // D_FINAL_ROOM_ENTER
-    "|--------------------------------------------------------|\n"
-    "|   This is the final room                                |\n"
-    "|   Everything is decided here                             |\n"
-    "|   No more mistakes                                       |\n"
-    "|--------------------------------------------------------|\n",
+"This is the final room\nEverything is decided here\nNo more mistakes\n",
 
-    // ENTER ANSWER
-    "|--------------------------------------------------------|\n"
-    "|   Enter your answer                                     |\n"
-    "|   Think carefully                                       |\n"
-    "|   One mistake can be fatal                               |\n"
-    "|--------------------------------------------------------|\n",
+"Enter your answer\nThink carefully\nOne mistake can be fatal\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   This is the moment                                    |\n"
-    "|   Everything depends on it                               |\n"
-    "|   Enter your answer                                      |\n"
-    "|--------------------------------------------------------|\n",
+"This is the moment\nEverything depends on it\nEnter your answer\n",
 
-    // CORRECT - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Correct                                              |\n"
-    "|   Sharp thinking                                       |\n"
-    "|   Proceed                                              |\n"
-    "|--------------------------------------------------------|\n",
+"Correct\nSharp thinking\nProceed\n",
 
-    // CORRECT - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Right answer                                         |\n"
-    "|   You’re on the right track                             |\n"
-    "|   Next step                                            |\n"
-    "|--------------------------------------------------------|\n",
+"Right answer\nYou’re on the right track\nNext step\n",
 
-    // CORRECT - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   That’s correct                                       |\n"
-    "|   Keep going                                           |\n"
-    "|   You’re close                                         |\n"
-    "|--------------------------------------------------------|\n",
+"That’s correct\nKeep going\nYou’re close\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   First step done                                      |\n"
-    "|   You’ve started                                       |\n"
-    "|   Keep pushing                                        |\n"
-    "|--------------------------------------------------------|\n",
+"First step done\nYou’ve started\nKeep pushing\n",
 
-    // WRONG - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Wrong answer                                         |\n"
-    "|   Be careful...                                        |\n"
-    "|   One more mistake and it’s over                        |\n"
-    "|--------------------------------------------------------|\n",
+"Wrong answer\nBe careful...\nOne more mistake and it’s over\n",
 
-    // WRONG - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Incorrect                                           |\n"
-    "|   That didn’t look right                               |\n"
-    "|   Try again                                            |\n"
-    "|--------------------------------------------------------|\n",
+"Incorrect\nThat didn’t look right\nTry again\n",
 
-    // WRONG - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   That’s not correct                                   |\n"
-    "|   Time keeps ticking...                                 |\n"
-    "|   Think faster                                         |\n"
-    "|--------------------------------------------------------|\n",
+"That’s not correct\nTime keeps ticking...\nThink faster\n",
 
-    // SCAN
-    "|--------------------------------------------------------|\n"
-    "|   Scan your finger                                     |\n"
-    "|   Wait for confirmation                                 |\n"
-    "|   Don’t move                                           |\n"
-    "|--------------------------------------------------------|\n",
+"Scan your finger\nWait for confirmation\nDon’t move\n",
 
-    // KEY
-    "|--------------------------------------------------------|\n"
-    "|   Turn the key                                         |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Turn the key\n\n\n",
 
-    // SWITCH
-    "|--------------------------------------------------------|\n"
-    "|   Flip the switch                                      |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Flip the switch\n\n\n",
 
-    // D_SPECIAL_WRONG
-    "|--------------------------------------------------------|\n"
-    "|   Wrong action                                         |\n"
-    "|   That shouldn’t have happened                          |\n"
-    "|   Try something else                                    |\n"
-    "|--------------------------------------------------------|\n",
+"Wrong action\nThat shouldn’t have happened\nTry something else\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Correct action                                       |\n"
-    "|   This is right                                        |\n"
-    "|   Continue                                             |\n"
-    "|--------------------------------------------------------|\n",
+"Correct action\nThis is right\nContinue\n",
 
-    // D_OPEN_COMPARTMENT
-    "|--------------------------------------------------------|\n"
-    "|   Compartment opened                                   |\n"
-    "|   Something has been released                          |\n"
-    "|   Check what changed quickly                             |\n"
-    "|--------------------------------------------------------|\n",
+"Compartment opened\nSomething has been released\nCheck what changed quickly\n",
 
-    // TIME UP
-    "|--------------------------------------------------------|\n"
-    "|   Time’s up                                            |\n"
-    "|   The bomb went off                                     |\n"
-    "|   Game over                                            |\n"
-    "|--------------------------------------------------------|\n",
+"Time’s up\nThe bomb went off\nGame over\n",
 
-    // WIN
-    "|--------------------------------------------------------|\n"
-    "|   Success                                              |\n"
-    "|   The bomb has been defused                              |\n"
-    "|   Just in time                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Success\nThe bomb has been defused\nJust in time\n",
 
-    // ERROR
-    "|--------------------------------------------------------|\n"
-    "|   Critical error                                       |\n"
-    "|   System stopped                                       |\n"
-    "|   Restart required                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Critical error\nSystem stopped\nRestart required\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Switch or/and key not reset                          |\n"
-    "|   Please reset the switch or key                       |\n"
-    "|   Then try again                                       |\n"
-    "|--------------------------------------------------------|\n",
+"Switch or/and key not reset\nPlease reset the switch or key\nThen try again\n"
 };
 
-const char* displayTemplatesSafeEn[MAX_TEMPLATES] = {
+const char displayTemplatesSafeEn[MAX_TEMPLATES][DISPLAY_LEN] = {
 
-    "NONE\n",
+"NONE\n",
 
-    // D_IDLE
-    "|--------------------------------------------------------|\n"
-    "|   The system is ready                                  |\n"
-    "|   Do you dare to take the challenge?                   |\n"
-    "|   Press any key to start                                |\n"
-    "|--------------------------------------------------------|\n",
+"The system is ready\nDo you dare to take the challenge?\nPress any key to start\n",
 
-    // D_DEV_PAGE
-    "|--------------------------------------------------------|\n"
-    "|   DEVELOPMENT MODE                                     |\n"
-    "|   Enter room number for data                            |\n"
-    "|   9999 = unlock all | 0000 = exit                       |\n"
-    "|--------------------------------------------------------|\n",
+"DEVELOPMENT MODE\nEnter room number for data\n9999 = unlock all | 0000 = exit\n",
 
-    // D_START_GAME
-    "|--------------------------------------------------------|\n"
-    "|   The system is activated                               |\n"
-    "|   You have [time] min                                   |\n"
-    "|   No mistakes allowed...                                 |\n"
-    "|--------------------------------------------------------|\n",
+"The system is activated\nYou have [time] min\nNo mistakes allowed...\n",
 
-    // GO TO ROOM - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Wrong room                                           |\n"
-    "|   Go to: [room name]                                   |\n"
-    "|   Don’t linger                                         |\n"
-    "|--------------------------------------------------------|\n",
+"Wrong room\nGo to: [room name]\nDon’t linger\n",
 
-    // GO TO ROOM - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   That’s not correct                                   |\n"
-    "|   Look for: [room name]                                |\n"
-    "|   You’re on the wrong track                             |\n"
-    "|--------------------------------------------------------|\n",
+"That’s not correct\nLook for: [room name]\nYou’re on the wrong track\n",
 
-    // GO TO ROOM - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   Wrong spot                                           |\n"
-    "|   Hurry to: [room name]                                |\n"
-    "|   Every second counts                                  |\n"
-    "|--------------------------------------------------------|\n",
+"Wrong spot\nHurry to: [room name]\nEvery second counts\n",
 
-    // D_GO_TO_FINAL_ROOM
-    "|--------------------------------------------------------|\n"
-    "|   Almost there                                         |\n"
-    "|   Head to the final room: [room name]                  |\n"
-    "|   Finish it                                             |\n"
-    "|--------------------------------------------------------|\n",
+"Almost there\nHead to the final room: [room name]\nFinish it\n",
 
-    // IN ROOM
-    "|--------------------------------------------------------|\n"
-    "|   Room: [room name]                                    |\n"
-    "|   This is where it happens                              |\n"
-    "|   No mistakes allowed                                   |\n"
-    "|--------------------------------------------------------|\n",
+"Room: [room name]\nThis is where it happens\nNo mistakes allowed\n",
 
-    // D_FINAL_ROOM_ENTER
-    "|--------------------------------------------------------|\n"
-    "|   This is the final room                                |\n"
-    "|   Everything is decided here                             |\n"
-    "|   No more mistakes                                       |\n"
-    "|--------------------------------------------------------|\n",
+"This is the final room\nEverything is decided here\nNo more mistakes\n",
 
-    // ENTER ANSWER
-    "|--------------------------------------------------------|\n"
-    "|   Enter your answer                                     |\n"
-    "|   Think carefully                                       |\n"
-    "|   Mistakes can have consequences                         |\n"
-    "|--------------------------------------------------------|\n",
+"Enter your answer\nThink carefully\nMistakes can have consequences\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   This is the moment                                    |\n"
-    "|   Everything depends on it                               |\n"
-    "|   Enter your answer                                      |\n"
-    "|--------------------------------------------------------|\n",
+"This is the moment\nEverything depends on it\nEnter your answer\n",
 
-    // CORRECT - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Correct                                              |\n"
-    "|   Sharp thinking                                       |\n"
-    "|   Proceed                                              |\n"
-    "|--------------------------------------------------------|\n",
+"Correct\nSharp thinking\nProceed\n",
 
-    // CORRECT - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Right answer                                         |\n"
-    "|   You’re on the right track                             |\n"
-    "|   Next step                                            |\n"
-    "|--------------------------------------------------------|\n",
+"Right answer\nYou’re on the right track\nNext step\n",
 
-    // CORRECT - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   That’s correct                                       |\n"
-    "|   Keep going                                           |\n"
-    "|   You’re close                                         |\n"
-    "|--------------------------------------------------------|\n",
+"That’s correct\nKeep going\nYou’re close\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   First step done                                      |\n"
-    "|   You’ve started                                       |\n"
-    "|   Keep pushing                                        |\n"
-    "|--------------------------------------------------------|\n",
+"First step done\nYou’ve started\nKeep pushing\n",
 
-    // WRONG - variant 1
-    "|--------------------------------------------------------|\n"
-    "|   Wrong answer                                         |\n"
-    "|   Be careful...                                        |\n"
-    "|   One more mistake and it could go wrong               |\n"
-    "|--------------------------------------------------------|\n",
+"Wrong answer\nBe careful...\nOne more mistake and it could go wrong\n",
 
-    // WRONG - variant 2
-    "|--------------------------------------------------------|\n"
-    "|   Incorrect                                           |\n"
-    "|   That didn’t look right                               |\n"
-    "|   Try again                                            |\n"
-    "|--------------------------------------------------------|\n",
+"Incorrect\nThat didn’t look right\nTry again\n",
 
-    // WRONG - variant 3
-    "|--------------------------------------------------------|\n"
-    "|   That’s not correct                                   |\n"
-    "|   Time keeps ticking...                                 |\n"
-    "|   Think faster                                         |\n"
-    "|--------------------------------------------------------|\n",
+"That’s not correct\nTime keeps ticking...\nThink faster\n",
 
-    // SCAN
-    "|--------------------------------------------------------|\n"
-    "|   Scan your finger                                     |\n"
-    "|   Wait for confirmation                                 |\n"
-    "|   Don’t move                                           |\n"
-    "|--------------------------------------------------------|\n",
+"Scan your finger\nWait for confirmation\nDon’t move\n",
 
-    // KEY
-    "|--------------------------------------------------------|\n"
-    "|   Turn the key                                         |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Turn the key\n\n\n",
 
-    // SWITCH
-    "|--------------------------------------------------------|\n"
-    "|   Flip the switch                                      |\n"
-    "|                                                        |\n"
-    "|                                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Flip the switch\n\n\n",
 
-    // D_SPECIAL_WRONG
-    "|--------------------------------------------------------|\n"
-    "|   Wrong action                                         |\n"
-    "|   That shouldn’t have happened                          |\n"
-    "|   Try something else                                    |\n"
-    "|--------------------------------------------------------|\n",
+"Wrong action\nThat shouldn’t have happened\nTry something else\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Correct action                                       |\n"
-    "|   This is right                                        |\n"
-    "|   Continue                                             |\n"
-    "|--------------------------------------------------------|\n",
+"Correct action\nThis is right\nContinue\n",
 
-    // D_OPEN_COMPARTMENT
-    "|--------------------------------------------------------|\n"
-    "|   Compartment opened                                   |\n"
-    "|   Something has been released                          |\n"
-    "|   Check what changed quickly                             |\n"
-    "|--------------------------------------------------------|\n",
+"Compartment opened\nSomething has been released\nCheck what changed quickly\n",
 
-    // TIME UP
-    "|--------------------------------------------------------|\n"
-    "|   Time’s up                                            |\n"
-    "|   The task failed                                       |\n"
-    "|   Game over                                            |\n"
-    "|--------------------------------------------------------|\n",
+"Time’s up\nThe task failed\nGame over\n",
 
-    // WIN
-    "|--------------------------------------------------------|\n"
-    "|   Success                                              |\n"
-    "|   The task is completed                                 |\n"
-    "|   Just in time                                        |\n"
-    "|--------------------------------------------------------|\n",
+"Success\nThe task is completed\nJust in time\n",
 
-    // ERROR
-    "|--------------------------------------------------------|\n"
-    "|   Critical error                                       |\n"
-    "|   System stopped                                       |\n"
-    "|   Restart required                                     |\n"
-    "|--------------------------------------------------------|\n",
+"Critical error\nSystem stopped\nRestart required\n",
 
-    "|--------------------------------------------------------|\n"
-    "|   Switch or/and key not reset                          |\n"
-    "|   Please reset the switch or key                       |\n"
-    "|   Then try again                                       |\n"
-    "|--------------------------------------------------------|\n",
+"Switch or/and key not reset\nPlease reset the switch or key\nThen try again\n"
 };

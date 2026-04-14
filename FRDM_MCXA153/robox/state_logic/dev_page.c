@@ -35,7 +35,7 @@ globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_STOP,
     10,
-    AUDIO_OFF,
+    AUDIO_ON,
     LANGUAGE_ENGLISH,
     NOT_CENSORED
 };
@@ -111,6 +111,11 @@ bool handleVolume(void)
             volume = value;
         }
 
+        if(globalSettings.audio == AUDIO_OFF) 
+        {
+            displayDigitsValues(OFF,OFF,OFF,OFF, OFF);
+            return true;
+        }
         //Display current volume
         uint8_t roomFirstVolume = volume / 10;
         uint8_t roomSecondVolume = volume % 10;
@@ -299,6 +304,7 @@ void receive_room_settings_from_esp(void)
 {   
     //Probeer 5x data van esp te verkijgen, als dit niet lukt disply kritiche error
     uint8_t attempts = 0;
+    newData = false;
     do
     {
         attempts ++;
@@ -311,7 +317,7 @@ void receive_room_settings_from_esp(void)
         lpuart1_putchar(START_BYTE_GET_SETTINGS_DATA);
 
     }while(!receive_room_settings());
-    newData = false;
+    
 }
 
 /**
