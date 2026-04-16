@@ -48,49 +48,38 @@ int main(void)
 
   while (1)
   {
-    static uint32_t lastDisplayUpdate = 0;
-    if(millis() - lastDisplayUpdate > 1) //update display elke 100 ms
-    {
-      lastDisplayUpdate = millis();
       st7920_update();
-    }
   }
   
-  while(1)
-  {
+  
+  // while(1)
+  // {
     
-    //Standaard updates die altijd moeten lopen
-    FSM_runStateMachine();
-    updateHM10();
-    updateDisplayQueue();
-    updateBuzzer();
-    updateAudioQueue();
-    updateInputBuffer();
-
-    static uint32_t lastDisplayUpdate = 0;
-    if(millis() - lastDisplayUpdate > 1) //update display elke 100 ms
-    {
-      lastDisplayUpdate = millis();
-      st7920_update();
-    }
+  //   //Standaard updates die altijd moeten lopen
+  //   FSM_runStateMachine();
+  //   updateHM10();
+  //   updateDisplayQueue();
+  //   updateBuzzer();
+  //   updateAudioQueue();
+  //   updateInputBuffer();
 
 
-    if(gameActiv)
-    {
-      //Updates die alleen moeten lopen als het spel actief is
-      updateGameTimer();
-      updateSpecialActies();
-      updateTimeGamePenaltyMillis();
-      updateTimeDependingAudio();
+  //   if(gameActiv)
+  //   {
+  //     //Updates die alleen moeten lopen als het spel actief is
+  //     updateGameTimer();
+  //     updateSpecialActies();
+  //     updateTimeGamePenaltyMillis();
+  //     updateTimeDependingAudio();
       
-      //Updates die alleen moeten lopen als er een bepaalde conditie is in de game is
-      if(globalSettings.difficulty == WRONG_ANSWER_TIME_X2) 
-      {
-        updateVirtualTime();
-      }
-    }
+  //     //Updates die alleen moeten lopen als er een bepaalde conditie is in de game is
+  //     if(globalSettings.difficulty == WRONG_ANSWER_TIME_X2) 
+  //     {
+  //       updateVirtualTime();
+  //     }
+  //   }
 
-  }
+  //}
 }
 //WARN : Lupart 0 word zo wel gebruikt voor audio als voor debuging kan problemen veroorzaken
 

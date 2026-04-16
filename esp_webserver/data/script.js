@@ -800,30 +800,56 @@ function generateSettingsTable(settings, kamerSettingsDiv, kamerNaam) {
                 option.selected = opt.value === setting.value;
                 field.appendChild(option);
             });
-
             // Event listener om dubbele speciale acties te voorkomen
             field.addEventListener("change", () => {
                 const selectedValue = parseInt(field.value);
                 const selectedLabel = field.options[field.selectedIndex].text;
 
-                if (selectedValue !== 0) {
+                const specialAction = selectedLabel =="Schakalaar" ||  selectedLabel == "Draai sluetel";
+
+                
+
+                console.log(kamerList);
+                if (selectedValue !== 0 &&( specialAction || selectedLabel =="Compartiment 1" || selectedLabel == "Compartiment 2" || selectedLabel == "Compartiment 3"))
+                {
                     // Controleer of deze actie al in een andere kamer is ingesteld
-                    for (const [otherKamer, action] of Object.entries(assignedSpecialActions)) {
-                        if (action === selectedValue && otherKamer !== kamerNaam) {
-                            alert(`Deze actie (${selectedLabel}) wordt al gedaan in andere kamer`);
-                            // Reset naar 0 (geen) als actie al gebruikt wordt
+                    for (const [otherKamer, action] of Object.entries(assignedSpecialActions)) 
+                    {
+                        if (action === selectedLabel && otherKamer !== (specialAction ? index - 5 : index)) 
+                        {
+                            const compartmenmt = action == "Compartiment 1" || action == "Compartiment 2" || action == "Compartiment 3";
+                            if(specialAction)
+                            {
+                                kamerList[index][2]["special-acties"] = "0";
+                                alert(`Deze actie ${selectedLabel} wordt al gedaan in ${ kamerList[compartmenmt ? otherKamer : otherKamer - 5][2]["naam-kamer"]}`);
+                            }
+                            else 
+                            {
+                                kamerList[index][2]["open-compartment"] = "0";
+                                alert(`Dit compartiment ${selectedLabel} wordt al gebruikt in ${ kamerList[compartmenmt ? otherKamer : otherKamer - 5][2]["naam-kamer"]}`);
+                            }
+                            
                             field.value = 0;
+                            
+                            
+                            console.log(kamerList);
                             return;
                         }
                     }
                     // Als oké, sla deze actie op voor deze kamer
-                    assignedSpecialActions[kamerNaam] = selectedValue;
-                } else {
+                     assignedSpecialActions[specialAction ? index + 5 : index] = selectedLabel;
+   
+                } 
+                else 
+                {
                     // Als gebruiker "Geen" kiest, verwijder de actie uit assigned
-                    delete assignedSpecialActions[kamerNaam];
+                    delete assignedSpecialActions[specialAction ? index + 5 : index];
                 }
+
             });
-        } else {
+        } 
+        else 
+            {
             field = document.createElement("input");
             field.type = setting.type || "text";
             field.value = setting.value ?? "";
@@ -880,10 +906,10 @@ function generateSettingsTable(settings, kamerSettingsDiv, kamerNaam) {
         field.addEventListener("input", (e) => {
 
 
-    if (field.type === "text" && field.value.length > 50) 
+    if (field.type === "text" && field.value.length > 20) 
     {
-    alert("Mag maximaal 50 tekens bevatten.");
-    field.value = field.value.slice(0, 50); // knip af op 50 chars
+    alert("Mag maximaal 20 tekens bevatten.");
+    field.value = field.value.slice(0, 20); // knip af op 50 chars
     return;
 }
 

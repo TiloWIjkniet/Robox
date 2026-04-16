@@ -31,13 +31,6 @@ void buzzer_init(void)
 
 }
 
-/**
- * @brief Zet de buzzer aan of uit.
- *
- * @param state
- * - true  : buzzer aan
- * - false : buzzer uit
- */
 
 /**
  * @brief Start het afspelen van een buzzer geluid.

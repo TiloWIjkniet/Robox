@@ -1,7 +1,7 @@
 #include "display.h"
 #include <stddef.h>
 #include <board.h>
-
+#include "time_millis.h"
 #define RS_SHIFT 8
 #define EN_MASK (1 << 9)
 
@@ -20,7 +20,7 @@ static const uint8_t DDRAM_addr[4] = {
 int st7920_set_cursor(uint8_t row, uint8_t col)
 {
     uint8_t newCursor = row * 16 + col;
-    if(newCursor > 4*16) return -1;
+    if(newCursor > 4 * 16) return -1;
     
     disp_cursor_pos = newCursor;
     if (cmd_set_ddram(DDRAM_addr[(disp_cursor_pos >> 4)]) == -1) { return -1; };
@@ -30,6 +30,15 @@ int st7920_set_cursor(uint8_t row, uint8_t col)
 static inline void tiny_delay(int loops)
 {
     for (volatile int i = 0; i < loops; i++) {
+        __NOP();
+    }
+}
+
+static inline void ms_delay(uint32_t ms)
+{
+    uint32_t start = millis();
+    while (millis() - start < ms) 
+    {
         __NOP();
     }
 }
@@ -97,16 +106,17 @@ void st7920_init()
         GPIO1->PDDR |= (1<<i);
     }
     
+    ms_delay(20);
     write_port(0, 0b00110000);
-    tiny_delay(1000);
+    ms_delay(5);
     write_port(0, 0b00110000);
-    tiny_delay(1000);
+    ms_delay(5);
     write_port(0, 0b00001111);
-    tiny_delay(1000);
+    ms_delay(5);
     write_port(0, 0b00000110);
-    tiny_delay(1000);
+    ms_delay(5);
     write_port(0, 0b00000001);
-    tiny_delay(5000);
+    ms_delay(10);
 }
 
 int st7920_writeb(uint8_t val)
@@ -138,6 +148,11 @@ int st7920_writeb(uint8_t val)
 
 void st7920_update()
 {
+    static uint32_t lastDisplayUpdate = 0;
+    uint32_t now = millis();
+    if(now - lastDisplayUpdate < 1)  return; 
+    lastDisplayUpdate = now;
+    
     if (disp_cmd_head != disp_cmd_tail) 
     {
         uint8_t tmp = (disp_cmd_tail + 1) & (ST7920_CMD_BUFF_SIZE - 1);
@@ -146,6 +161,7 @@ void st7920_update()
         write_port(cmd->rs, cmd->data);
     }    
 }
+
 
 
 

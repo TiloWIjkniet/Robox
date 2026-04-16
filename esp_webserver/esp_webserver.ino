@@ -17,7 +17,7 @@ IPAddress myIP;
 #define MAXS_TIMES 15
 #define MAXS_RECORDINGS 10
 #define MAXS_ROOMS 20
-#define MAX_CHAR_IN_STRING 50
+#define MAX_CHAR_IN_STRING 20
 
 #define MAX_ANSWERS 5
 

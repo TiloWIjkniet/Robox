@@ -54,6 +54,10 @@ void audio_init(void)
    
 }
 
+/**
+ * @brief Calculate checksum in cmdBuffer.
+ * 
+ */
 void calculateChecksum(void) 
 {
     uint16_t sum = 0;
@@ -66,6 +70,11 @@ void calculateChecksum(void)
     cmdBuffer[CHECKSUM_LOW] = checksum & 0xFF;
 }
 
+/**
+ * @brief Build and send a command to the DFPlayer Mini.
+ *
+ * @param[in] cmdData Struct containing command and parameter data.
+ */
 void sendCommand(audio_command_t cmdData) 
 {
     cmdBuffer[COMMAND] = cmdData.command;
@@ -79,7 +88,15 @@ void sendCommand(audio_command_t cmdData)
     }
 }
 
-// Voeg commando toe aan de queue
+/**
+ * @brief Add a new audio to the queue
+ *
+ * Inserts a new command with parameter into the circular queue.
+ * If the queue is full, the command is silently discarded.
+ *
+ * @param[in] command Command byte to enqueue.
+ * @param[in] param   16-bit parameter associated with the command.
+ */
 void enqueueCommand(uint8_t  command, uint16_t param) 
 {
     uint8_t nextHead = (queueHead + 1) % QUEUE_SIZE;
@@ -90,7 +107,19 @@ void enqueueCommand(uint8_t  command, uint16_t param)
     queueHead = nextHead;
 }
 
-// Verwerk queue: stuur volgend commando als DFPlayer klaar is
+/**
+ * @brief Process and send queued the audio commands.
+ *
+ * Sends the next command from the queue when the DFPlayer is ready.
+ * Ensures a minimum delay between commands and supports a priority
+ * "force command" that bypasses the queue.
+ *
+ * - Forced commands are sent immediately (once) when requested.
+ * - Normal commands are only sent when the BUSY pin indicates ready.
+ * - Commands are rate-limited using SEND_DELAY.
+ * 
+ * @note This function should be called regularly in the main loop
+ */
 void updateAudioQueue()
 {
     
@@ -102,6 +131,7 @@ void updateAudioQueue()
     if (now - lastSendTime < SEND_DELAY) return;
     lastSendTime = now;
 
+    // Handle forced command (priority)
     if(isForceCommand)
     {
         isForceCommand = false;
@@ -109,71 +139,123 @@ void updateAudioQueue()
         return;
     }
 
+    // Wait until DFPlayer is ready (BUSY pin inactive)
     if (!getPinState(GPIO2, BUSY_PIN)) return;
     
-    // Stuur volgende commando in queue
-    // printf("head %d, tail %d\n", queueHead, queueTail);
+
     sendCommand(audioQueue[queueTail]);
     
-    queueTail = (queueTail + 1) % QUEUE_SIZE; // cirkelende queue
+    queueTail = (queueTail + 1) % QUEUE_SIZE; 
 }
 
+/**
+ * @brief Queue command to play a specific audio file in a folder.
+ * *
+ * @param[in] file  Folder number.
+ * @param[in] audio File number within the folder.
+ */
 void audioPlayInFile(uint8_t file, uint8_t audio)
 {
-  enqueueCommand(CMD_SPECIFIC_FOLDER, ((uint16_t)file << 8) | audio);
+    enqueueCommand(CMD_SPECIFIC_FOLDER, ((uint16_t)file << 8) | audio);
 }
 
 
-
+/**
+ * @brief Set audio volume.
+ *
+ * Clamps volume to MAX_VOLUME, updates global volume,
+ * and enqueues the command.
+ *
+ * @param[in] vol Desired volume level.
+ */
 void audioSetVolume(uint8_t vol)
 {
-    if(vol > MAX_VOLUME) vol = MAX_VOLUME;
+    if (vol > MAX_VOLUME) vol = MAX_VOLUME;
     enqueueCommand(CMD_SET_VOLUME, vol);
     volume = vol;
 }
 
+
+/**
+ * @brief Play a global audio file.
+ *
+ * Plays audio from the global folder.
+ * then queues the audio file 
+ *
+ * @param[in] audioFile Global audio file identifier.
+ */
 void playGlobelAudio(globel_audio_files_t audioFile)
 {
-    if(globalSettings.audio == AUDIO_OFF || volume == 0 ) return;
+    if (globalSettings.audio == AUDIO_OFF || volume == 0) return;
     audioPlayInFile(GLOBEL_FOLDER, audioFile);
 }
 
+
+/**
+ * @brief Play a language-dependent audio file.
+ *
+ * Selects folder based on language and censorship settings,
+ * then queues the audio file 
+ *
+ * @param[in] audioFile Audio file identifier.
+ */
 void playAudio(audio_files_t audioFile)
 {
-
-    if(globalSettings.audio == AUDIO_OFF || volume == 0 || audioFile == AUDIO_NONE) return;
+    if (globalSettings.audio == AUDIO_OFF || volume == 0 || audioFile == AUDIO_NONE) return;
     
     uint8_t file = (globalSettings.language == LANGUAGE_ENGLISH) ? ENGLISH_FOLDER : NEDERLANDS_FOLDER;
     audioPlayInFile(file + globalSettings.censorship, audioFile);
 }
 
+/**
+ * @brief Force stop current audio playback.
+ *
+ * Sets a high-priority stop command that bypasses the queue.
+ */
 void stopAudio(void)
 {
-    if(globalSettings.audio == AUDIO_OFF || volume == 0) return;
-    isForceCommand = true;
+    if (globalSettings.audio == AUDIO_OFF || volume == 0) return;
 
-    forceCommand.command    = CMD_STOP;
-    forceCommand.param      = 0;
-    
+    isForceCommand = true;
+    forceCommand.command = CMD_STOP;
+    forceCommand.param   = 0;
 }
 
+
+/**
+ * @brief Force play a global audio file.
+ *
+ * Immediately schedules a global audio command with priority,
+ * bypassing the queue.
+ *
+ * @param[in] audioFile Global audio file identifier.
+ */
 void forceGlobelAudio(globel_audio_files_t audioFile)
 {
-    if(globalSettings.audio == AUDIO_OFF || volume == 0 || audioFile == AUDIO_NONE_G) return;
-    isForceCommand = true;
+    if (globalSettings.audio == AUDIO_OFF || volume == 0 || audioFile == AUDIO_NONE_G) return;
 
-    forceCommand.command    = CMD_SPECIFIC_FOLDER;
-    forceCommand.param      = ((uint16_t)GLOBEL_FOLDER << 8) | audioFile;
-  
+    isForceCommand = true;
+    forceCommand.command = CMD_SPECIFIC_FOLDER;
+    forceCommand.param   = ((uint16_t)GLOBEL_FOLDER << 8) | audioFile;
 }
 
+
+/**
+ * @brief Force play a language-dependent audio file.
+ *
+ * Selects folder based on language settings and schedules
+ * the command with priority, bypassing the queue.
+ *
+ * @param[in] audioFile Audio file identifier.
+ */
 void forceplayAudio(audio_files_t audioFile)
 {
-    if(globalSettings.audio == AUDIO_OFF || volume == 0 || audioFile == AUDIO_NONE) return;
+    if (globalSettings.audio == AUDIO_OFF || volume == 0 || audioFile == AUDIO_NONE) return;
+
     isForceCommand = true;
+
     uint8_t file = (globalSettings.language == LANGUAGE_ENGLISH) ? ENGLISH_FOLDER : NEDERLANDS_FOLDER;
 
-    forceCommand.command    = CMD_SPECIFIC_FOLDER;
-    forceCommand.param      = ((uint16_t)file << 8) | audioFile;
-
+    forceCommand.command = CMD_SPECIFIC_FOLDER;
+    forceCommand.param   = ((uint16_t)file << 8) | audioFile;
 }

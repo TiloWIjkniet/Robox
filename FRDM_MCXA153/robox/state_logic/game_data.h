@@ -14,7 +14,7 @@
 #define INVALID_COORD 255
 #define MAX_RUNS 20
 #define MAX_ROOMS 20
-#define MAX_CHAR_IN_STRING 50
+#define MAX_CHAR_IN_STRING 20
 #define MAX_CHAR_IN_STRING_S 50
 #define MAX_ANSWERS 5
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
