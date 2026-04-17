@@ -1,0 +1,15 @@
+key_manager:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/key_manager
+    project-root-path: boards/${board}/driver_examples/key_manager/${multicore_foldername}
+    document:
+      name: key_manager${core_id_suffix_name}
+      category: driver_examples/key
+      brief: The Key Manager example shows how to configure Key Manager to select
+        PUF key as Master Key and locks this setting
+      example_readme:
+      - examples/driver_examples/key_manager/readme.md
+      - ${board_root}/${board}/driver_examples/key_manager/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

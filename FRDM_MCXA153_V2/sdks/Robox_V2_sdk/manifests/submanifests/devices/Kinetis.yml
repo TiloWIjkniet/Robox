@@ -1,0 +1,22 @@
+manifest:
+  remotes:
+  - name: nxp
+    url-base: https://github.com/NXP
+  - name: nxp-zephyr
+    url-base: https://github.com/nxp-zephyr
+  - name: nxp-mcuxpresso
+    url-base: https://github.com/nxp-mcuxpresso
+  defaults:
+    remote: nxp-mcuxpresso
+  projects:
+  - name: mcux-devices-kinetis
+    revision: 748c452a7afe87b30e3aa6460a172b7a0e0ae433
+    path: mcuxsdk/devices/Kinetis
+    groups:
+    - core
+    userdata:
+      track_branch: release/26.03.00
+      branch_flow: true
+      display_name: Kinetis Series Device Files
+      description: Device system files, template files, IDE related startup and linker
+        files.

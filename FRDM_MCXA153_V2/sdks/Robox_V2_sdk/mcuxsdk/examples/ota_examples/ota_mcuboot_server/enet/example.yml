@@ -1,0 +1,44 @@
+ota_mcuboot_server_enet:
+  section-type: application
+  contents:
+    meta_path: examples/ota_examples/ota_mcuboot_server/enet
+    project-root-path: boards/${board}/ota_examples/ota_mcuboot_server/enet/${multicore_foldername}
+    document:
+      name: ota_mcuboot_server_enet${core_id_suffix_name}
+      category: ota_examples
+      brief: This ota_mcuboot_server application demonstrates OTA using an HTTP server
+        based on lwIP TCP/IP stack with FreeRTOS. The user uses an Internet browser
+        to upload new update package to reprogram application running on the board.
+      example_readme:
+      - examples/ota_examples/ota_mcuboot_server/enet/readme.md
+      - ${board_root}/${board}/ota_examples/ota_mcuboot_server/enet/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}
+ota_mcuboot_server_enet@mcxn_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/mcxn/ota_mcuboot_server_enet.conf
+  boards: {}
+ota_mcuboot_server_enet@rw61x_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/rw61x/ota_mcuboot_server_enet.conf
+  boards: {}
+ota_mcuboot_server_enet@rt1064_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/rt1064/ota_mcuboot_server_enet.conf
+  boards: {}
+ota_mcuboot_server_enet@rt10xx_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/rt10xx/ota_mcuboot_server_enet.conf
+  boards: {}

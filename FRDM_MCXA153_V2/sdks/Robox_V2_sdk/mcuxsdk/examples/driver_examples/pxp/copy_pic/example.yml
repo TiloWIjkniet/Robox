@@ -1,0 +1,15 @@
+pxp_copy_pic:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pxp/copy_pic
+    project-root-path: boards/${board}/driver_examples/pxp/copy_pic/${multicore_foldername}
+    document:
+      name: pxp_copy_pic${core_id_suffix_name}
+      category: driver_examples/pxp
+      brief: The PXP copy_pic project shows how to use the PXP to copy image from
+        one buffer to another buffer.
+      example_readme:
+      - examples/driver_examples/pxp/copy_pic/readme.md
+      - ${board_root}/${board}/driver_examples/pxp/copy_pic/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

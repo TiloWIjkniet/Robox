@@ -1,0 +1,20 @@
+led_control_bm:
+  section-type: application
+  contents:
+    meta_path: examples/component_examples/led_control/bm/.
+    project-root-path: boards/${board}/component_examples/led_control/bm/${multicore_foldername}
+    document:
+      name: led_control_bm${core_id_suffix_name}
+      category: component_examples
+      brief: The LED demo is used to demonstrate how to use new components. The main
+        function of the demo is to control the led by using the shell or button. For
+        shell, please enter \"help\" to get the help information firstly. Turn on
+        LED by using command \"led on\". And turn off LED by using command \"led off\".
+        For button, please press the corresponding button to control LED. Turn on
+        LED when the button is pressed with long press or double click event. And
+        turn off LED when the button is pressed with short press or one click event.
+      example_readme:
+      - examples/component_examples/led_control/bm/readme.md
+      - ${board_root}/${board}/component_examples/led_control/bm/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

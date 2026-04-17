@@ -1,0 +1,17 @@
+elcdif_lut:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/elcdif/lut
+    project-root-path: boards/${board}/driver_examples/elcdif/lut/${multicore_foldername}
+    document:
+      name: elcdif_lut${core_id_suffix_name}
+      category: driver_examples/elcdif
+      brief: The ELCDIF LUT project shows how to use the ELCDIF LUT to convert 8-bit
+        input pixelto 24-bit output pixel. There are two LUT memories, this project
+        uses one inputframe buffer, and swithes between the two memories, so from
+        the LCD panel, twodifferent pictures are shown one by one.
+      example_readme:
+      - examples/driver_examples/elcdif/lut/readme.md
+      - ${board_root}/${board}/driver_examples/elcdif/lut/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

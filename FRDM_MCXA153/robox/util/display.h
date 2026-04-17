@@ -22,6 +22,6 @@ int st7920_set_cursor(uint8_t row, uint8_t col);
 void st7920_init();
 int st7920_writeb(uint8_t val);
 void st7920_update();
-
+void ms_delay(uint32_t ms);
 
 #endif

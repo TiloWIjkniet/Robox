@@ -1,0 +1,18 @@
+csi_mipi_rgb:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/csi/mipi_rgb
+    project-root-path: boards/${board}/driver_examples/csi/mipi_rgb/${multicore_foldername}
+    document:
+      name: csi_mipi_rgb${core_id_suffix_name}
+      category: driver_examples/csi
+      brief: This project shows how to use the CSI with MIPI_CSI. In this example,
+        the camera device output pixel format is RGB565, the MIPI_CSI converts it
+        to RGB888 internally and sends to CSI. In other words, the CSI input data
+        bus width is 24-bit. The CSI saves the frame as 32-bit format XRGB8888. PXP
+        is used to convert the XRGB8888 to RGB565 and shown in the LCD panel.
+      example_readme:
+      - examples/driver_examples/csi/mipi_rgb/readme.md
+      - ${board_root}/${board}/driver_examples/csi/mipi_rgb/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

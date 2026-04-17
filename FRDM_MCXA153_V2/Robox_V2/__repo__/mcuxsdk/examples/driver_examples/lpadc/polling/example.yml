@@ -1,0 +1,23 @@
+lpadc_polling:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lpadc/polling
+    project-root-path: boards/${board}/driver_examples/lpadc/polling/${multicore_foldername}
+    document:
+      name: lpadc_polling${core_id_suffix_name}
+      category: driver_examples/lpadc
+      brief: The lpadc_single_polling example shows the simplest way to use LPADC
+        driver.In this example, user should indicate a channel to provide a voltage
+        signal (can be controlled by user) as the LPADC'ssample input. When running
+        the project, typing any key into debug console would trigger the conversion.
+        The execution would check the FIFO valid flag in loop until the flag is asserted,
+        which means the conversion is completed. Then read the conversion result value
+        and print it to debug console.Note, the default setting of initialization
+        for the ADC converter is just an available configuration. User can changethe
+        configuration structure's setting in application to fit the special requirement.
+      example_readme:
+      - examples/driver_examples/lpadc/polling/readme.md
+      - ${board_root}/${board}/driver_examples/lpadc/polling/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

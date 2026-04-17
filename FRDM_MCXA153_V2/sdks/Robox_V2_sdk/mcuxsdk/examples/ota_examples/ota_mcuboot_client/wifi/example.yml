@@ -1,0 +1,25 @@
+ota_mcuboot_client_wifi:
+  section-type: application
+  contents:
+    meta_path: examples/ota_examples/ota_mcuboot_client/wifi
+    project-root-path: boards/${board}/ota_examples/ota_mcuboot_client/wifi/${multicore_foldername}
+    document:
+      name: ota_mcuboot_client_wifi${core_id_suffix_name}
+      category: ota_examples
+      brief: The ota_mcuboot_client demo application demonstrates an HTTPS OTA client
+        using FreeRTOS + LWIP + MbedTLS + CoreHTTP. The client connects to a HTTPS
+        server and requests an OTA binary for download and subsequent installation
+        by MCUBoot.
+      example_readme:
+      - examples/ota_examples/ota_mcuboot_client/wifi/readme.md
+      - ${board_root}/${board}/ota_examples/ota_mcuboot_client/wifi/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - ${board_root}/${board}/wifi_examples/readme_modules.md
+  boards: {}
+ota_mcuboot_client_wifi@rw61x_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/rw61x/ota_mcuboot_client_wifi.conf
+  boards: {}

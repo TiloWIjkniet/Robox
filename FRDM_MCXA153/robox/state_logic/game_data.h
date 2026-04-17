@@ -10,21 +10,24 @@
 #include <stdio.h>
 #endif
 
-#define MAX_DIFFICULTY 5
 #define INVALID_COORD 255
+
 #define MAX_RUNS 20
 #define MAX_ROOMS 20
+
 #define MAX_CHAR_IN_STRING 20
-#define MAX_CHAR_IN_STRING_S 50
+#define MAX_CHAR_IN_STRING_LONG 50
+
 #define MAX_ANSWERS 5
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+#define MAX_DIFFICULTY 5
+
 #define FROM_MIN_TO_MS 60 *1000
 
 
 typedef struct 
 {
     float roomTimes[MAX_ROOMS];
-    uint8_t wrongAnswerCount;
+    uint8_t wrongAnswerCnt;
     uint8_t totalTime;
     uint8_t difficulty;
     uint8_t maxRooms;
@@ -49,10 +52,10 @@ typedef struct
 {
     uint8_t coordinates[2];
     char beconIp[MAX_CHAR_IN_STRING];
-    char answers[MAX_ANSWERS][MAX_CHAR_IN_STRING];
+    char answers[MAX_ANSWERS][MAX_CHAR_IN_STRING]; // Kan nog verklijt worden MAX_ANSWERSMAX_ANSWERS * antowwrd = 20 dus kan een stuk minder data in answers
     compartment_t openCompartment;
     specialActies_t specialActies;
-    char naam[MAX_CHAR_IN_STRING];
+    char roomNaam[MAX_CHAR_IN_STRING];
     
 }roomSettings_t;
 
@@ -108,6 +111,6 @@ extern  uint8_t roomIndex;
 
 extern  char answerBuffer[MAX_CHAR_IN_STRING];
 extern  bool hasNewAnswer;
-extern bool gameActiv;
+extern bool isGameActiv;
 
 #endif

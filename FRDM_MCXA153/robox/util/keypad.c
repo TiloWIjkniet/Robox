@@ -43,9 +43,9 @@ typedef struct
 
 keyState_t keys[ROWS][COLS];
 
-char inputBuffer[CHAR_IN_STRING] ="";
+char inputBuffer[MAX_CHAR_IN_STRING] ="";
 
-char answerBuffer[CHAR_IN_STRING];
+char answerBuffer[MAX_CHAR_IN_STRING];
 bool hasNewAnswer = false;
 uint8_t inputBufferIndex = 0;
 
@@ -93,6 +93,7 @@ void emptyInputBuffer(void)
   inputBufferIndex = 0;
   hasNewAnswer = false;
   inputBuffer[inputBufferIndex] = '\0';
+  printInput(inputBuffer, inputBufferIndex);
 }
 
 /**
@@ -143,13 +144,14 @@ void updateInputBuffer(void)
     default:
     {
       inputBuffer[inputBufferIndex] = key;
-      if(inputBufferIndex < CHAR_IN_STRING )inputBufferIndex ++;
+      if(inputBufferIndex < MAX_CHAR_IN_STRING
+       )inputBufferIndex ++;
       inputBuffer[inputBufferIndex] = '\0';
       break;
     }
   }
   forceGlobelAudio(AUDIO_NUMPAD_INPUT);
-
+  printInput(inputBuffer, inputBufferIndex);
 
 }
 

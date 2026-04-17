@@ -1,0 +1,15 @@
+new_project:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/new_project
+    project-root-path: boards/${board}/demo_apps/new_project/${multicore_foldername}
+    document:
+      name: new_project${core_id_suffix_name}
+      category: demo_apps
+      brief: The new project is provided as starting point for user to add with customized
+        flow.
+      example_readme:
+      - examples/demo_apps/new_project/readme.md
+      - ${board_root}/${board}/demo_apps/new_project/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

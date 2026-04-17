@@ -1,0 +1,23 @@
+
+
+/*!
+@defgroup semc SEMC: Smart External DRAM Controller Driver
+@details The MCUXpresso SDK provides a peripheral driver for the Smart External DRAM Controller
+ block of MCUXpresso SDK devices.
+
+# SEMC: Smart External DRAM Controller Driver {#SEMCDriver}
+
+## SEMC Initialization Operation {#SEMCInitDeinit}
+The SEMC Initialize is to initialize for common configure: gate the SEMC clock, configure IOMUX, and queue weight setting.
+The SEMC Deinitialize is to ungate the clock and disable SEMC module.
+
+## SEMC Interrupt Operation {#SEMCInteOps}
+The interrupt and disable operation for SEMC.
+
+## SEMC Memory access Operation {#SEMCMemoryAccess}
+This group is mainly provide NAND/NOR memory access API which is through IP bus/ IP command access. Since the AXI access is directly read/write is so easy, so the AXI read/write part is not provided in SEMC.
+
+# Typical use case {#SEMCTpyUC}
+
+
+*/

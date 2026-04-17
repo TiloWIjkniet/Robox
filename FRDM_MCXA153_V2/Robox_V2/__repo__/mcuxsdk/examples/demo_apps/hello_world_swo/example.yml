@@ -1,0 +1,16 @@
+hello_world_swo:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/hello_world_swo
+    project-root-path: boards/${board}/demo_apps/hello_world_swo/${multicore_foldername}
+    document:
+      name: hello_world_swo${core_id_suffix_name}
+      category: demo_apps
+      brief: 'The Hello World SWO demo prints the "SWO: Hello World" string to the
+        SWO viewer. The purpose of this demo is to show how to use the swo, and to
+        provide a simple project for debugging and further development.'
+      example_readme:
+      - examples/demo_apps/hello_world_swo/readme.md
+      - ${board_root}/${board}/demo_apps/hello_world_swo/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

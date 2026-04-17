@@ -1,0 +1,20 @@
+cmsis_lpspi_int_b2b_transfer_slave:
+  section-type: application
+  contents:
+    meta_path: examples/cmsis_driver_examples/lpspi/int_b2b_transfer/slave
+    project-root-path: boards/${board}/cmsis_driver_examples/lpspi/int_b2b_transfer/slave/${multicore_foldername}
+    document:
+      name: cmsis_lpspi_int_b2b_transfer_slave${core_id_suffix_name}
+      category: cmsis_driver_examples/lpspi
+      brief: 'The lpspi_int_b2b_transfer example shows how to use LPSPI CMSIS driver
+        in interrupt way:In this example , we need two boards, one board used as LPSPI
+        master and another board used as LPSPI slave.The file ''cmsis_lpspi_int_b2b_transfer_slave.c''
+        includes the LPSPI slave code.This example uses the transactional API in LPSPI
+        driver.1. LPSPI master send/received data to/from LPSPI slave in interrupt
+        . '
+      example_readme:
+      - examples/cmsis_driver_examples/lpspi/int_b2b_transfer/slave/readme.md
+      - ${board_root}/${board}/cmsis_driver_examples/lpspi/int_b2b_transfer/slave/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

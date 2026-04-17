@@ -1,0 +1,17 @@
+dma_interleave_transfer:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lpc_dma/interleave_transfer
+    project-root-path: boards/${board}/driver_examples/dma/interleave_transfer/${multicore_foldername}
+    document:
+      name: dma_interleave_transfer${core_id_suffix_name}
+      category: driver_examples/dma
+      brief: The DMA interleave transfer example is a simple demonstration program
+        that uses the SDK software.It executes a linked transfer from source buffer
+        to destination buffer using the SDK DMA drivers.The purpose of this example
+        is to show how to use the DMA interleave feature.
+      example_readme:
+      - examples/driver_examples/lpc_dma/interleave_transfer/readme.md
+      - ${board_root}/${board}/driver_examples/dma/interleave_transfer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

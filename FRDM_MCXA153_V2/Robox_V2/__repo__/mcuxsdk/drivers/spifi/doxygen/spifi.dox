@@ -1,0 +1,29 @@
+
+
+/*!
+@defgroup spifi SPIFI: SPIFI flash interface driver
+*/
+
+/*!
+@defgroup spifi_driver SPIFI Driver
+@ingroup spifi
+@details
+
+SPIFI driver includes functional APIs.
+
+Functional APIs are feature/property target low level APIs.
+Functional APIs can be used for SPIFI initialization/configuration/operation for
+optimization/customization purpose. Using the functional API requires the
+knowledge of the SPIFI peripheral and how to organize functional APIs to
+meet the application requirements. All functional APIs use the peripheral base
+address as the first parameter. SPIFI functional operation groups provide the
+functional API set.
+
+# Typical use case {#SPIFICase}
+
+## SPIFI transfer using a polling method {#SPIFICasePolling}
+
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/spifi
+*/
+
+

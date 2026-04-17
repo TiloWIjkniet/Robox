@@ -1,0 +1,17 @@
+# flash_component_nor_lpspi
+
+## Overview
+
+nor flash demo shows the use of nor flash component to erase, program, and read
+an external nor flash device.
+
+## Supported Boards
+- [FRDM-MCXW71](../../../../_boards/frdmmcxw71/component_examples/flash_component/lpspi_nor/example_board_readme.md)
+- [MCX-W71-EVK](../../../../_boards/mcxw71evk/component_examples/flash_component/lpspi_nor/example_board_readme.md)
+- [KW45B41Z-EVK](../../../../_boards/kw45b41zevk/component_examples/flash_component/lpspi_nor/example_board_readme.md)
+- [KW47-EVK](../../../../_boards/kw47evk/component_examples/flash_component/lpspi_nor/example_board_readme.md)
+- [MCX-W72-EVK](../../../../_boards/mcxw72evk/component_examples/flash_component/lpspi_nor/example_board_readme.md)
+- [MIMXRT1180-EVK](../../../../_boards/evkmimxrt1180/component_examples/flash_component/lpspi_nor/example_board_readme.md)
+- [KW47-LOC](../../../../_boards/kw47loc/component_examples/flash_component/lpspi_nor/example_board_readme.md)
+- [MCXW72-LOC](../../../../_boards/mcxw72loc/component_examples/flash_component/lpspi_nor/example_board_readme.md)
+- [FRDM-MCXW72](../../../../_boards/frdmmcxw72/component_examples/flash_component/lpspi_nor/example_board_readme.md)

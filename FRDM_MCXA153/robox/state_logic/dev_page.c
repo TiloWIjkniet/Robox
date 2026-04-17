@@ -14,28 +14,28 @@
 #include <stdlib.h>
 #include "HM10.h"
 
-#define WEBSERVER_ON  0xCC
-#define WEBSERVER_OFF 0xEE
+#define WEBSERVER_ON_CMD  0xCC
+#define WEBSERVER_OFF_CMD 0xEE
 #define START_BYTE_GET_SETTINGS_DATA 0xBB
 #define START_BYTE_SEND_RUN_DATA 0xAA
-#define START_BYTE_GLOBAL_DATA 0xAA
-#define START_BYTE_ROOM_DATA   0xAB
+#define START_BYTE_GET_GLOBAL_DATA 0xAA
+#define START_BYTE_SEND_ROOM_DATA   0xAB
 #define NEW_DATA_BYTE 0xDD
 
-#define EXIT_DEV_CODE "0000"
-#define OPEN_ALL_COMPARTMETS "3333"
-#define SET_AUDIO_VOLUME "1111"
-#define RECEIVE_ROOM_SETTINGS "2222"
+#define EXIT_DEV_CODE_CMD "0000"
+#define OPEN_ALL_COMPARTMETS_CMD "3333"
+#define SET_AUDIO_VOLUME_CMD "1111"
+#define RECEIVE_ROOM_SETTINGS_CMD "2222"
+
 #define TIMEOUT_MS 500  
 
 #define RETRY_ATTEMPTS 5
-#define MAX_DIFFICULTY 5
 
 globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_STOP,
     10,
-    AUDIO_OFF,
+    AUDIO_ON,
     LANGUAGE_ENGLISH,
     NOT_CENSORED
 };
@@ -48,14 +48,14 @@ roomSettings_t roomsSettings[MAX_ROOMS] =
 };
 const char ROOM_CODES[20][2] = {"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19"};
 
-bool newData = false;
+bool hasNewData = false;
 
 void checkIfNewDataFromEsp(void);
 
 void dev_page_onEntry(void)
 {
     //Anable webserver on esp
-    lpuart1_putchar(WEBSERVER_ON); 
+    lpuart1_putchar(WEBSERVER_ON_CMD); 
 
     forceDisplayTemplate(D_DEV_PAGE, 0);
     displayDigits(DEV_MODE_HEX);
@@ -64,7 +64,7 @@ void dev_page_onEntry(void)
 
 bool handleExit(void)
 {
-    if(isInputMatching(answerBuffer, EXIT_DEV_CODE))
+    if(isInputMatching(answerBuffer, EXIT_DEV_CODE_CMD))
     {
         //Exit dev mode
         FSM_addEvent(E_EXIT_DEV); 
@@ -74,7 +74,7 @@ bool handleExit(void)
 };
 bool handleOpenAll(void)
 {
-    if(isInputMatching(answerBuffer, OPEN_ALL_COMPARTMETS))
+    if(isInputMatching(answerBuffer, OPEN_ALL_COMPARTMETS_CMD))
     {
         //Open al compartments for testing/ resetting
         openCompartment(NON_C);
@@ -86,7 +86,7 @@ bool handleOpenAll(void)
 }
 bool handleDebugBeacons(void)
 {
-    if(isInputMatching(answerBuffer, RECEIVE_ROOM_SETTINGS))
+    if(isInputMatching(answerBuffer, RECEIVE_ROOM_SETTINGS_CMD))
     {
         char lowestBeconsString[MAX_BEACONS_IN_LIST * 30]; 
         
@@ -98,12 +98,12 @@ bool handleDebugBeacons(void)
 }
 bool handleVolume(void)
 {
-    char *pos = strstr(answerBuffer, SET_AUDIO_VOLUME);
+    char *pos = strstr(answerBuffer, SET_AUDIO_VOLUME_CMD);
     hasNewAnswer = false;
     if(pos != NULL)
     {
         //Set or get audio volume 
-        pos += strlen(SET_AUDIO_VOLUME);
+        pos += strlen(SET_AUDIO_VOLUME_CMD);
         if(*pos != '\0')
         {
             //If value is provided after command, set volume
@@ -130,7 +130,7 @@ void handleRoomSelection(void)
         if(isInputMatching(answerBuffer, ROOM_CODES[room]))
         { 
             //Recive room settings from the esp  
-            if(newData) receive_room_settings_from_esp();       
+            if(hasNewData) receive_room_settings_from_esp();       
             //Zet de codinate van de geslecteerde kamer aan                            
             setMapCoordinates(roomsSettings[room].coordinates);                
             
@@ -163,18 +163,18 @@ void dev_page_onExit(void)
     receive_room_settings_from_esp();  
     
     //Disble webserver on esp
-    lpuart1_putchar(WEBSERVER_OFF);    
+    lpuart1_putchar(WEBSERVER_OFF_CMD);    
 }
 
 void checkIfNewDataFromEsp(void)
 {
-    if(newData) return;
+    if(hasNewData) return;
     if(lpuart1_rxcnt() > 0)
     {
         char byte = lpuart1_getchar();
         if(byte == NEW_DATA_BYTE)
         {
-            newData = true;
+            hasNewData = true;
         } 
     }
 }
@@ -226,7 +226,7 @@ bool receive_room_settings(void)
         switch(state)
         {
             case WAIT_GLOBAL_START:
-                if(b == START_BYTE_GLOBAL_DATA)
+                if(b == START_BYTE_GET_GLOBAL_DATA)
                 {
                     p = (uint8_t*)&globalSettings;
                     byteIndex = 0;
@@ -246,7 +246,7 @@ bool receive_room_settings(void)
                 break;
 
             case WAIT_ROOM_START:
-                if(b == START_BYTE_ROOM_DATA)
+                if(b == START_BYTE_SEND_ROOM_DATA)
                 {
                     p = (uint8_t*)&roomsSettings[room];
                     byteIndex = 0;
@@ -312,7 +312,7 @@ void receive_room_settings_from_esp(void)
         lpuart1_putchar(START_BYTE_GET_SETTINGS_DATA);
 
     }while(!receive_room_settings());
-    newData = false;
+    hasNewData = false;
 }
 
 /**

@@ -1,0 +1,16 @@
+pdm_sai_interrupt_transfer:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pdm/pdm_sai_interrupt_transfer
+    project-root-path: boards/${board}/driver_examples/pdm/pdm_sai_interrupt_transfer/${multicore_foldername}
+    document:
+      name: pdm_sai_interrupt_transfer${core_id_suffix_name}
+      category: driver_examples/pdm
+      brief: The pdm_sdma_transfer example shows how to use pdm driver with interrupt
+        transaction api:In this example, one sai instance loopback the audio data
+        that recieve from PDM.
+      example_readme:
+      - examples/driver_examples/pdm/pdm_sai_interrupt_transfer/readme.md
+      - ${board_root}/${board}/driver_examples/pdm/pdm_sai_interrupt_transfer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,14 @@
+mc_pmsm_enc:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/mc_pmsm/pmsm_enc
+    project-root-path: boards/${board}/demo_apps/mc_pmsm/pmsm_enc/${multicore_foldername}
+    document:
+      name: mc_pmsm_enc${core_id_suffix_name}
+      category: demo_apps
+      brief: This example demonstrates the control of the PMSM.
+      example_readme:
+      - examples/demo_apps/mc_pmsm/pmsm_enc/readme.md
+      - ${board_root}/${board}/demo_apps/mc_pmsm/pmsm_enc/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

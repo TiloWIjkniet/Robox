@@ -1,0 +1,19 @@
+qtmr_inputcapture_outputpwm:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/qtmr_1/inputcapture_outputpwm
+    project-root-path: boards/${board}/driver_examples/qtmr/inputcapture_outputpwm/${multicore_foldername}
+    document:
+      name: qtmr_inputcapture_outputpwm${core_id_suffix_name}
+      category: driver_examples/qtmr
+      brief: 'The QTMR project is a demonstration program of the SDK QTMR driver''s
+        input capture and output pwm feature.The example sets up a QTMR channel for
+        input capture. Once the input signal is received,this example will enter interrupt
+        and print the capture value.The example also sets up one QTMR channel to output
+        pwm. The user should probe a 50Khz PWM signal output with50% dutycycle with
+        a oscilloscope. '
+      example_readme:
+      - examples/driver_examples/qtmr_1/inputcapture_outputpwm/readme.md
+      - ${board_root}/${board}/driver_examples/qtmr/inputcapture_outputpwm/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

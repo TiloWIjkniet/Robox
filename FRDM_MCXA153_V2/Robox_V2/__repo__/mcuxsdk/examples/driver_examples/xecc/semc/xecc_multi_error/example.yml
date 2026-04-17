@@ -1,0 +1,16 @@
+semc_xecc_multi_error:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/xecc/semc/xecc_multi_error
+    project-root-path: boards/${board}/driver_examples/xecc/semc/xecc_multi_error/${multicore_foldername}
+    document:
+      name: semc_xecc_multi_error${core_id_suffix_name}
+      category: driver_examples/xecc
+      brief: The MECC Multi Error project is a simple demonstration program of the
+        SDK MECC driver. It supports Double Error Detection(SECDED) ECC function to
+        provide reliability for external memory ECC region access.
+      example_readme:
+      - examples/driver_examples/xecc/semc/xecc_multi_error/readme.md
+      - ${board_root}/${board}/driver_examples/xecc/semc/xecc_multi_error/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

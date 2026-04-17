@@ -1,0 +1,20 @@
+# Copyright 2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_HAS_COMPONENT_driver.pls_pmu
+    bool
+    default y if MCUX_HW_IP_DriverType_PMIC
+
+config MCUX_COMPONENT_driver.pls_pmu
+    bool "pls_pmu"
+    select MCUX_COMPONENT_driver.common
+    depends on MCUX_HAS_COMPONENT_driver.pls_pmu
+
+if MCUX_COMPONENT_driver.pls_pmu
+    config PLS_PMU_REG_WRITE_DELAY_VAL
+        int "Extra delay value in microseconds required between consecutive writes to PMU register."
+        default 600
+        help
+          This delay ensures proper timing between register write operations.
+endif

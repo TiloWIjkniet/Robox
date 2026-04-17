@@ -1,0 +1,15 @@
+lin_stack_slave:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/lin_stack/slave/.
+    project-root-path: boards/${board}/demo_apps/lin_stack/slave/${multicore_foldername}
+    document:
+      name: lin_stack_slave${core_id_suffix_name}
+      category: demo_apps
+      brief: The lin_stack_slave demo is used to demonstrate how to use the lin stack
+        as slave node.
+      example_readme:
+      - examples/demo_apps/lin_stack/slave/readme.md
+      - ${board_root}/${board}/demo_apps/lin_stack/slave/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

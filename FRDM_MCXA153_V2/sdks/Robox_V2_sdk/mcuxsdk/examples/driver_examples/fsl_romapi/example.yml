@@ -1,0 +1,18 @@
+fsl_romapi:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/fsl_romapi/.
+    project-root-path: boards/${board}/driver_examples/fsl_romapi/${multicore_foldername}
+    document:
+      name: fsl_romapi${core_id_suffix_name}
+      category: driver_examples/fsl_romapi
+      brief: The fsl_romapi example shows how to use flexspi rom api In this example,
+        rom api will send data and operate the external Nor flash connected with FLEXSPI.
+        Some simple flash command willbe executed, such as Write Enable, Erase sector,
+        Program page.Example will first erase the sector and program a page into the
+        flash, at last check if the data in flash is correct.
+      example_readme:
+      - examples/driver_examples/fsl_romapi/readme.md
+      - ${board_root}/${board}/driver_examples/fsl_romapi/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,73 @@
+# Copyright 2024-2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+menu "Device specific drivers configuration"
+
+    rsource "romapi/Kconfig"
+
+    config MCUX_COMPONENT_driver.clock
+        bool "clock"
+        default y
+
+    if MCUX_COMPONENT_driver.clock
+
+        config CLOCK_XTAL_DRIVE_PARAMS_COUNT
+            int "XTAL drive parameters count"
+            default 1
+            help
+                Count of XTAL drive parameters triplets
+                used for Rosc initialization.
+
+    endif
+
+    config MCUX_COMPONENT_driver.edma_soc
+         bool "edma_soc"
+         default n
+
+    config MCUX_COMPONENT_driver.inputmux_connections
+         bool "inputmux_connections"
+         default y
+
+    config MCUX_COMPONENT_driver.advc
+         bool "advc"
+         select ADVC_DRIVER_USED
+         default n
+
+     config ADVC_DRIVER_USED # Workaround to overcome MCUX SDK package limitation
+         bool "advc_driver"
+         default n
+
+    config MCUX_COMPONENT_driver.power
+         bool "Use driver power"
+         select MCUX_COMPONENT_driver.wuu if MCUX_HW_CORE_ID_CM33
+         select MCUX_COMPONENT_driver.mcx_cmc if MCUX_HW_CORE_ID_CM33
+         select MCUX_COMPONENT_driver.common if MCUX_HW_CORE_ID_CM0PLUS
+         select MCUX_COMPONENT_driver.mu1
+         select MCUX_COMPONENT_driver.smm
+         select MCUX_COMPONENT_driver.pls_pmu
+         select MCUX_COMPONENT_driver.advc
+
+     if MCUX_COMPONENT_driver.power
+          config POWER_MU_TRANSFER_TIMEOUT
+               int "Maximum number of loops to wait for a response from the other core. A value of 0 indicates an infinite wait"
+               default 0
+               help
+               The g_powerMuTransferState is updated when the secondary core parses the request message and sends a response.
+
+          config POWER_CONTEXT_SAVING_DPD2_TO_DPD1_SYNC_TIMEOUT
+               int "Specifies the maximum number of iterations to wait for dual-core synchronization after waking up from DPD2 to DPD1 with context saving enabled. Set to 0 to wait indefinitely"
+               default 0
+               help
+               After waking up from DPD2 to DPD1 with context saving enabled, the CM0+ core waits to synchronize with the primary core.
+     endif
+
+    config MCUX_COMPONENT_driver.reset
+         bool "reset"
+         default y
+
+    config MCUX_COMPONENT_driver.trdc_soc
+         bool "trdc_soc"
+         default n
+
+endmenu

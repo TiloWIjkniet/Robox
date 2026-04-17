@@ -6,8 +6,8 @@
 #include <stdbool.h>
 #include "time_millis.h"
 #include "HM10.h"
-
-char beconIp[50];
+#include "game_data.h"
+char beconIp[MAX_CHAR_IN_STRING];
 
 #define LINE_BUFFER_SIZE 128
 #define BEACON_TIMEOUT 20000
@@ -63,7 +63,6 @@ void HM10_init(void)
 //    sentDataToHM10("AT+POWE3\r\n"); // zet power hooger dus sneler detection en reaction
     sentDataToHM10("AT+IBEA1\r\n"); // zorgt er voor dat je allen iBcons ziet 
 
-    
     askForBeacons();
 }
 

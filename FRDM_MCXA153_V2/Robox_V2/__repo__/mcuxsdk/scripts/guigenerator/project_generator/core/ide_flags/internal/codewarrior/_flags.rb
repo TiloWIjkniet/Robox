@@ -1,0 +1,392 @@
+# frozen_string_literal: true
+
+# ********************************************************************
+# Copyright 2022, 2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+# ********************************************************************
+require_relative '../../internal/_flags'
+
+module Internal
+  module CodeWarrior
+    class Flags < Internal::Flags
+      private
+
+      #  compile compiler flags
+      def compiler_optimization(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        #-opt level=4
+        pattern = /\s-opt\s+level=(1|2|3|4)\s/
+        result  = line.match(pattern)
+        if result
+          flag = result[1]
+          @file.dscCompilerTab.optimizationTab.optimization_level(target, flag)
+          line.sub!(result[0], '')
+        else
+          @logger.debug('no optimization set!')
+        end
+        #-opt speed/size
+        pattern = /\s-opt\s+(speed|space)\s/
+        result  = line.match(pattern)
+        if result
+          flag = result[1]
+          @file.dscCompilerTab.optimizationTab.optimization_mode(target, flag)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def compiler_program_mem_model(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-(sprog|hprog)\s/
+        result  = line.match(pattern)
+        if result
+          if result[1] == "sprog"
+            @file.dscCompilerTab.processorTab.small_program_model(target, true)
+            @file.dscCompilerTab.processorTab.large_program_model(target, false)
+            @file.dscCompilerTab.processorTab.huge_program_model(target, false)
+          else
+            @file.dscCompilerTab.processorTab.small_program_model(target, false)
+            @file.dscCompilerTab.processorTab.large_program_model(target, false)
+            @file.dscCompilerTab.processorTab.huge_program_model(target, true)
+          end
+          line.sub!(result[0], '')
+        else
+          @file.dscCompilerTab.processorTab.small_program_model(target, false)
+          @file.dscCompilerTab.processorTab.large_program_model(target, true)
+          @file.dscCompilerTab.processorTab.huge_program_model(target, false)
+        end
+        return line
+      end
+
+      def compiler_data_mem_model(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-ldata\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.processorTab.large_data_mem_model(target, true)
+          line.sub!(result[0], '')
+        else
+          @file.dscCompilerTab.processorTab.large_data_mem_model(target, false)
+        end
+        return line
+      end
+
+      def compiler_pad_pipeline(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-nopadpipe\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.processorTab.set_pad_pipeline(target, false)
+          line.sub!(result[0], '')
+        else
+          @file.dscCompilerTab.processorTab.set_pad_pipeline(target, true)
+        end
+        return line
+      end
+
+      def compiler_globals_live(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-globalsInLowerMemory\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.processorTab.set_globals_live(target, true)
+          line.sub!(result[0], '')
+        else
+          @file.dscCompilerTab.processorTab.set_globals_live(target, false)
+        end
+        return line
+      end
+
+      def compiler_hawk_elf(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s(-v4|-v3)\s/
+        result = line.match(pattern)
+        if result
+          if result[1] == "-v4"
+            @file.dscCompilerTab.processorTab.set_hawk_elf(target, true)
+          else
+            @file.dscCompilerTab.processorTab.set_hawk_elf(target, false)
+          end
+          line.sub!(result[0], '')
+        else
+          @file.dscCompilerTab.processorTab.set_hawk_elf(target, false)
+        end
+        return line
+      end
+
+      def compiler_language_c99(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-lang\s+c99\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.languageTab.set_language_c99(target, true)
+          line.sub!(result[0], '')
+        else
+          @file.dscCompilerTab.languageTab.set_language_c99(target, false)
+        end
+        return line
+      end
+
+      def compiler_require_protos(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-requireprotos\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.languageTab.set_require_protos(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def compiler_warn_illpragmas(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-w=illpragmas\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.warningsTab.set_warn_illpragmas(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def compiler_warn_possible(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-w=possible\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.warningsTab.set_warn_possible(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def compiler_warn_extended(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-w=extended\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.warningsTab.set_warn_extended(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def compiler_warn_extracomma(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-w=extracomma\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.warningsTab.set_warn_extracomma(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def compiler_warn_emptydecl(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-w=emptydecl\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.warningsTab.set_warn_emptydecl(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def compiler_warn_structclass(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-w=structclass\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.warningsTab.set_warn_structclass(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def compiler_warn_notinlined(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-w=notinlined\s/
+        result = line.match(pattern)
+        if result
+          @file.dscCompilerTab.warningsTab.set_warn_notinlined(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def compiler_addl_compiler(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        @file.dscCompilerTab.languageTab.add_other_flags(target, line.strip) unless line.strip.empty?
+        return line
+      end
+
+      def assembler_no_syspath(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-nosyspath\s/
+        result = line.match(pattern)
+        if result
+          @file.dscAssemblerTab.inputTab.set_no_syspath(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def assembler_data_memory_model(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-data\s+(\d+)\s/
+        result = line.match(pattern)
+        if result
+          @file.dscAssemblerTab.generalTab.set_data_mem_model(target, result[1])
+          line.sub!(result[0], '')
+        else
+          @logger.debug('no data model set!')
+        end
+        return line
+      end
+
+      def assembler_program_memory_model(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-prog\s+(\d+)\s/
+        result = line.match(pattern)
+        if result
+          @file.dscAssemblerTab.generalTab.set_program_mem_model(target, result[1])
+          line.sub!(result[0], '')
+        else
+          @logger.debug('no data model set!')
+        end
+        return line
+      end
+
+      def assembler_pad_pipeline(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-nodebug_workaround\s/
+        result = line.match(pattern)
+        if result
+          @file.dscAssemblerTab.generalTab.set_pad_pipeline(target, false)
+          line.sub!(result[0], '')
+        else
+          @file.dscAssemblerTab.generalTab.set_pad_pipeline(target, true)
+        end
+        return line
+      end
+
+      def assembler_hawk_elf(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s(-v4|-v3)\s/
+        result = line.match(pattern)
+        if result
+          if result[1] == "-v4"
+            @file.dscAssemblerTab.generalTab.set_hawk_elf(target, true)
+          else
+            @file.dscAssemblerTab.generalTab.set_hawk_elf(target, false )
+          end
+          line.sub!(result[0], '')
+        else
+          @file.dscAssemblerTab.generalTab.set_hawk_elf(target, false )
+        end
+        return line
+      end
+
+      def assembler_addl_assembler(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        @file.dscAssemblerTab.generalTab.add_other_flags(target, line.strip) unless line.strip.empty?
+        return line
+      end
+
+      def linker_large_data_mem_model(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-ldata\s/
+        result = line.match(pattern)
+        if result
+          @file.dscLinkerTab.generalTab.large_data_mem_model(target, true)
+          line.sub!(result[0], '')
+        else
+          @file.dscLinkerTab.generalTab.large_data_mem_model(target, false)
+        end
+        return line
+      end
+
+      def linker_no_stdlib(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-nostdlib\s/
+        result = line.match(pattern)
+        if result
+          @file.dscLinkerTab.inputTab.set_no_stdlib(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def linker_generate_map(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-map\s/
+        result = line.match(pattern)
+        if result
+          @file.dscLinkerTab.outputTab.set_generate_map(target, true)
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def linker_entry_point(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s-main\s+(\S+)\s/
+        result = line.match(pattern)
+        if result && result[1]
+          @file.dscLinkerTab.inputTab.set_entry_point(target, result[1])
+          line.sub!(result[0], '')
+        end
+        return line
+      end
+
+      def linker_hawk_elf(target,line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /\s(-v4|-v3)\s/
+        result = line.match(pattern)
+        if result
+          if result[1] == "-v4"
+            @file.dscLinkerTab.generalTab.set_hawk_elf(target, true)
+          else
+            @file.dscLinkerTab.generalTab.set_hawk_elf(target, false)
+          end
+          line.sub!(result[0], '')
+        else
+          @file.dscLinkerTab.generalTab.set_hawk_elf(target, false)
+        end
+        return line
+      end
+
+      def linker_addl_lib(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        pattern = /-l(\S+)/
+        result = line.match(pattern)
+        while result
+          lib = result[1].gsub("\\\"", "")
+          if lib && lib.match(/^\$\{\S+\}\S+/)
+            lib = '"' + lib + '"'
+          else
+            lib = result[1]
+          end
+          @file.dscLinkerTab.inputTab.add_addl_lib(target, lib)
+          line.sub!(result[0], '')
+          result = line.match(pattern)
+        end
+        return line
+      end
+
+      def linker_addl_linker(target, line)
+        Core.assert(line.is_a?(String), 'not a string')
+        @file.dscLinkerTab.generalTab.add_other_flags(target, line.strip) unless line.strip.empty?
+        return line
+      end
+
+      def compiler_cc_options_for_linker(line)
+        Core.assert(line.is_a?(String), 'not a string')
+        @file.addlLinkerTab.compilerOptionsForLinker(line.strip.split(' ').join("\r\n")) unless line.strip.empty?
+        return line
+      end
+    end
+  end
+end

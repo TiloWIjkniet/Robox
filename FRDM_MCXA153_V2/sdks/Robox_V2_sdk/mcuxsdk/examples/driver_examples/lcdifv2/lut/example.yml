@@ -1,0 +1,18 @@
+lcdifv2_lut:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lcdifv2/lut
+    project-root-path: boards/${board}/driver_examples/lcdifv2/lut/${multicore_foldername}
+    document:
+      name: lcdifv2_lut${core_id_suffix_name}
+      category: driver_examples/lcdifv2
+      brief: This example demonstrates how to use the LCDIF v2 color palette (LUT).
+        In this example the pixel format is 8-bit LUT index. Although the LUT supports
+        256 items in this example only items 0-7 are used, because the frame buffer
+        content are restricted to 0-7. When the example runs, a rectangle is moving
+        in the screen, and its color changes when touch border.
+      example_readme:
+      - examples/driver_examples/lcdifv2/lut/readme.md
+      - ${board_root}/${board}/driver_examples/lcdifv2/lcdifv2_examples_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

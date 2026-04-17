@@ -1,0 +1,16 @@
+cdog:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/cdog
+    project-root-path: boards/${board}/driver_examples/cdog/${multicore_foldername}
+    document:
+      name: cdog${core_id_suffix_name}
+      category: driver_examples/cdog
+      brief: The CDOG Example project is a demonstration program that uses the KSDK
+        software to show funcionality of Code Watchdog Timer.
+      example_readme:
+      - examples/driver_examples/cdog/readme.md
+      - ${board_root}/${board}/driver_examples/cdog/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards:
+    frdmmcxa153: []

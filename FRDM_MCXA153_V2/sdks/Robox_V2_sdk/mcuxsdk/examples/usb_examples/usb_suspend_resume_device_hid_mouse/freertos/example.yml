@@ -1,0 +1,18 @@
+dev_suspend_resume_hid_mouse_freertos:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_suspend_resume_device_hid_mouse/freertos/.
+    project-root-path: boards/${board}/usb_examples/usb_suspend_resume_device_hid_mouse/freertos/${multicore_foldername}
+    document:
+      name: dev_suspend_resume_hid_mouse_freertos${core_id_suffix_name}
+      category: usb_examples
+      brief: the application is enumerated as a mouse. When host releases the USB
+        Bus, the device will enter into low power mode. The device can be waked up
+        when resume signal is detected on the bus. Or the device can remote wake-up
+        the host by delivering the resume signal when the remote wake-up is enabled
+        by the host.
+      example_readme:
+      - examples/usb_examples/usb_suspend_resume_device_hid_mouse/readme.md
+      - ${board_root}/${board}/usb_examples/usb_suspend_resume_device_hid_mouse/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,16 @@
+powerquad_benchmark_sw_filter:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/powerquad/benchmark_sw_filter
+    project-root-path: boards/${board}/driver_examples/powerquad/benchmark_sw_filter/${multicore_foldername}
+    document:
+      name: powerquad_benchmark_sw_filter${core_id_suffix_name}
+      category: driver_examples/powerquad
+      brief: This example shows the official CMSIS DSP function performance. It could
+        be compared with the project powerquad_benckmark_filter to show the PowerQuad
+        performance improvement.
+      example_readme:
+      - examples/driver_examples/powerquad/benchmark_sw_filter/readme.md
+      - ${board_root}/${board}/driver_examples/powerquad/benchmark_sw_filter/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

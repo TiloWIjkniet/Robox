@@ -1,0 +1,86 @@
+manifest:
+  remotes:
+  - name: nxp
+    url-base: https://github.com/NXP
+  - name: nxp-zephyr
+    url-base: https://github.com/nxp-zephyr
+  - name: nxp-mcuxpresso
+    url-base: https://github.com/nxp-mcuxpresso
+  - name: nxp-real-time-edge-sw
+    url-base: https://github.com/nxp-real-time-edge-sw
+  defaults:
+    remote: nxp-mcuxpresso
+  projects:
+  - name: usb
+    userdata:
+      owner: yichang.wang@nxp.com
+      track_branch: main
+      branch_flow: false
+      display_name: USB stack
+      description: Host, Device, OTG
+    revision: f294d48f2cfe9bcfa3e77387d83b27272ecca9b9
+    path: mcuxsdk/middleware/usb
+    repo-path: mcux-sdk-middleware-usb
+    groups:
+    - usb
+    - middleware
+  - name: lwip
+    revision: 0ecf2a5738b20c6085acc23094970bdc88fb5049
+    path: mcuxsdk/middleware/lwip
+    groups:
+    - lwip
+    - middleware
+    userdata:
+      track_branch: mcux_main
+      branch_flow: false
+      display_name: lwIP
+      description: TCP/IP Networking Stack
+  - name: lin_stack
+    repo-path: mcux-lin_stack
+    path: mcuxsdk/middleware/lin_stack
+    userdata:
+      owner: zejiang.yu@nxp.com
+      track_branch: mcux_main
+      branch_flow: false
+      display_name: LIN Stack
+      description: LIN Stack middleware
+    revision: 458e0042f13fe9942c9e361a7bd99ce269e3b1ef
+    groups:
+    - lin_stack
+    - middleware
+  - name: soem
+    revision: 42945cd86e964c026423bc2e2ea9deb54ee7864f
+    path: mcuxsdk/middleware/soem
+    remote: nxp-real-time-edge-sw
+    groups:
+    - soem
+    - middleware
+    userdata:
+      track_branch: master
+      branch_flow: false
+      display_name: SOEM
+      description: Simple Open EtherCAT Master Library
+  - name: freemodbus
+    revision: 3bb6432e98e28181122c633a09f3c248e8bc2ee8
+    path: mcuxsdk/middleware/freemodbus
+    remote: nxp-real-time-edge-sw
+    groups:
+    - modbus
+    - middleware
+    userdata:
+      track_branch: main
+      branch_flow: false
+      display_name: freemodbus
+      description: freemodbus library
+  - name: canopennode
+    url: https://github.com/CANopenNode/CANopenNode
+    revision: 8c7d852902b2d307e8b91a43332c14e366641e00
+    path: mcuxsdk/middleware/canopennode/protocol
+    groups:
+    - canopennode
+    - middleware
+    userdata:
+      track_branch: master
+      branch_flow: false
+      display_name: CANopenNode
+      description: CANopen protocol stack

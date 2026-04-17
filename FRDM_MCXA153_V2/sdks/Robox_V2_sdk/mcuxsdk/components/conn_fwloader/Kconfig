@@ -1,0 +1,76 @@
+# Copyright 2024-2026 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+menu "connectivity firmware loader / libraries select"
+    config MCUX_COMPONENT_driver.conn_fwloader
+        bool "conn_fwloader"
+        select MCUX_COMPONENT_driver.ocotp_rw61x
+        select MCUX_COMPONENT_component.osa
+        imply MCUX_COMPONENT_component.mflash_offchip
+
+    config MCUX_COMPONENT_driver.conn_fwloader.fw_bin
+        bool "Firmware Binary"
+        default y if MCUX_COMPONENT_driver.conn_fwloader
+        select MCUX_COMPONENT_component.wifi_bt_module.config
+
+    config MCUX_COMPONENT_driver.conn_fwloader_ns
+        bool "conn_fwloader_ns"
+
+    config MCUX_COMPONENT_driver.conn_fwloader.monolithic
+        bool "Monolithic application"
+        help
+            Enable the monolithic property. This will embedd
+            the CPU1/CPU2 FW in the main application.
+
+    if MCUX_COMPONENT_driver.conn_fwloader.monolithic
+
+    config MONOLITHIC_WIFI
+        bool "Wi-Fi"
+        help
+            Enable monolithic property for WIFI.
+
+    config MONOLITHIC_BLE
+        bool "BLE"
+        help
+            Enable monolithic property for BLE.
+
+    config MONOLITHIC_BLE_15_4
+        bool "BLE/15.4 combo"
+        help
+            Enable monolithic property for BLE+15.4 combo.
+
+    endif # MCUX_COMPONENT_driver.conn_fwloader.monolithic
+
+    config MCUX_COMPONENT_driver.wifi.libcsi
+        bool "Wi-Fi libcsi"
+        select MCUX_COMPONENT_middleware.wifi
+        select MCUX_COMPONENT_middleware.wifi.wifidriver
+        select MCUX_COMPONENT_middleware.wifi.libcsi.incl
+        help
+            Wi-Fi libcsi
+
+    if MCUX_COMPONENT_driver.wifi.libcsi
+        choice
+        prompt "Select libcsi"
+        default MCUX_COMPONENT_driver.wifi.libcsi_cm33 \
+            if MCUX_COMPONENT_component.wifi_bt_module.RW61X
+        default MCUX_COMPONENT_driver.wifi.libcsi_cm7.cm7f_sta_20M_only \
+            if MCUX_COMPONENT_component.wifi_bt_module.board_murata_2ll_m2 || \
+               MCUX_COMPONENT_component.wifi_bt_module.board_murata_2ll_usd
+        default MCUX_COMPONENT_driver.wifi.libcsi_cm7.cm7f
+        help
+            Choose the Wi-Fi CSI library.
+
+        config MCUX_COMPONENT_driver.wifi.libcsi_cm33
+            bool "libcsi for Cortex-M33"
+
+        config MCUX_COMPONENT_driver.wifi.libcsi_cm7.cm7f
+            bool "libcsi for Cortex-M7 (CM7F)"
+
+        config MCUX_COMPONENT_driver.wifi.libcsi_cm7.cm7f_sta_20M_only
+            bool "libcsi for Cortex-M7 (CM7F) (STA 20MHz only)"
+
+        endchoice
+    endif
+
+endmenu

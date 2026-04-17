@@ -1,0 +1,15 @@
+meterlib3phkwh_test:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/meterlib3phkwh_test
+    project-root-path: boards/${board}/demo_apps/meterlib3phkwh_test/${multicore_foldername}
+    document:
+      name: meterlib3phkwh_test${core_id_suffix_name}
+      category: demo_apps
+      brief: This  example  demonstrates  use  of  the  metering  library  in  active  energy  polyphase  power  meter
+        application.
+      example_readme:
+      - examples/demo_apps/meterlib3phkwh_test/readme.md
+      - ${board_root}/${board}/demo_apps/meterlib3phkwh_test/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

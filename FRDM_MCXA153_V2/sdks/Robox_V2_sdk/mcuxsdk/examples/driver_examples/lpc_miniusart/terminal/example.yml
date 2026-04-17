@@ -1,0 +1,18 @@
+usart_terminal:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lpc_miniusart/terminal
+    project-root-path: boards/${board}/driver_examples/usart/terminal/${multicore_foldername}
+    document:
+      name: usart_terminal${core_id_suffix_name}
+      category: driver_examples/usart
+      brief: "This example demonstrate configuration and use of the USART module in\
+        \ interrupt-driven \nasynchronous mode on communication with a terminal emulator\
+        \ calling the USART \ntransactional APIs. USART will echo back every character\
+        \ to terminal emulator, and send\nback all received characters once users\
+        \ press [Enter] key.\n"
+      example_readme:
+      - examples/driver_examples/lpc_miniusart/terminal/readme.md
+      - ${board_root}/${board}/driver_examples/usart/terminal/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

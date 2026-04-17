@@ -1,0 +1,15 @@
+
+
+/*!
+ * @defgroup lpi2c LPI2C: Low Power Inter-Integrated Circuit Driver
+ */
+
+/*!
+ * @defgroup lpi2c_master_driver LPI2C Master Driver
+ * @ingroup lpi2c
+ */
+
+/*!
+ * @defgroup lpi2c_slave_driver LPI2C Slave Driver
+ * @ingroup lpi2c
+ */

@@ -1,0 +1,13 @@
+# xspi_octal_polling_transfer
+
+## Overview
+The xspi_octal_polling_transfer example shows how to use xspi driver with polling:
+
+In this example, xspi will send data and operate the external Nor flash connected with XSPI. Some simple flash command
+will be executed, such as Write Enable, Erase sector, Program page.
+Example will first erase the sector and program a page into the flash, at last check if the data in flash is correct.
+
+## Supported Boards
+- [MIMXRT700-EVK](../../../../_boards/mimxrt700evk/driver_examples/xspi/octal/polling_transfer/example_board_readme.md)
+- [IMX952LPD5EVK-19](../../../../_boards/imx952evk/driver_examples/xspi/octal/polling_transfer/example_board_readme.md)
+- [IMX952LPD5EVK-15](../../../../_boards/imx952evk/driver_examples/xspi/octal/polling_transfer/example_board_readme.md)

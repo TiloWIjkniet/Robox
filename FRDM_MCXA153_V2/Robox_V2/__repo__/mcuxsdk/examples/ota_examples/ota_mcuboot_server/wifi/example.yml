@@ -1,0 +1,24 @@
+ota_mcuboot_server_wifi:
+  section-type: application
+  contents:
+    meta_path: examples/ota_examples/ota_mcuboot_server/wifi
+    project-root-path: boards/${board}/ota_examples/ota_mcuboot_server/wifi/${multicore_foldername}
+    document:
+      name: ota_mcuboot_server_wifi${core_id_suffix_name}
+      category: ota_examples
+      brief: This ota_mcuboot_server application demonstrates OTA using an HTTP server
+        based on lwIP TCP/IP stack with FreeRTOS. The user uses an Internet browser
+        to upload new update package to reprogram application running on the board.
+      example_readme:
+      - examples/ota_examples/ota_mcuboot_server/wifi/readme.md
+      - ${board_root}/${board}/ota_examples/ota_mcuboot_server/wifi/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - ${board_root}/${board}/wifi_examples/readme_modules.md
+  boards: {}
+ota_mcuboot_server_wifi@rw61x_encrypted_xip:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/ota_examples/_custom_cfg/rw61x/ota_mcuboot_server_wifi.conf
+  boards: {}

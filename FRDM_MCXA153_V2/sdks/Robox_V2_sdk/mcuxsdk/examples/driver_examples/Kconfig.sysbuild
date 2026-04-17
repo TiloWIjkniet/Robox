@@ -1,0 +1,14 @@
+#
+# Copyright 2025-2026 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+config secondary_toolchain
+    string
+    default "$(toolchain)"
+
+# This is for internal board support
+osource "${SdkRootDirPath}/${board_root}/${board}/Kconfig.sysbuild"
+
+# This is for external custom board support
+osource "${CUSTOM_BOARD_ROOT}/${board}/Kconfig.sysbuild"

@@ -1,0 +1,23 @@
+# Copyright 2024 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_HAS_COMPONENT_driver.vref
+    bool
+    default y if MCUX_HW_IP_DriverType_VREF
+
+config MCUX_COMPONENT_driver.vref
+    bool "vref"
+    select MCUX_COMPONENT_driver.common
+    depends on MCUX_HAS_COMPONENT_driver.vref
+
+if MCUX_COMPONENT_driver.vref
+
+    config VREF_INTERNAL_VOLTAGE_STABLE_TIMEOUT
+        int "Max loops to wait for VREF internal voltage stable (0 means wait forever)"
+        default 0
+        help
+          This parameter defines how many loops to check completion before return timeout.
+          If defined as 0, driver will wait forever until completion.
+
+endif

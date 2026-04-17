@@ -1,0 +1,21 @@
+# Copyright 2024-2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_HAS_COMPONENT_driver.ce
+    bool
+    default y if MCUX_HW_IP_DriverType_CE
+
+config MCUX_COMPONENT_driver.ce
+    bool "Compute Engine"
+    select MCUX_COMPONENT_driver.common
+    depends on MCUX_HAS_COMPONENT_driver.ce
+
+if MCUX_COMPONENT_driver.ce
+    config CE_COMPUTE_TIMEOUT
+        int "Max loops to wait for CE computation (0 means wait forever)"
+        default 0
+        help
+          This parameter defines how many loops to check completion before return timeout.
+          If defined as 0, driver will wait forever until completion.
+endif

@@ -1,0 +1,20 @@
+flexcan_ping_pong_buffer_transfer:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexcan/ping_pong_buffer_transfer
+    project-root-path: boards/${board}/driver_examples/flexcan/ping_pong_buffer_transfer/${multicore_foldername}
+    document:
+      name: flexcan_ping_pong_buffer_transfer${core_id_suffix_name}
+      category: driver_examples/flexcan
+      brief: The flexcan_ping_pong_buffer_transfer example shows how to use the FlexCAN
+        queue feature to create 2 simulate FIFOs that can receive CAN frames:In this
+        example, 2 boards are connected through CAN bus. Endpoint A(board A) send
+        CAN messages to Endpoint B(board B) when user input the number of CAN messages
+        to be send in terminal. Endpoint B uses two receiving queues to receive messages
+        in turn, and prints the message content and the receiving queue number to
+        the terminal after any queue is full.
+      example_readme:
+      - examples/driver_examples/flexcan/ping_pong_buffer_transfer/readme.md
+      - ${board_root}/${board}/driver_examples/flexcan/ping_pong_buffer_transfer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

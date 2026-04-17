@@ -1,0 +1,25 @@
+
+rsource "../../arch/dsp56800/configuration/Kconfig"
+rsource "../../arch/dsp56800/core/Kconfig"
+
+menu "Startup components"
+    config MCUX_COMPONENT_device.CMSIS
+        bool "header"
+
+    config MCUX_COMPONENT_device.system
+        bool "system"
+        imply MCUX_COMPONENT_device.CMSIS
+
+    config MCUX_COMPONENT_device.startup
+        bool "startup"
+        imply MCUX_COMPONENT_device.system
+endmenu
+
+config MCUX_PRJSEG_module.device.suite
+    bool
+    default y
+
+config MCUX_COMPONENT_device.startup_common
+    bool
+    default y if MCUX_COMPONENT_device.startup
+

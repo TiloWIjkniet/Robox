@@ -15,7 +15,7 @@
 
 uint32_t startRoomMillis;
 bool hasAnwertCorrect = false;
-bool gameActiv = false;
+bool isGameActiv = false;
 
 typedef struct 
 {
@@ -84,7 +84,7 @@ void first_room_onEntry(void)
 
     resetGameLogic();
 
-    gameActiv = true;
+    isGameActiv = true;
     roomIndex = 0;
 
     //leegt run data 

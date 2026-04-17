@@ -1,0 +1,31 @@
+# Copyright 2024-2025 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+config MCUX_COMPONENT_component.hal_power
+    bool "hal power"
+    select MCUX_COMPONENT_component.sm_power
+
+    if MCUX_COMPONENT_component.hal_power
+      choice
+        prompt "porting layer"
+        default MCUX_DEPENDENCY_COMPONENT_component.hal_power_DEPEND_ANYOF_OPTION_1
+        config MCUX_DEPENDENCY_COMPONENT_component.hal_power_DEPEND_ANYOF_OPTION_1
+          bool "imx95"
+          select MCUX_COMPONENT_component.hal_power.imx95
+
+        config MCUX_DEPENDENCY_COMPONENT_component.hal_power_DEPEND_ANYOF_OPTION_2
+          bool "imx943"
+          select MCUX_COMPONENT_component.hal_power.imx943
+
+      endchoice
+    endif
+
+config MCUX_COMPONENT_component.hal_power.imx943
+    bool "Component component.hal_power.imx943"
+    depends on MCUX_HW_BOARD_imx943evk
+
+config MCUX_COMPONENT_component.hal_power.imx95
+    bool "Component component.hal_power.imx95"
+    depends on MCUX_HW_BOARD_imx95lpd5evk19 || MCUX_HW_BOARD_imx95lp4xevk15 || MCUX_HW_BOARD_imx95verdinevk
+

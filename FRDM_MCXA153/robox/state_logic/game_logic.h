@@ -13,6 +13,7 @@
 // 🖥️ DISPLAY / UI
 // =======================
 
+void printInput(char *input, uint8_t len);
 void updateDisplayQueue(void);
 void forceDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis);
 void addDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis);

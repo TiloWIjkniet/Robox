@@ -1,0 +1,11 @@
+var a00983 =
+[
+    [ "MCUXCLECC_WACPU_", "a01044.html", "a01044" ],
+    [ "MCUXCLECC_MONTDH_WACPU_", "a01045.html", "a01045" ],
+    [ "MCUXCLECC_EDDSA_WACPU_", "a01046.html", "a01046" ],
+    [ "MCUXCLECC_WAPKC_", "a01047.html", "a01047" ],
+    [ "MCUXCLECC_MONTDH_WAPKC_", "a01048.html", "a01048" ],
+    [ "MCUXCLECC_EDDSA_WAPKC_", "a01049.html", "a01049" ],
+    [ "MCUXCLECC_EDDSA_GENKEYPAIR_DESC_SIZE_", "a01050.html", "a01050" ],
+    [ "MCUXCLECC_EDDSA_SIGNATURE_PROTOCOL_DESC_SIZE_", "a01051.html", "a01051" ]
+];

@@ -1,0 +1,16 @@
+snvs_lp_tamper:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/snvs_hp/snvs_lp_tamper
+    project-root-path: boards/${board}/driver_examples/snvs/snvs_lp_tamper/${multicore_foldername}
+    document:
+      name: snvs_lp_tamper${core_id_suffix_name}
+      category: driver_examples/snvs
+      brief: The SNVS LP TAMPER project is a simple demonstration program of the SDK
+        SNVS LP driver. The test will set up pasive and active tamper pins and also
+        enables and test voltage, temperature and clock tampers.
+      example_readme:
+      - examples/driver_examples/snvs_hp/snvs_lp_tamper/readme.md
+      - ${board_root}/${board}/driver_examples/snvs/snvs_lp_tamper/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

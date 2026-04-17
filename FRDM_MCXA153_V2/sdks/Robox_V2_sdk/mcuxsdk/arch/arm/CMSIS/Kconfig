@@ -1,0 +1,100 @@
+#
+# Copyright 2024-2025 NXP
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+menu "CMSIS Software Kits"
+
+    config MCUX_COMPONENT_CMSIS_NN_Source
+        bool "CMSIS NN"
+
+
+    menu "CMSIS DSP"
+
+    config MCUX_COMPONENT_CMSIS_DSP_Include
+        bool "Header"
+
+    config MCUX_COMPONENT_CMSIS_DSP_Source
+        bool "Source"
+
+    endmenu
+
+
+    menu "CMSIS RTOS2"
+
+    config MCUX_COMPONENT_CMSIS_Device_API_RTOS2
+        bool "OS API"
+
+    config MCUX_COMPONENT_CMSIS_Device_API_OSTick
+        bool "OS Tick API"
+
+    config MCUX_COMPONENT_CMSIS_RTOS2_RTX
+        bool "RTX"
+        select MCUX_COMPONENT_CMSIS_Device_API_RTOS2
+        select MCUX_COMPONENT_CMSIS_Device_API_OSTick
+
+    config MCUX_COMPONENT_CMSIS_RTOS2_RTX_LIB
+        bool "RTX Library"
+        select MCUX_COMPONENT_CMSIS_Device_API_RTOS2
+        select MCUX_COMPONENT_CMSIS_Device_API_OSTick
+
+    endmenu
+
+    config MCUX_COMPONENT_CMSIS_Include_core_cm
+        bool
+        default y if MCUX_HW_CORE_ID_CM4 || MCUX_HW_CORE_CM4F || MCUX_HW_CORE_ID_CM7 || MCUX_HW_CORE_CM7F || MCUX_HW_CORE_CM33 || MCUX_HW_CORE_CM23 || MCUX_HW_CORE_CM0P || MCUX_HW_CORE_CM85
+
+    config MCUX_COMPONENT_CMSIS_Include_core_ca7
+        bool
+        default y if MCUX_HW_CORE_CA7
+
+    menu "CMSIS Driver Include"
+        config MCUX_COMPONENT_CMSIS_Driver_Include.USART
+            bool "USART"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.CAN
+            bool "CAN"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.Ethernet
+            bool "Ethernet"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.Ethernet_MAC
+            bool "Ethernet MAC"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.Ethernet_PHY
+            bool "Ethernet PHY"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.Flash
+            bool "Flash"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.GPIO
+            bool "GPIO"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.I2C
+            bool "I2C"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.MCI
+            bool "MCI"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.NAND
+            bool "NAND"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.SAI
+            bool "SAI"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.SPI
+            bool "SPI"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.USB_Device
+            bool "USB Device"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.USB_Host
+            bool "USB Host"
+
+        config MCUX_COMPONENT_CMSIS_Driver_Include.WiFi
+            bool "WiFi"
+    endmenu
+
+endmenu
+

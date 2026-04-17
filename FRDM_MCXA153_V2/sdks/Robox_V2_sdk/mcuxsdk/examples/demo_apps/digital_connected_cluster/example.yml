@@ -1,0 +1,21 @@
+edgefast_bluetooth_dcc_app:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/digital_connected_cluster
+    project-root-path: boards/${board}/demo_apps/digital_connected_cluster/${multicore_foldername}
+    document:
+      name: edgefast_bluetooth_dcc_app${core_id_suffix_name}
+      category: demo_apps/
+      brief: The Edgefast Bluetooth DCC APP example with simplified application.
+      example_readme:
+      - examples/demo_apps/digital_connected_cluster/readme.md
+      - ${board_root}/${board}/demo_apps/digital_connected_cluster/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}
+edgefast_bluetooth_dcc_app@multiple_conns:
+  section-type: custom_application
+  contents:
+    document:
+      extra_build_args:
+      - -DCONF_FILE=examples/demo_apps/digital_connected_cluster/prj.conf
+  boards: {}

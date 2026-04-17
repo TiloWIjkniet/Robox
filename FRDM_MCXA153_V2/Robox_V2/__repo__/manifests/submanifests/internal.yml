@@ -1,0 +1,206 @@
+manifest:
+  remotes:
+  - name: origin
+    url-base: https://github.com/nxp-mcuxpresso
+  defaults:
+    remote: origin
+  projects:
+  - name: mcu-sdk-test
+    path: mcuxsdk/test
+    revision: main
+    groups:
+    - bifrost
+    userdata:
+      track_branch: main
+      branch_flow: false
+  - name: docs-int
+    path: mcuxsdk/docs/internal
+    revision: e9ca614d20c12829f62f986b60cc8e8f7991e784
+    groups:
+    - bifrost
+    userdata:
+      track_branch: main
+      branch_flow: false
+  - name: mcu-sdk-ecosystem
+    path: mcuxsdk/ecosystem
+    revision: 3c30f7f514798651be5baeb7840be96de23754e7
+    west-commands: scripts/west_commands.yml
+    groups:
+    - bifrost
+    userdata:
+      track_branch: release/25.12.00
+      branch_flow: true
+  - name: sdk_components
+    path: mcuxsdk/ecosystem/sdk_generator/modules/sdk_components
+    revision: e8d5be6bbd6643374a68ec8f6b9e7c5f334e461a
+    groups:
+    - bifrost
+    userdata:
+      track_branch: master
+      branch_flow: false
+  - name: acceptance_tests
+    path: mcuxsdk/ecosystem/sdk_generator/modules/acceptance_tests
+    revision: cdf417d58fb6ae26ea1eac27fbbb02d3bfaef910
+    groups:
+    - bifrost
+    userdata:
+      track_branch: master
+      branch_flow: false
+  - name: cmsis-pack-rev
+    path: mcuxsdk/ecosystem/sdk_generator/modules/cmsis-pack-rev
+    revision: 5a550cd43955e401f4e756da11f723afcd483cc8
+    groups:
+    - bifrost
+    userdata:
+      track_branch: master
+      branch_flow: false
+  - name: sdk_generator
+    path: mcuxsdk/ecosystem/sdk_generator
+    revision: f2dcdec22e1d3aeb56258e1b01e89f2090c07136
+    submodules:
+    - path: modules/manifest_schema
+    groups:
+    - bifrost
+    userdata:
+      track_branch: release/25.12.00
+      branch_flow: false
+  - name: MIR
+    path: mcuxsdk/MIR
+    revision: 47c10f5a82c498aa267490c0e049b2d802484294
+    groups:
+    - bifrost
+    userdata:
+      track_branch: 2512000
+      branch_flow: false
+  - name: framework-int
+    path: mcuxsdk/middleware/wireless/framework_private
+    revision: 935cfe86ffd980836d1348e0efdf2cfb4593ee84
+    groups:
+    - bifrost
+    userdata:
+      track_branch: master
+      branch_flow: false
+  - name: hciot-threadx
+    path: mcuxsdk/examples/wireless_examples/reference_design/health_care_iot_threadx
+    revision: 70eb994eef13732e39a0302503e66d1bdf2865b9
+    groups:
+    - bifrost
+    userdata:
+      track_branch: main
+      branch_flow: false
+      display_name: health_care_iot_threadx
+      description: Health Care IoT Reference Design using ThreadX RTOS
+  - name: threadx
+    path: mcuxsdk/rtos/eclipse-threadx/threadx
+    revision: be411ceed27a88831791c2023617c15d6069a649
+    groups:
+    - bifrost
+    userdata:
+      track_branch: master
+      branch_flow: false
+      display_name: threadx
+      description: Eclipse ThreadX RTOS
+  - name: ble-controller-int
+    path: mcuxsdk/middleware/wireless/marvell_ll
+    revision: 92593d89522a3cf28a82a720c14d5941f1be6446
+    groups:
+    - bifrost
+    userdata:
+      track_branch: develop/main
+      branch_flow: false
+  - name: ble-controller-snps-int
+    path: mcuxsdk/middleware/wireless/snps_ll_private
+    repo-path: ble-controller-int-snps
+    revision: 065ed99ada989c11f4797774de784e141d16bded
+    groups:
+    - bifrost
+    userdata:
+      track_branch: main
+      branch_flow: false
+  - name: mcu-sdk-examples-int
+    path: mcuxsdk/examples_int
+    revision: bf0dc9172dd5faf6bc433a0d902575ecab823e4a
+    groups:
+    - bifrost
+    userdata:
+      track_branch: release/25.12.00
+      branch_flow: true
+  - name: mcu-sdk-devices-int
+    path: mcuxsdk/devices_int
+    revision: 07842903826d02b2a107d31f03814b68c294d2ca
+    groups:
+    - bifrost
+    userdata:
+      track_branch: main
+      branch_flow: false
+  - name: emwin
+    userdata:
+      owner: tomas.barak@nxp.com
+      track_branch: main
+      branch_flow: false
+      display_name: emWin
+      description: emWin graphics library
+    path: mcuxsdk/middleware/emwin
+    revision: 50c4ffb557a7c7935fe112e039bd22bd5c42534f
+    groups:
+    - bifrost
+  - name: ieee-802.15.4_private
+    userdata:
+      owner: george.stefan@nxp.com
+      track_branch: main
+      branch_flow: false
+    path: mcuxsdk/middleware/wireless/ieee-802.15.4_private
+    revision: c9e56a23cff3cc641a86874de2350f850b6ab4ff
+    repo-path: mcux-sdk-middleware-ieee_802.15.4-int
+    groups:
+    - bifrost
+  - name: zigbee_private
+    userdata:
+      owner: alexandru.porosanu@nxp.com
+      track_branch: main
+      branch_flow: false
+    path: mcuxsdk/middleware/wireless/zigbee_private
+    revision: 1d86d7dca92c02e4ba3eaf8b5518354349402045
+    repo-path: mcux-sdk-middleware-zigbee-int
+    groups:
+    - bifrost
+  - name: crypto_benchmark
+    userdata:
+      owner: patrik.nemeth@nxp.com
+      track_branch: main
+      branch_flow: false
+    path: mcuxsdk/components/crypto_benchmark
+    revision: 78f6b793348507a18c85db4882ff9467e3fda831
+    groups:
+    - bifrost
+  - name: bluetooth_private
+    userdata:
+      owner: mihai-octavian.urzica@nxp.com
+      track_branch: develop/main
+      branch_flow: false
+    path: mcuxsdk/middleware/wireless/bluetooth_private
+    revision: 93151401c4fc73fc485b03e66cc0906b6ae5ed1d
+    repo-path: mcux-sdk-middleware-bluetooth-int
+    groups:
+    - bifrost
+    - bluetooth_private
+  - name: ble_cs_algo_private
+    userdata:
+      owner: mihai-octavian.urzica@nxp.com
+      track_branch: master
+      branch_flow: false
+    path: mcuxsdk/middleware/wireless/ble_cs_algo_private
+    revision: ee7661e84559e077d428b01920966cbc522879e8
+    repo-path: mcux-sdk-middleware-ble_cs_algo-int
+    groups:
+    - bifrost
+    - ble_cs_algo_private
+  - name: freemaster_internal
+    userdata:
+      owner: michal.hanak@nxp.com
+      track_branch: main
+      branch_flow: false
+    path: mcuxsdk/middleware/freemaster_internal
+    revision: main
+    groups:
+    - bifrost

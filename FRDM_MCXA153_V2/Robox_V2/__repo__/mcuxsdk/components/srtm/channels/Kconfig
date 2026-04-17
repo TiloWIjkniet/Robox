@@ -1,0 +1,19 @@
+# Copyright 2024-2025 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+
+choice
+    prompt "Endpoints"
+    default MCUX_COMPONENT_component.rpmsg_endpoint
+    depends on MCUX_COMPONENT_driver.srtm
+
+    config MCUX_COMPONENT_component.rpmsg_endpoint
+        bool "RPMSG"
+
+    config MCUX_COMPONENT_component.rpmsg_emu_endpoint
+        bool "RPMSG Emulate"
+
+    config MCUX_COMPONENT_component.mu_endpoint
+        bool "MU"
+
+endchoice

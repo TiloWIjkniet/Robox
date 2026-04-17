@@ -1,0 +1,15 @@
+easrc_p2p_out_sdma:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/easrc/asrc_p2p_out_sdma
+    project-root-path: boards/${board}/driver_examples/asrc/asrc_p2p_out_sdma/${multicore_foldername}
+    document:
+      name: easrc_p2p_out_sdma${core_id_suffix_name}
+      category: driver_examples/asrc
+      brief: The asrc_p2p_out_sdma example shows how to use asrc driver with SDMA
+        :In this example, one asrc instance convert audio data and push to sai directly.
+      example_readme:
+      - examples/driver_examples/easrc/asrc_p2p_out_sdma/readme.md
+      - ${board_root}/${board}/driver_examples/asrc/asrc_p2p_out_sdma/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

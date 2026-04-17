@@ -34,7 +34,7 @@ static inline void tiny_delay(int loops)
     }
 }
 
-static inline void ms_delay(uint32_t ms)
+void ms_delay(uint32_t ms)
 {
     uint32_t start = millis();
     while (millis() - start < ms) 
@@ -148,10 +148,6 @@ int st7920_writeb(uint8_t val)
 
 void st7920_update()
 {
-    static uint32_t lastDisplayUpdate = 0;
-    uint32_t now = millis();
-    if(now - lastDisplayUpdate < 1)  return; 
-    lastDisplayUpdate = now;
     
     if (disp_cmd_head != disp_cmd_tail) 
     {

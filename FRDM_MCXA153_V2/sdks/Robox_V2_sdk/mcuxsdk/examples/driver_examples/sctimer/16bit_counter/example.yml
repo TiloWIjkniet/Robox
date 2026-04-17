@@ -1,0 +1,16 @@
+sctimer_16bit_counter:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/sctimer/16bit_counter
+    project-root-path: boards/${board}/driver_examples/sctimer/16bit_counter/${multicore_foldername}
+    document:
+      name: sctimer_16bit_counter${core_id_suffix_name}
+      category: driver_examples/sctimer
+      brief: The SCTimer 16-bit counter project is a demonstration program of the
+        SDK SCTimer driver operation when using the SCTimer counteras two 16-bit counters.The
+        example toggles an output per counter when a match occurs.
+      example_readme:
+      - examples/driver_examples/sctimer/16bit_counter/readme.md
+      - ${board_root}/${board}/driver_examples/sctimer/16bit_counter/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

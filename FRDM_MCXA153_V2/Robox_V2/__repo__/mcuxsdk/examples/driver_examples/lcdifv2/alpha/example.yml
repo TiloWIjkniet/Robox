@@ -1,0 +1,17 @@
+lcdifv2_alpha:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lcdifv2/alpha
+    project-root-path: boards/${board}/driver_examples/lcdifv2/alpha/${multicore_foldername}
+    document:
+      name: lcdifv2_alpha${core_id_suffix_name}
+      category: driver_examples/lcdifv2
+      brief: This example demonstrates how to use the LCDIF v2 layer blend feature.
+        In this example, two layers are enabled. For each layer, a global alpha value
+        50% (128) is used. When the example runs, two rectangles are shown, one blue
+        and one red, in the overlay region, the color is purple.
+      example_readme:
+      - examples/driver_examples/lcdifv2/alpha/readme.md
+      - ${board_root}/${board}/driver_examples/lcdifv2/lcdifv2_examples_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

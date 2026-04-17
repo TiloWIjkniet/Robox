@@ -17,7 +17,7 @@ uint32_t startRoomTimeMillis = 0;
 void completed_onEntry(void) 
 { 
     //Ends the game 
-    gameActiv = false;
+    isGameActiv = false;
 
     addDisplayTemplate(D_WIN, DISPLAY_5S);
 
@@ -50,7 +50,7 @@ void completed_onExit(void)
 void timeout_onEntry(void) 
 { 
     //Ends the game
-    gameActiv = false;
+    isGameActiv = false;
     startRoomTimeMillis = millis();
     addDisplayTemplate(D_TIME_UP, DISPLAY_5S);
 }

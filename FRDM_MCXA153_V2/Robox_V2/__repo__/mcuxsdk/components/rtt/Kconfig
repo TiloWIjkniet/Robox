@@ -1,0 +1,11 @@
+# Copyright 2024-2025 NXP
+# SPDX-License-Identifier: BSD-3-Clause
+
+menu "rtt"
+    config MCUX_COMPONENT_driver.rtt.template
+        bool "rtt.template"
+
+    config MCUX_COMPONENT_driver.rtt
+        bool "rtt"
+        select MCUX_COMPONENT_driver.rtt.template
+endmenu

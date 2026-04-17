@@ -1,0 +1,14 @@
+pmc_temperature_sensor:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/pmc_temperature_sensor
+    project-root-path: boards/${board}/demo_apps/pmc_temperature_sensor/${multicore_foldername}
+    document:
+      name: pmc_temperature_sensor${core_id_suffix_name}
+      category: demo_apps
+      brief: The demo shows how to measure the temperature within the PMC module.
+      example_readme:
+      - examples/demo_apps/pmc_temperature_sensor/readme.md
+      - ${board_root}/${board}/demo_apps/pmc_temperature_sensor/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,15 @@
+flexio_mculcd_int_transfer:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexio/mculcd/int_transfer
+    project-root-path: boards/${board}/driver_examples/flexio/mculcd/int_transfer/${multicore_foldername}
+    document:
+      name: flexio_mculcd_int_transfer${core_id_suffix_name}
+      category: driver_examples/flexio
+      brief: The flexio_mculcd_int_transfer example shows how to use flexio mculcd
+        driver interrupt based transactional APIs to drive MCU LCD panel.
+      example_readme:
+      - examples/driver_examples/flexio/mculcd/int_transfer/readme.md
+      - ${board_root}/${board}/driver_examples/flexio/mculcd/int_transfer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

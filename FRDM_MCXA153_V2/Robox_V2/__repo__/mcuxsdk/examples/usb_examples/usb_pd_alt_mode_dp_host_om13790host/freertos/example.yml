@@ -1,0 +1,18 @@
+usb_pd_alt_mode_dp_host_freertos_om13790host:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_pd_alt_mode_dp_host_om13790host/freertos/.
+    project-root-path: boards/${board}/usb_examples/usb_pd_alt_mode_dp_host_om13790host/freertos/${multicore_foldername}
+    document:
+      name: usb_pd_alt_mode_dp_host_freertos_om13790host${core_id_suffix_name}
+      category: usb_examples
+      brief: This PD example is a simple demonstration based on the MCUXpresso SDK
+        PD stack. The application use the shield host board (om13790host) to implement
+        the DisplayPort alternate mode.It recognize attached video adapters (like
+        "Type-C to DisplayPort" or "Type-C to HDMI"), and drive the adapter to work.
+      example_readme:
+      - examples/usb_examples/usb_pd_alt_mode_dp_host_om13790host/readme.md
+      - ${board_root}/${board}/usb_examples/usb_pd_alt_mode_dp_host_om13790host/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_pd_alt_mode_dp_host_om13790host/ugreen_typec_hdmi.jpg
+  boards: {}

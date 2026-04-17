@@ -1,0 +1,14 @@
+pdm_edma_transfer:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pdm/pdm_edma_transfer
+    project-root-path: boards/${board}/driver_examples/pdm/pdm_edma_transfer/${multicore_foldername}
+    document:
+      name: pdm_edma_transfer${core_id_suffix_name}
+      category: driver_examples/pdm
+      brief: pdm_edma_transfer
+      example_readme:
+      - examples/driver_examples/pdm/pdm_edma_transfer/readme.md
+      - ${board_root}/${board}/driver_examples/pdm/pdm_edma_transfer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

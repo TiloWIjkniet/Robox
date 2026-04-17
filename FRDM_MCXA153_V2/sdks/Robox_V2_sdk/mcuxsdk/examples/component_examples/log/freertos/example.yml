@@ -1,0 +1,16 @@
+log_freertos:
+  section-type: application
+  contents:
+    meta_path: examples/component_examples/log/freertos/.
+    project-root-path: boards/${board}/component_examples/log/freertos/${multicore_foldername}
+    document:
+      name: log_freertos${core_id_suffix_name}
+      category: component_examples
+      brief: The log demo is used to demonstrate how to use log component. The main
+        function of the demo is to prompt the LOG level string according to the user
+        input log level command.
+      example_readme:
+      - examples/component_examples/log/freertos/readme.md
+      - ${board_root}/${board}/component_examples/log/freertos/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

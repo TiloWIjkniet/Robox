@@ -1,0 +1,16 @@
+flexram_magic_address:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/flexram/magic_address
+    project-root-path: boards/${board}/driver_examples/flexram/magic_address/${multicore_foldername}
+    document:
+      name: flexram_magic_address${core_id_suffix_name}
+      category: driver_examples/magic_address
+      brief: The FLEXRAM project is a simple demonstration program of the SDK FLEXRAM
+        driver. It allocate the on-chip ram and then access the OCRAM to demo magic
+        address and access error interrupt.
+      example_readme:
+      - examples/driver_examples/flexram/magic_address/readme.md
+      - ${board_root}/${board}/driver_examples/flexram/magic_address/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,21 @@
+pxp_lcdif_handshake:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/pxp/lcdif_handshake
+    project-root-path: boards/${board}/driver_examples/pxp/lcdif_handshake/${multicore_foldername}
+    document:
+      name: pxp_lcdif_handshake${core_id_suffix_name}
+      category: driver_examples/pxp
+      brief: The PXP LCDIF hand shake project shows how to enable the hand shake betweenPXP
+        and LCDIF. If this example runs correctly, you will see two rectangles moving
+        in thescreen. One rectangle is process surface output, and the other is alpha
+        surfaceoutput, the overlay region color is OR'ed value of process surface
+        and alpha surface.NOTE:This example must run continously to get the right
+        result, breaking during debugwill results to handshake fail. Because the PXP
+        must be started before every LCDframe, if system is halt, the PXP does not
+        start correctly.
+      example_readme:
+      - examples/driver_examples/pxp/lcdif_handshake/readme.md
+      - ${board_root}/${board}/driver_examples/pxp/lcdif_handshake/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

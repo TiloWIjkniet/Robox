@@ -11,6 +11,8 @@
 #include "audio.h"
 #include "switch_and_key_sensors.h"
 #include "display.h"
+
+
 #define MS_PER_TICK_PANALTY 10
 #define TIME_DEPENDING_ADUIO_INTERVAL 5 * FROM_MIN_TO_MS
 #define TIME_AUDIO_CHECK_LEN 6
@@ -163,7 +165,7 @@ void loadDisplayTemplate(displayTemplate_t template)
     }
 
     cmd_display_clear();
-    for (uint32_t i = 0; i < 1000; i++);
+    ms_delay(10);
     
     st7920_set_cursor(0, 0);
     for (uint16_t i = 0; i < DISPLAY_LEN; i++)
@@ -174,10 +176,10 @@ void loadDisplayTemplate(displayTemplate_t template)
     }
     
     #if DEBUG_ON_PC
-   // printf("%s", displayStr);
+    printf("%s", displayStr);
     #endif
 }
-void printCustomDisplay(char *customDisplay)
+void printCustomDisplay(char *customDisplay )
 {
      //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
      //TODO: Beter manier maken om customDisplays aan de que toe te voegen
@@ -187,6 +189,26 @@ void printCustomDisplay(char *customDisplay)
     printf("Lowest becons:\n");
     printf(customDisplay);
     #endif
+}
+
+void printInput(char *input, uint8_t len)
+{
+    if(len > 16) len = 16;
+    
+    st7920_set_cursor(3, 0);
+    for (uint8_t i = 0; i < 15; i++)
+    {
+        char c = i < len ? input[i] : '*';
+        st7920_writeb(c); 
+        #if DEBUG_ON_PC
+        printf("%c", c);   
+        #endif
+    }
+    #if DEBUG_ON_PC
+    printf("\n");
+    #endif
+
+    
 }
 
 /**
@@ -428,7 +450,7 @@ specialActies_t getSpecialActies(void)
  */
 void applyWrongAnswerPenalty(void)
 {
-    runData.wrongAnswerCount++;
+    runData.wrongAnswerCnt++;
     uint32_t penalty = getWrongAnswerPenalty();
     timeGamePanaltyBuffer += penalty;
 }

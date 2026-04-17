@@ -1,0 +1,10 @@
+/*!
+@page middleware_log Middleware Change Log
+
+@section safety_iec60730b SAFETY_IEC60730B for KSDK
+  Current version is 1.1.0
+  
+  - 1.1.0
+    - Initial version.
+
+*/

@@ -1,0 +1,14 @@
+shell:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/shell
+    project-root-path: boards/${board}/demo_apps/shell/${multicore_foldername}
+    document:
+      name: shell${core_id_suffix_name}
+      category: demo_apps
+      brief: The Shell Demo application demonstrates to control Leds by commands.
+      example_readme:
+      - examples/demo_apps/shell/readme.md
+      - ${board_root}/${board}/demo_apps/shell/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

@@ -1,0 +1,20 @@
+lpi2c_interrupt:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/lpi2c/interrupt
+    project-root-path: boards/${board}/driver_examples/lpi2c/interrupt/${multicore_foldername}
+    document:
+      name: lpi2c_interrupt${core_id_suffix_name}
+      category: driver_examples/lpi2c
+      brief: The lpi2c_functional_interrupt example shows how to use lpi2c functional
+        driver to build a interrupt based application:In this example , one lpi2c
+        instance used as lpi2c master and another lpi2c instance used as lpi2c slave
+        .1. lpi2c master send data using interrupt to lpi2c slave in interrupt .2.
+        lpi2c master read data using interrupt from lpi2c slave in interrupt .3. The
+        example assumes that the connection is OK between master and slave, so there's
+        NO error handling code.
+      example_readme:
+      - examples/driver_examples/lpi2c/interrupt/readme.md
+      - ${board_root}/${board}/driver_examples/lpi2c/interrupt/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

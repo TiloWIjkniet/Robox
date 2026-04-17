@@ -1,0 +1,24 @@
+# Copyright 2024 NXP
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+rsource "../../arch/riscv/configuration/Kconfig"
+rsource "../../arch/riscv/core/Kconfig"
+rsource "../../arch/riscv/headers/Kconfig"
+
+menu "Startup components"
+    config MCUX_COMPONENT_device.CMSIS
+        bool "header"
+
+    config MCUX_COMPONENT_device.system
+        bool "system"
+        imply MCUX_COMPONENT_device.CMSIS
+
+    config MCUX_COMPONENT_device.startup
+        bool "startup"
+        imply MCUX_COMPONENT_device.system
+endmenu
+
+config MCUX_PRJSEG_module.device.suite
+    bool
+    default y

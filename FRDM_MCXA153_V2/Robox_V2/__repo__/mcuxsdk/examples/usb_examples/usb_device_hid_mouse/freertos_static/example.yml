@@ -1,0 +1,18 @@
+dev_hid_mouse_freertos_static:
+  section-type: application
+  contents:
+    meta_path: examples/usb_examples/usb_device_hid_mouse/freertos_static/.
+    project-root-path: boards/${board}/usb_examples/usb_device_hid_mouse/freertos_static/${multicore_foldername}
+    document:
+      name: dev_hid_mouse_freertos_static${core_id_suffix_name}
+      category: usb_examples
+      brief: The USB HID mouse application is a simple demonstration program based
+        on the MCUXpresso SDK.It is enumerated as a mouse. Users can see the mouse
+        arrow moving on the PC screen according in a rectangular fashion.
+      example_readme:
+      - examples/usb_examples/usb_device_hid_mouse/readme.md
+      - ${board_root}/${board}/usb_examples/usb_device_hid_mouse/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+      - examples/usb_examples/usb_device_hid_mouse/dcd_detection.jpg
+  boards:
+    frdmmcxa153: []

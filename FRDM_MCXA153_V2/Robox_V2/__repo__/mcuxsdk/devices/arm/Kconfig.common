@@ -1,0 +1,42 @@
+rsource "../../arch/arm/configuration/Kconfig"
+rsource "../../arch/arm/cortexm/Kconfig"
+orsource "../../arch/arm/CMSIS/Kconfig"
+
+menu "Startup components"
+    config MCUX_COMPONENT_device.CMSIS
+        bool "CMSIS"
+        select MCUX_COMPONENT_CMSIS_Include_core_cm
+
+    config MCUX_COMPONENT_device.system
+        bool "system"
+        imply MCUX_COMPONENT_device.CMSIS
+
+    config MCUX_COMPONENT_device.startup
+        bool "startup"
+        imply MCUX_COMPONENT_device.system
+
+    config MCUX_COMPONENT_device.RTE
+        bool "rte"        
+
+    config FLASH_BASE_ADDRESS
+        hex "Flash base address"
+        default 0x0
+
+    config FLASH_DEFAULT_APP_OFFSET
+        hex "Default application offset in flash(DO NOT CHANGE, use load offset instead)"
+        default 0x0
+
+    config HAS_FLASH_LOAD_OFFSET
+        bool "Application has load offset"
+        default y
+
+    if HAS_FLASH_LOAD_OFFSET
+        config FLASH_LOAD_OFFSET
+            hex "Application load offset from flash base address"
+            default FLASH_DEFAULT_APP_OFFSET
+    endif
+endmenu
+
+config MCUX_PRJSEG_module.device.suite
+    bool
+    default y

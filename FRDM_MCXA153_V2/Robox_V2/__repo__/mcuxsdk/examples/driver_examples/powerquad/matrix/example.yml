@@ -1,0 +1,14 @@
+powerquad_matrix:
+  section-type: application
+  contents:
+    meta_path: examples/driver_examples/powerquad/matrix
+    project-root-path: boards/${board}/driver_examples/powerquad/matrix/${multicore_foldername}
+    document:
+      name: powerquad_matrix${core_id_suffix_name}
+      category: driver_examples/powerquad
+      brief: This example shows how to use powerquad driver matrix functions.
+      example_readme:
+      - examples/driver_examples/powerquad/matrix/readme.md
+      - ${board_root}/${board}/driver_examples/powerquad/matrix/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}

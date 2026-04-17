@@ -1,0 +1,30 @@
+/*!
+@defgroup smartcard Smart Card
+@details The MCUXpresso SDK provides a peripheral drivers for the UART-ISO7816 and EMVSIM/USIM modules of MCUXpresso SDK devices.@n
+ @n
+Smart Card driver provides the necessary functions to access and control integrated circuit cards.
+The driver controls communication modules (UART/EMVSIM/USIM) and handles special ICC sequences, such as the activation/deactivation
+(using EMVSIM/USIM IP or external interface chip). The Smart Card driver consists of two IPs (SmartCard_Uart and SmartCard_EmvSim drivers)
+and three PHY drivers (smartcard_phy_emvsim, smartcard_phy_tda8035, and smartcard_phy_gpio drivers). These drivers can be combined, which
+ means that the Smart Card driver wraps one IP (transmission) and one PHY (interface) driver.
+
+The driver provides asynchronous functions to communicate with the Integrated Circuit Card (ICC).
+The driver contains RTOS adaptation layers which use semaphores as synchronization
+objects of synchronous transfers. The RTOS driver support also provides protection for multithreading.
+
+# SmartCard Driver Initialization {#SmartCardInit}
+
+The Smart Card Driver is initialized by calling the SMARTCARD_Init() and SMARTCARD_PHY_Init() functions.
+The Smart Card Driver initialization configuration structure requires these settings:
+<ul>
+<li>Smart Card voltage class</li>
+<li>Smart Card Interface options such as the RST, IRQ, CLK pins, and so on.</li>
+</ul>
+The driver also supports user callbacks for assertion/de-assertion Smart Card events and transfer finish event. This feature is useful to detect the card presence
+or for handling transfer events, for example, in RTOS.
+The user should initialize the Smart Card driver, which consist of IP and PHY drivers.
+
+# SmartCard Call diagram {#SmarCardCallDiagram}
+Because the call diagram is complex, the detailed use of the Smart Card driver is not described in this section.
+For details about using the Smart Card driver, see the Smart Card driver example which describes a simple use case.
+*/

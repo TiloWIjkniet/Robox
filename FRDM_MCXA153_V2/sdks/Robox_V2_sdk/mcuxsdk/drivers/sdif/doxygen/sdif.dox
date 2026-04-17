@@ -1,0 +1,14 @@
+
+
+/*!
+@defgroup sdif SDIF: SD/MMC/SDIO card interface
+@details The MCUXpresso SDK provides a peripheral driver for the SD/MMC/SDIO card interface (sdif)
+         module of MCUXpresso SDK devices.
+
+# Typical use case {#sdifTypUC}
+
+## sdif Operation {#sdifOperation}
+
+Refer to the driver examples codes located at \<SDK_ROOT\>/boards/\<BOARD\>/driver_examples/sdif
+*/
+

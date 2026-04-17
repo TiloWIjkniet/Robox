@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 3.22.0)
+
+include("${SdkRootDirPath}/cmake/extension/mcux.cmake")
+
+project(
+  dev_cdc_ecm_nic_lite_bm
+  LANGUAGES
+    "ASM"
+    "C"
+    "CXX"
+  PROJECT_BOARD_PORT_PATH "${board_root}/${board}/usb_examples/usb_device_cdc_ecm_nic_lite/bm"
+)
+
+include("${SdkRootDirPath}/CMakeLists.txt")
+
+mcux_add_include(
+  BASE_PATH "${SdkRootDirPath}"
+  INCLUDES "examples/usb_examples/usb_device_cdc_ecm_nic_lite/bm"
+)
+
+mcux_add_macro(
+  CC "-DUSB_STACK_BM"
+)
+
+mcux_add_source(
+  BASE_PATH "${SdkRootDirPath}"
+  SOURCES
+    "examples/usb_examples/usb_device_cdc_ecm_nic_lite/bm/usb_device_cdc_ecm.c"
+    "examples/usb_examples/usb_device_cdc_ecm_nic_lite/bm/usb_device_cdc_ecm.h"
+    "examples/usb_examples/usb_device_cdc_ecm_nic_lite/bm/usb_device_ch9.c"
+    "examples/usb_examples/usb_device_cdc_ecm_nic_lite/bm/usb_device_ch9.h"
+    "examples/usb_examples/usb_device_cdc_ecm_nic_lite/bm/usb_device_descriptor.c"
+    "examples/usb_examples/usb_device_cdc_ecm_nic_lite/bm/usb_device_descriptor.h"
+    "examples/usb_examples/usb_device_cdc_ecm_nic_lite/bm/app.c"
+    "examples/usb_examples/usb_device_cdc_ecm_nic_lite/bm/app.h"
+)
+
+mcux_add_mdk_configuration(
+  LD "--library_type=microlib"
+)
+
+include("${SdkRootDirPath}/${board_root}/${board}/usb_examples/usb_device_cdc_ecm_nic_lite/bm/reconfig.cmake" OPTIONAL)
+
+mcux_convert_binary(
+  BINARY "${APPLICATION_BINARY_DIR}/${MCUX_SDK_PROJECT_NAME}.bin"
+)

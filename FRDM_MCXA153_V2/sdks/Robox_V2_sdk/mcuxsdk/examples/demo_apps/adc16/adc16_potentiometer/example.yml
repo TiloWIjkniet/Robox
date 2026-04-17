@@ -1,0 +1,15 @@
+adc16_potentiometer:
+  section-type: application
+  contents:
+    meta_path: examples/demo_apps/adc16/adc16_potentiometer
+    project-root-path: boards/${board}/demo_apps/adc16_potentiometer/${multicore_foldername}
+    document:
+      name: adc16_potentiometer${core_id_suffix_name}
+      category: demo_apps
+      brief: The ADC potentiometer demo application demonstrates how to read the analog
+        value from a hardware potentiometer via theADC peripheral.
+      example_readme:
+      - examples/demo_apps/adc16/adc16_potentiometer/readme.md
+      - ${board_root}/${board}/demo_apps/adc16_potentiometer/example_board_readme.md
+      - ${board_root}/${board}/examples_shared_readme.md
+  boards: {}
