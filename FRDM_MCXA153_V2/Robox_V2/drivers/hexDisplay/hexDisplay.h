@@ -21,14 +21,6 @@ void hexDisplay_off(void);
  */
 void hexDisplay_displayValue(uint8_t value);
 
-/**
- * @brief Displays a time value in MM:SS format.
- *
- * Converts milliseconds into minutes and seconds, then displays
- * the result on a 4-digit display.
- *
- * @param ms Time in milliseconds.
- */
-void hexDisplay_displayTime(uint32_t ms);
+void hexDisplay_setTime(uint8_t min, uint8_t sec);
 
 #endif

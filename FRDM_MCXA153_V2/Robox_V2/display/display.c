@@ -55,7 +55,7 @@ void display_updateQueue(void)
         activeDisplayTemplate = item->displayTemplate;
         item->displayStart_ms = now;
         item->state = DISPLAY_STATE_ACTIVE;
-        display_print(activeDisplayTemplate);
+        display_render(activeDisplayTemplate);
 
     }
 
@@ -72,10 +72,13 @@ int display_forceTemplate(const displayTemplate_t displayTemplate, const uint32_
     tail = 0;
     head = 1;
     
-    displayQueue[tail].displayTemplate   = displayTemplate;
-    displayQueue[tail].duration_ms       = duration_ms;
-    displayQueue[tail].displayStart_ms   = 0;
-    displayQueue[tail].state             = DISPLAY_STATE_QUEUED;
+   displayQueue[head] =
+   {
+        .displayTemplate = displayTemplate,
+        .duration_ms = duration_ms,
+        .displayStart_ms = 0,
+        .state = DISPLAY_STATE_QUEUED
+    };
 
 
     return 0;
@@ -84,22 +87,25 @@ int display_forceTemplate(const displayTemplate_t displayTemplate, const uint32_
 int display_queueTemplate(const displayTemplate_t displayTemplate, const uint32_t duration_ms)
 {
     if(activeDisplayTemplate == displayTemplate) return -1;
-    if(queueContainsDisplay(displayTemplate)) return -1;
+    if(display_queueContains(displayTemplate)) return -1;
 
     uint8_t tmpHead = (head + 1) & MAX_ITEMS_IN_DISPLAY_QUEUE_MASK;
     if(tmpHead == tail) return -1;
 
-    displayQueue[tmpHead].displayTemplate   = displayTemplate;
-    displayQueue[tmpHead].duration_ms       = duration_ms;
-    displayQueue[tmpHead].displayStart_ms   = 0;
-    displayQueue[tmpHead].state             = DISPLAY_STATE_QUEUED;
+    displayQueue[tmpHead] = 
+    {
+        .displayTemplate = displayTemplate,
+        .duration_ms = duration_ms,
+        .displayStart_ms = 0,
+        .state = DISPLAY_STATE_QUEUED
+    };
 
     head = tmpHead;
 
     return 0;
 }
 
-void display_print(const displayTemplate_t displayTemplate)
+void display_render(const displayTemplate_t displayTemplate)
 {
 
 }

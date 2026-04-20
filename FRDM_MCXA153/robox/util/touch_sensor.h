@@ -7,7 +7,7 @@ typedef enum
   WHITE,
   RED,
   GREEN
-}collors_t;
+}colors_t;
 
 void touchSensor_init(void);
 

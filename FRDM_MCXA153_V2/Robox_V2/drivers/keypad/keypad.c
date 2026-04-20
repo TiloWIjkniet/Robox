@@ -15,7 +15,10 @@ const uint8_t pin_colums[COLS] = {PIN_COLUM_0, PIN_COLUM_1, PIN_COLUM_2};
 const uint8_t pin_row[ROWS] = {PIN_ROW_0, PIN_ROW_1, PIN_ROW_2, PIN_ROW_3};
 
 
+#define BOUNCE_TIME 50
+#define NO_KEY 0
 #define DEFAULT_CHAR '\0'
+
 #define MAX_INPUT_BUFFER_LEN (MAX_INPUT_DATA_LEN - 1)
 const uint8_t keymap[ROWS][COLS] =
 {
@@ -47,6 +50,11 @@ void keypad_init(void)
     pin_init(GPIO3, PIN_ROW_1, INPUT_PULLUP, 0);
     pin_init(GPIO3, PIN_ROW_2, INPUT_PULLUP, 0);
     pin_init(GPIO3, PIN_ROW_3, INPUT_PULLUP, 0);
+
+    for (uint8_t col = 0; col < COLS; col++)
+    {   
+        setPinState(GPIO3, pin_colums[col], true);
+    }
 }
 
 bool keypad_answerAvailable(void)
@@ -54,7 +62,7 @@ bool keypad_answerAvailable(void)
     return answerAvailable;
 }
 
-void keypad_getAnswer(inputData_t answer)
+void keypad_getAnswer(inputData_t *answer)
 {
    memcpy(answer, inputData, sizeof(inputData_t)); 
    answerAvailable = false;
@@ -63,11 +71,6 @@ void keypad_getAnswer(inputData_t answer)
 char keypad_getkey(void)
 {
     static keypadButtons_t keypadButtons[COLS][ROWS] = {};
-    for (uint8_t col = 0; col < COLS; col++)
-    {   
-        setPinState(GPIO3, pin_colums[col], true);
-    }
-
 
   for(uint8_t col = 0; col < COLS; col++)
   {
@@ -76,19 +79,17 @@ char keypad_getkey(void)
     for (uint8_t row =0; row < ROWS; row++)
     {
         bool val = getPinState(GPIO3, pin_row[row]);
-        bool debouncedVal = pin_debounce(val, &keypadButtons[col][row].debounce);
+        bool debouncedVal = pin_debounce(val, &keypadButtons[col][row].debounce, BOUNCE_TIME);
 
         bool prev = keypadButtons[col][row].lastStatus;
         keypadButtons[col][row].lastStatus = debouncedVal;
 
         if(debouncedVal && !prev) return keymap[row][col];
-        
-        
     }
     setPinState(GPIO3, pin_colums[col], true);
 
   }
-  return DEFAULT_CHAR;
+  return NO_KEY;
     
 }
 
@@ -97,7 +98,7 @@ bool keypad_update(void)
     char key = keypad_getkey();
     switch (key) 
     {
-        case '\0':
+        case NO_KEY:
         {
             return false;
         }

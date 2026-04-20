@@ -26,7 +26,7 @@ bool keypad_answerAvailable(void);
  *
  * @param answer Destination buffer where the keypad input will be copied.
  */
-void keypad_getAnswer(inputData_t answer);
+void keypad_getAnswer(inputData_t *answer);
 
 /**
  * @brief Updates keypad input state and processes key events.

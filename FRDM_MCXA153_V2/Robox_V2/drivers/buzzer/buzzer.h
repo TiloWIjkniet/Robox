@@ -31,10 +31,8 @@ void buzzer_init(void);
  * Switches the buzzer between ON and OFF states. 
  * Is auto reset in Buzzer_update() 
  *
- * @return true  If the buzzer is now ON.
- * @return false If the buzzer is now OFF.
  */
-bool buzzer_toggle(void);
+void buzzer_toggle(void)
 
 
 /**

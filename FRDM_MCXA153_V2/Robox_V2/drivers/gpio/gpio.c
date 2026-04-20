@@ -1,7 +1,7 @@
 #include "gpio.h"
 #include "time.h"
 
-#define BOUNCE_TIME 50
+
 
 static inline PORT_Type *getGpio(const GPIO_Type *pGpio)
 {
@@ -62,7 +62,7 @@ typedef struct
     uint32_t lastChangeTime;
 } debounce_t;
 
-bool pin_debounce(const bool pinStatus, debounce_t *debounce)
+bool pin_debounce(const bool pinStatus, debounce_t *debounce , const uint32_t bounce_time)
 {
     uint32_t now = millis();
     if(pinStatus != debounce->lastRaw)
@@ -72,7 +72,7 @@ bool pin_debounce(const bool pinStatus, debounce_t *debounce)
         return false;
     }
 
-    if(now - debounce->lastChangeTime < BOUNCE_TIME )return false;
+    if(now - debounce->lastChangeTime < bounce_time )return false;
 
     return pinStatus;
 }
