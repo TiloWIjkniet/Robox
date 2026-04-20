@@ -22,7 +22,7 @@ const char* eventNames[] = { "E_INIT_COMPLETE", "E_START_DEV", "E_EXIT_DEV",
 #define MAX_EVENTS_IN_BUFFER 4
 #define MAX_EVENTS_IN_BUFFER_MASK (MAX_EVENTS_IN_BUFFER - 1)
 
-state_funcs_t state_funcs[MAX_STATES] = {};
+state_funcs_t stateFuncs[MAX_STATES] = {};
 transition_t transitions[MAX_TRANSITIONS] = {};
 event_t events[MAX_EVENTS_IN_BUFFER] = {};
 
@@ -45,7 +45,7 @@ void FSM_addState(const state_t state, const state_funcs_t *funcs)
         DEBUG_PRINT("[DEBUG_FSM] State added, Event %s\n",stateNames[state]);
     #endif
     if(numOfStates > MAX_STATES) return;
-    memcpy(&state_funcs[state], funcs, sizeof(state_funcs_t));
+    memcpy(&stateFuncs[state], funcs, sizeof(state_funcs_t));
     numOfStates++;
 }
 /**
@@ -111,14 +111,14 @@ state_t FSM_eventHandler(const state_t state, const event_t event)
         {
             if(transitions[i].event == event)
             {
-                if(state_funcs[transitions[i].from].onExit != NULL)
+                if(stateFuncs[transitions[i].from].onExit != NULL)
                 {
-                    state_funcs[transitions[i].from].onExit();
+                    stateFuncs[transitions[i].from].onExit();
                 }
                 nextState = transitions[i].to; 
-                if(state_funcs[transitions[i].to].onEntry != NULL)
+                if(stateFuncs[transitions[i].to].onEntry != NULL)
                 {
-                    state_funcs[transitions[i].to].onEntry();
+                    stateFuncs[transitions[i].to].onEntry();
                 }
             }
         }
@@ -134,7 +134,7 @@ state_t FSM_eventHandler(const state_t state, const event_t event)
  *        laten werken, moet deze functie herhaaldelijk in een while-loop
  *        in de main functie worden aangeroepen.
  */
-void FSM_runStateMachine(void)
+void FSM_update(void)
 {
     static event_t event;
     static state_t state = S_INIT;
@@ -152,8 +152,8 @@ void FSM_runStateMachine(void)
 
     }
 
-    if(state_funcs[state].onUpdate != NULL)
+    if(stateFuncs[state].onUpdate != NULL)
     {
-        state_funcs[state].onUpdate();
+        stateFuncs[state].onUpdate();
     }
 }

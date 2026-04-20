@@ -9,12 +9,15 @@
  *
  * @return uint32_t Aantal milliseconden sinds start.
  */
-extern uint32_t ms;
+extern volatile uint32_t ms;
 static inline uint32_t millis(void)
 {
     return ms;
 }
 
+/**
+ * @brief Initialiseert de milliseconde timer met behulp van de SysTick.
+ */
 void millis_init(void);
 
 #endif

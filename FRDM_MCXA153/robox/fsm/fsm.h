@@ -20,7 +20,7 @@ typedef struct
 }transition_t;
 
 void FSM_config(void);
-void FSM_runStateMachine(void);
+void FSM_update(void);
 void FSM_addEvent(const event_t event);
 void FSM_addState(const state_t state, const state_funcs_t *funcs);
 

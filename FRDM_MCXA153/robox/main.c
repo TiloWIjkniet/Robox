@@ -58,7 +58,7 @@ int main(void)
   {
     
     //Standaard updates die altijd moeten lopen
-    FSM_runStateMachine();
+    FSM_update();
     updateHM10();
     updateDisplayQueue();
     updateBuzzer();

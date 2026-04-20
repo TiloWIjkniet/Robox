@@ -16,69 +16,26 @@ include(${SdkRootDirPath}/CMakeLists.txt)
 
 mcux_add_source(
     SOURCES main.c
-
-            fifo/fifo.c
-            fifo/fifo.h
+            board/board.h
 
             fsm/fsm.c
-            fsm/fsm_config.c
-            fsm/states.h
             fsm/fsm.h
+            fsm/states.h
             fsm/events.h
-            
-            serial2lpuart/lpuart2.c
-            serial2lpuart/lpuart2.h
+            fsm/fsm_init.c
 
-            serial1lpuart/lpuart1.c
-            serial1lpuart/lpuart1.h
-
-            serial/retarget.c
-            serial/serial.c
-            serial/serial.h
-
-            state_logic/idle.c
-            state_logic/dev_page.c
-            state_logic/rooms.c
-            state_logic/state_lifecycle.c
-            state_logic/game_logic.c
             state_logic/state_logic.h
-            state_logic/game_logic.h
-            state_logic/game_data.h
-            state_logic/display_template.h
-            state_logic/display_template.c
 
-            util/keypad.c
-            util/keypad.h
-            util/time_millis.c
-            util/time_millis.h
-            util/buzzer.c
-            util/buzzer.h
-            util/touch_sensor.c
-            util/touch_sensor.h
-            util/hexDisplay.c
-            util/hexDisplay.h
-            util/HM10.c
-            util/HM10.h
-            util/audio.c
-            util/audio.h
-            util/switch_and_key_sensors.c
-            util/switch_and_key_sensors.h
-            util/display.c
-            util/display.h
-
-            board/board.h
+            gpio/gpio.h
+            gpio/gpio.c
 )
 
 mcux_add_include(
     INCLUDES .
             board
-            fifo
             fsm
-            serial
             state_logic
-            util
-            serial2lpuart
-            serial1lpuart
+            gpio
    
 )
 

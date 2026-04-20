@@ -84,7 +84,7 @@ void sendCommand(audio_command_t cmdData)
     
     for (uint8_t i = 0; i < CMD_LENGTH; i++) 
     {
-        serial_putchar(cmdBuffer[i]);
+        lupart0_putchar(cmdBuffer[i]);
     }
 }
 

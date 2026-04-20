@@ -30,7 +30,7 @@
  *
  *****************************************************************************/
 #include <stdio.h>
-#include "serial.h"
+#include "lupart0.h"
 
 // -----------------------------------------------------------------------------
 // Local type definitions
@@ -77,7 +77,7 @@ int _write(int fd, const void *buf, size_t count)
 
     for(size_t i=0; i<count; i++)
     {
-        serial_putchar(((char *)buf)[i]);
+        lupart0_putchar(((char *)buf)[i]);
     }
 
     return count;
@@ -89,7 +89,7 @@ int _read(int fd, const void *buf, size_t count)
 
     for(size_t i=0; i<count; i++)
     {
-        ((char *)buf)[i] = serial_getchar();
+        ((char *)buf)[i] = lupart0_getchar();
     }
 
     return count;

@@ -55,13 +55,13 @@
 
 int stdout_putchar(int ch)
 {
-    serial_putchar(ch);
+    lupart0_putchar(ch);
     return ch;
 }
 
 int stdin_getchar(void)
 {
-    return serial_getchar();
+    return lupart0_getchar();
 }
 
 #endif
@@ -77,7 +77,7 @@ int _write(int fd, const void *buf, size_t count)
 
     for(size_t i=0; i<count; i++)
     {
-        serial_putchar(((char *)buf)[i]);
+        lupart0_putchar(((char *)buf)[i]);
     }
 
     return count;
@@ -89,7 +89,7 @@ int _read(int fd, const void *buf, size_t count)
 
     for(size_t i=0; i<count; i++)
     {
-        ((char *)buf)[i] = serial_getchar();
+        ((char *)buf)[i] = lupart0_getchar();
     }
 
     return count;
@@ -120,7 +120,7 @@ int __sys_write(int handle, char *buffer, int size)
     // Send data
     for(size_t i=0; i<size; i++)
     {
-        serial_putchar(((char *)buffer)[i]);
+        lupart0_putchar(((char *)buffer)[i]);
     }
 
     return size;
@@ -128,7 +128,7 @@ int __sys_write(int handle, char *buffer, int size)
 
 int __sys_readc(void)
 {
-    return serial_getchar();
+    return lupart0_getchar();
 }
 
 #endif

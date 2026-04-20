@@ -14,16 +14,16 @@
 #define DEBOUNCE_TIME 50
 
 
-#define PIN_COLOM_0 10
-#define PIN_COLOM_1 6
-#define PIN_COLOM_2 8
+#define PIN_COLUM_0 10
+#define PIN_COLUM_1 6
+#define PIN_COLUM_2 8
 
 #define PIN_ROW_0 7 // Controleren of goed
 #define PIN_ROW_1 31
 #define PIN_ROW_2 11
 #define PIN_ROW_3 9
 
-const  uint8_t pin_coloms[COLS]  = {PIN_COLOM_0, PIN_COLOM_1, PIN_COLOM_2};
+const  uint8_t pin_coloms[COLS]  = {PIN_COLUM_0, PIN_COLUM_1, PIN_COLUM_2};
 const uint8_t pin_rows[ROWS]    = {PIN_ROW_0, PIN_ROW_1, PIN_ROW_2, PIN_ROW_3};
 
 const uint8_t keymap[ROWS][COLS] =
@@ -61,12 +61,12 @@ void keyPad_init(void)
     MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_PORT3(1);
     MRCC0->MRCC_GLB_RST1_SET = MRCC_MRCC_GLB_RST1_GPIO3(1); 
 
-    PORT3->PCR[PIN_COLOM_0] = PORT_PCR_LK(1);
-    PORT3->PCR[PIN_COLOM_1] = PORT_PCR_LK(1);
-    PORT3->PCR[PIN_COLOM_2] = PORT_PCR_LK(1);
+    PORT3->PCR[PIN_COLUM_0] = PORT_PCR_LK(1);
+    PORT3->PCR[PIN_COLUM_1] = PORT_PCR_LK(1);
+    PORT3->PCR[PIN_COLUM_2] = PORT_PCR_LK(1);
 
-    GPIO3->PDOR |= (1<<PIN_COLOM_0) | (1<<PIN_COLOM_1) | (1<<PIN_COLOM_2);
-    GPIO3->PDDR |= (1<<PIN_COLOM_0) | (1<<PIN_COLOM_1) | (1<<PIN_COLOM_2);
+    GPIO3->PDOR |= (1<<PIN_COLUM_0) | (1<<PIN_COLUM_1) | (1<<PIN_COLUM_2);
+    GPIO3->PDDR |= (1<<PIN_COLUM_0) | (1<<PIN_COLUM_1) | (1<<PIN_COLUM_2);
 
     PORT3->PCR[PIN_ROW_0] = PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_MUX(0) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
     PORT3->PCR[PIN_ROW_1] = PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_MUX(0) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
