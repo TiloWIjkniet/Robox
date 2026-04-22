@@ -36,9 +36,11 @@ fingerprintState_t fingerprintScanner_update(bool active)
     static uint32_t blinkTime = 0;
 
     uint32_t now = millis();
-
     bool isPressing = getPinState(GPIO3, TOUCH_SENSOR_PIN);
     bool debouncedPress = pin_debounce(isPressing, &debounce, DEBOUNCE_TIME);
+
+    colors_t c_off = active ? WHITE : OFF;
+    colors_t c_on  = active ? GREEN : RED;
 
     switch (state)
     {
@@ -48,9 +50,8 @@ fingerprintState_t fingerprintScanner_update(bool active)
         {
             state = FINGERPRINT_START;
         }
-        fingerprintScanner_setColor(active ? WHITE : OFF);
+        fingerprintScanner_setColor(c_off);
         return FINGERPRINT_OFF;
-    break;
     }
     case FINGERPRINT_START:
     {
@@ -58,7 +59,7 @@ fingerprintState_t fingerprintScanner_update(bool active)
         startScanTime = now;
         blinkState = false;
         blinkTime = now;
-        fingerprintScanner_setColor(active ? GREEN : RED);
+        fingerprintScanner_setColor(c_on);
         return FINGERPRINT_START;
     }
     case FINGERPRINT_SCANNING:
@@ -73,31 +74,26 @@ fingerprintState_t fingerprintScanner_update(bool active)
             state = FINGERPRINT_SUCCESS;
             return FINGERPRINT_SCANNING;
         }
-        else
+     
+        uint32_t elapsed = now - startScanTime;
+        if(elapsed > BLINK_RANGE) elapsed = BLINK_RANGE;
+
+        uint32_t ratio = (elapsed * elapsed) / BLINK_RANGE;
+        uint32_t blinkDelay = MAX_BLINK_DELAY - ((MAX_BLINK_DELAY - MIN_BLINK_DELAY) * ratio) / BLINK_RANGE;
+        if(now - blinkTime >= blinkDelay)
         {
-            uint32_t elapsed = now - startScanTime;
-            if(elapsed > BLINK_RANGE) elapsed = BLINK_RANGE;
+            blinkTime += blinkDelay;
+            blinkState = !blinkState;
 
-            uint32_t ratio = (elapsed * elapsed) / BLINK_RANGE;
-            uint32_t blinkDelay = MAX_BLINK_DELAY - ((MAX_BLINK_DELAY - MIN_BLINK_DELAY) * ratio) / BLINK_RANGE;
-            if(now - blinkTime >= blinkDelay)
-            {
-                blinkTime += blinkDelay;
-                blinkState ^= 1;
-
-                colors_t c1 = active ? WHITE : OFF;
-                colors_t c2 = active ? GREEN : RED;
-                fingerprintScanner_setColor(blinkState ? c1 : c2);
-            }
+            fingerprintScanner_setColor(blinkState ? c_off : c_on);
         }
-
-
+        
         return FINGERPRINT_SCANNING;
     }
     case FINGERPRINT_SUCCESS:
     {
         state = FINGERPRINT_COMPLETE;
-        fingerprintScanner_setColor(active ? GREEN : RED);
+        fingerprintScanner_setColor(c_on);
         return FINGERPRINT_SUCCESS;
     }
     case FINGERPRINT_COMPLETE:

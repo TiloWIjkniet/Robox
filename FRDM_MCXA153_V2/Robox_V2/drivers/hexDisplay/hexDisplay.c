@@ -131,13 +131,15 @@ void hexDisplay_displayValue(uint8_t value)
 
 bool hexDisplay_displayTime(uint32_t ms)
 {
-  static lastSec = 0;
-  uint16_t min = (ms / 1000) / (60);
-  uint16_t sec = (ms / 1000) % (60);
+  static uint8_t lastSec = 0;
+  uint16_t totalSec = ms / SEC_TO_MS;
+  uint8_t min = totalSec / 60;
+  uint8_t sec = totalSec % 60;
 
   if(lastSec == sec) return false;
-  
-  hexDisplay_digitsValues(min,sec);
+  lastSec = sec;
+
+  hexDisplay_setTime(min, sec);
   return true;
 
 }

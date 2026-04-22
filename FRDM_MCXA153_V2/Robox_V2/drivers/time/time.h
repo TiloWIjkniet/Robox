@@ -11,7 +11,7 @@
  *
  * @return uint32_t Milliseconds elapsed since start.
  */
-extern uint32_t ms;
+extern volatile uint32_t ms;
 static inline uint32_t millis(void)
 {
     return ms;

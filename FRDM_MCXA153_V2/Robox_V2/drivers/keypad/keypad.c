@@ -33,14 +33,18 @@ inputData_t inputData;
 
 void keypad_init(void)
 {
-    for (uint8_t row = 0; row < ROWS; row++)
+    const uint8_t *rows = pin_row;
+    const uint8_t *cols = pin_colums;
+
+    for (uint8_t i = 0; i < ROWS; i++)
     {
-        pin_init(GPIO3, pin_row[row], INPUT_PULLUP, 0);
+        pin_init(GPIO3, rows[i], INPUT_PULLUP, 0);
     }
-    for (uint8_t col = 0; col < COLS; col++)
+
+    for (uint8_t i = 0; i < COLS; i++)
     {   
-        pin_init(GPIO3, pin_colums[col], OUTPUT, 0);
-        setPinState(GPIO3, pin_colums[col], true);
+        pin_init(GPIO3, cols[i], OUTPUT, 0);
+        setPinState(GPIO3, cols[i], true);
     }
 }
 
@@ -54,19 +58,25 @@ char keypad_getkey(void)
 {
     static debounce_t keypadButtons[COLS][ROWS] = {};
 
+    const uint8_t *cols = pin_colums;
+    const uint8_t *rows = pin_row;
   for(uint8_t col = 0; col < COLS; col++)
   {
-    setPinState(GPIO3, pin_colums[col], false);
+    setPinState(GPIO3, cols[col], false);
 
     for (uint8_t row =0; row < ROWS; row++)
     {
-        bool val = getPinState(GPIO3, pin_row[row]);
+        bool val = getPinState(GPIO3, rows[row]);
         bool prev = keypadButtons[col][row].lastStable;
         bool debouncedVal = pin_debounce(val, &keypadButtons[col][row], DEFAULT_DEBOUNCE_TIME);
         
-        if(debouncedVal && !prev) return keymap[row][col];
+        if(debouncedVal && !prev) 
+        {
+            setPinState(GPIO3, cols[col], true);
+            return keymap[row][col];
+        }
     }
-    setPinState(GPIO3, pin_colums[col], true);
+    setPinState(GPIO3, cols[col], true);
 
   }
   return NO_KEY;
@@ -76,16 +86,14 @@ char keypad_getkey(void)
 bool keypad_update(void)
 {
     char key = keypad_getkey();
+    if(key == NO_KEY) return;
+
     switch (key) 
     {
-        case NO_KEY:
-        {
-            return false;
-        }
         case '#':
         {
-            inputData[inputBuffer_len] = '\0';
             memcpy(inputData, inputBuffer, inputBuffer_len);
+            inputData[inputBuffer_len] = '\0';
 
             answerAvailable = true;
             inputBuffer_len = 0;
@@ -98,8 +106,11 @@ bool keypad_update(void)
         }
         default:
         {
-            inputBuffer[inputBuffer_len] = key;
-            if(inputBuffer_len < MAX_INPUT_BUFFER_LEN) inputBuffer_len ++;
+            
+            if(inputBuffer_len < MAX_INPUT_BUFFER_LEN) 
+            {
+                inputBuffer[inputBuffer_len++] = key;
+            }
             break;
         }
     }
