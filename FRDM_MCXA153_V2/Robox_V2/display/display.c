@@ -37,8 +37,7 @@ bool display_queueContains(const displayTemplate_t displayTemplate)
     {
         if(displayQueue[i].displayTemplate == displayTemplate) return true;
         i = (i + 1) & MAX_ITEMS_IN_DISPLAY_QUEUE_MASK;
-    }
-    
+    } 
     return false;
 }
 
@@ -71,8 +70,8 @@ int display_forceTemplate(const displayTemplate_t displayTemplate, const uint32_
     
     tail = 0;
     head = 1;
-    
-   displayQueue[head] =
+
+   displayQueue[head] = (displayQueueItem_t)
    {
         .displayTemplate = displayTemplate,
         .duration_ms = duration_ms,
@@ -92,7 +91,7 @@ int display_queueTemplate(const displayTemplate_t displayTemplate, const uint32_
     uint8_t tmpHead = (head + 1) & MAX_ITEMS_IN_DISPLAY_QUEUE_MASK;
     if(tmpHead == tail) return -1;
 
-    displayQueue[tmpHead] = 
+    displayQueue[tmpHead] = (displayQueueItem_t)
     {
         .displayTemplate = displayTemplate,
         .duration_ms = duration_ms,

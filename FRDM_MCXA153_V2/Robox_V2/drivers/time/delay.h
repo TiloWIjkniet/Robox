@@ -14,7 +14,7 @@
  *
  * @param ms Number of milliseconds to wait.
  */
-void delay(uint32_t ms);
+void delay_ms(uint32_t ms);
 
 /**
  * @brief Very short busy-wait delay.

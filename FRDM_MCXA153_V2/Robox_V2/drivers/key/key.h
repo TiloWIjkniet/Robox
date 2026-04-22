@@ -4,7 +4,6 @@
 #include "gpio.h"
 
 #define KEY_SENSOR_PIN 1
-#define DEBOUNCE_TIME 50
 
 
 /**
@@ -43,7 +42,7 @@ static inline bool key_getState(void)
 {
     static debounce_t debounce;
     bool rawState = key_getRawState();
-    return !pin_debounce(rawState, &debounce, DEBOUNCE_TIME);
+    return !pin_debounce(rawState, &debounce, DEFAULT_DEBOUNCE_TIME);
 }
 
 #endif

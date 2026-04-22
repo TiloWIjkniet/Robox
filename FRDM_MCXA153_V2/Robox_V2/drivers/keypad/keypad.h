@@ -2,7 +2,9 @@
 #define KEYPAD_H
 
 #define MAX_INPUT_DATA_LEN 9
+
 typedef char inputData_t[MAX_INPUT_DATA_LEN];
+extern bool answerAvailable;
 
 void keypad_init(void);
 /**
@@ -16,7 +18,10 @@ void keypad_init(void);
  * @return true  An answer is available in the input buffer.
  * @return false No complete input has been received yet.
  */
-bool keypad_answerAvailable(void);
+static inline bool keypad_answerAvailable(void)
+{
+    return answerAvailable;
+}
 
 /**
  * @brief Copies the current keypad input buffer to the provided output buffer.

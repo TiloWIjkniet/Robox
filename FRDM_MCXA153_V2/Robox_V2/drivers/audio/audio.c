@@ -44,6 +44,17 @@
 #define FORCE 0x010
 #define PLAY_ONLY_RIGHT_AWAY 0x100
 
+
+
+ typedef struct
+ {
+    uint8_t cmd,
+    uint8_t parm1,
+    uint8_t parm2,
+ } audioCommand_t;
+
+ audioCommand_t audioQueue[AUDIO_QUEUE_LEN] = {};
+
 void audio_init(void)
 {
     pin_init(GPIO2, BUSY_PIN, INPUT, 0);
@@ -54,53 +65,17 @@ static inline bool audio_isPlaying(void)
     return getPinState(GPIO2, BUSY_PIN);
 }
 
-
-
-//FORCE skippet skippable items
-
- typedef struct
- {
-    bool isNewAudio;
-    uint8_t cmd,
-    uint8_t parm1,
-    uint8_t parm2,
-    uint16_t type
- } audioCommand_t;
-
- audioCommand_t audioQueue[AUDIO_QUEUE_LEN] = {};
-
-
  void audio_sendCommand(audioCommand_t audioCommand)
  {
 
  }
-
-void audio_play(uint8_t cmd, uint8_t parm1, uint8_t parm2, uint16_t  type)
+void audio_play()
 {
-    if((type & PLAY_ONLY_RIGHT_AWAY) && audio_isPlaying()) return; 
-    audioQueue[AUDIO_IN_QUEUE].isNewAudio = true;
-    audioQueue[AUDIO_IN_QUEUE].type = type;
-    audioQueue[AUDIO_IN_QUEUE].type = cmd;
-    audioQueue[AUDIO_IN_QUEUE].type = parm1;
-    audioQueue[AUDIO_IN_QUEUE].type = parm2;
+
 }
 
 void audio_update(void)
 {
-    static uint32_t lastSendData = 0;
 
-    if(!audioQueue[AUDIO_IN_QUEUE].isNewAudio) return;
-    if(!(audioQueue[AUDIO_IN_QUEUE].type & FORCE) && (audioQueue[AUDIO_PLAYING].type & UN_SKIPPABLE))
-    {
-        if(audio_isPlaying()) return;
-    }
-
-    uint32_t now = millis();
-    if(now - lastSendData > AUDIO_SEND_DELAY) return;
-
-    audioQueue[AUDIO_PLAYING] = audioQueue[AUDIO_IN_QUEUE];
-    audioQueue[AUDIO_IN_QUEUE].isNewAudio = false;
-    audio_sendCommand(audioQueue[AUDIO_PLAYING]);
-    
 }
 

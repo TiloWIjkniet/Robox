@@ -1,5 +1,5 @@
 
-
+#include "time.h"
 volatile uint32_t ms = 0;
 
 void millis_init(void)

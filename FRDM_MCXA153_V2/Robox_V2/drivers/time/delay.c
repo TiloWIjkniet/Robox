@@ -1,7 +1,7 @@
 #include "delay.h"
 #include "time.h"
 
-void delay(uint32_t ms)
+void delay_ms(uint32_t ms)
 {
     uint32_t startDelay = millis();
     while (millis() - startDelay < ms)

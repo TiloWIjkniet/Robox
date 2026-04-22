@@ -55,13 +55,6 @@ static inline void enableClock(const GPIO_Type *pGpio)
 
 }
 
-
-typedef struct
-{
-    bool lastRaw;
-    uint32_t lastChangeTime;
-} debounce_t;
-
 bool pin_debounce(const bool pinStatus, debounce_t *debounce , const uint32_t bounce_time)
 {
     uint32_t now = millis();
@@ -69,11 +62,11 @@ bool pin_debounce(const bool pinStatus, debounce_t *debounce , const uint32_t bo
     {
         debounce->lastChangeTime = now;
         debounce->lastRaw = pinStatus;
-        return false;
+        return debounce->lastStable;
     }
 
-    if(now - debounce->lastChangeTime < bounce_time )return false;
-
+    if(now - debounce->lastChangeTime < bounce_time )return debounce->lastStable;
+    debounce->lastStable = pinStatus;
     return pinStatus;
 }
 

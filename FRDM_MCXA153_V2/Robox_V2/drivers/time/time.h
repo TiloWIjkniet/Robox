@@ -4,6 +4,8 @@
 #include "board.h"
 #include <stdint.h>
 
+#define SEC_TO_MS 1000
+#define MIN_TO_MS (60 * SEC_TO_MS)
 /**
  * @brief Returns the number of milliseconds since the timer started.
  *

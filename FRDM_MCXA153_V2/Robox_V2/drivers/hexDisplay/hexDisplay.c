@@ -7,11 +7,11 @@
 #define PIN_CLK 30
 #define PIN_DIO 31
 
-#define NUMBER_OF_HEX_NUMBERS 11
+#define HEX_CHAR_LEN 11
 
 #define OFF 10
 
-static const uint8_t segments[NUMBER_OF_HEX_NUMBERS] = 
+static const uint8_t segments[HEX_CHAR_LEN] = 
 {
     0b00111111, // 0
     0b00000110, // 1
@@ -42,14 +42,14 @@ static inline void hexDisplay_setDIO(bool value)
     setPinState(GPIO3, PIN_DIO, value);
 }
 
-void start(void) 
+static inline void start(void) 
 {
   hexDisplay_setCLK(true);
   hexDisplay_setDIO(true);
   hexDisplay_setDIO(false);
 }
 
-void stop(void) 
+static inline void stop(void) 
 {
   hexDisplay_setCLK(false);
   hexDisplay_setDIO(false);
@@ -129,9 +129,17 @@ void hexDisplay_displayValue(uint8_t value)
 
 }
 
-void hexDisplay_displayTime(uint32_t ms)
+bool hexDisplay_displayTime(uint32_t ms)
 {
-    
+  static lastSec = 0;
+  uint16_t min = (ms / 1000) / (60);
+  uint16_t sec = (ms / 1000) % (60);
+
+  if(lastSec == sec) return false;
+  
+  hexDisplay_digitsValues(min,sec);
+  return true;
+
 }
 
 

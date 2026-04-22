@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include "board.h"
 
+#define DEFAULT_DEBOUNCE_TIME 50
+
 typedef struct
 {
     bool lastRaw;

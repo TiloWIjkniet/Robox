@@ -28,8 +28,9 @@ void fingerprintScanner_init(void)
 fingerprintState_t fingerprintScanner_update(bool active)
 {
     static fingerprintState_t state = FINGERPRINT_OFF;
-    static uint32_t startScanTime = 0;
+
     static debounce_t debounce;
+    static uint32_t startScanTime = 0;
 
     static bool blinkState = false;
     static uint32_t blinkTime = 0;

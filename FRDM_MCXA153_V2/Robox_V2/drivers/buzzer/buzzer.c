@@ -24,9 +24,8 @@ void buzzer_setPin(bool val)
 
 bool buzzer_toggle(void)
 {
-    lastStatus = !lastStatus;
-    buzzer_setPin(lastStatus);
-    return lastStatus;
+    buzzer_setPin(!lastStatus);
+    return !lastStatus;
 }
 
 void buzzer_update(void)
