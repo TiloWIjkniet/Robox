@@ -147,7 +147,7 @@ static uint8_t HM10_extractStrength(const char *line)
     return val;
 }
 
-static void HM10_updateBeacon(char *beaconIp, uint8_t strength)
+static void HM10_updateBeacon(char *beaconIp, const uint8_t strength)
 {
     uint8_t tmpHead = beacons_head;
     beacon_t *b = beacons;
@@ -209,12 +209,40 @@ static void HM10_checkResponse(void)
     }
 }
 
-void HM10_getStrongestBeaconIp(char *ip)
+void HM10_getStrongestBeaconIp(const char *ip)
 {
     uint8_t strongestBeaconIndex = HM10_getStrongestBeaconIndex();
     memcpy(ip, beacons[strongestBeaconIndex].ip, BEACON_IP_CHAR_LEN);
 }
 
+int HM10_Qsort(const beacon_t *a, const beacon_t*b)
+{
+    
+    const beacon_t *ba = a;
+    const beacon_t *bb = b;
+    return ba->strength - bb->strength;
+}
+
+void HM10_getStrongest5Beacons(const char *b, const size_t size)
+{
+    if(beacons_head <= 0) 
+    {
+        char *str = "No beacons";
+        memcpy(b, "No beacons", sizeof("No beacons"));
+        return;
+    }
+    qsort(beacons, beacons_head, sizeof(beacon_t), HM10_Qsort);
+
+    size_t offset = 0;
+    for (uint8_t i = 0; i < 5; i++)
+    {
+        int written  = sprintf(b, sizeof(b), "%s  %d",beacons[i].ip, beacons[i].strength);
+
+        if(written < 0|| written >= size - offset) return;
+        offset += written;
+    }
+        
+}
 void HM10_update(void)
 {
     static uint32_t lastSendTime = 0;
