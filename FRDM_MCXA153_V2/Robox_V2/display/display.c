@@ -23,23 +23,21 @@ typedef struct
 }displayQueueItem_t;
 
 static displayQueueItem_t displayQueue[MAX_ITEMS_IN_DISPLAY_QUEUE] = {};
-
+static displayTemplate_t activeDisplayTemplate = D_NON;
 static uint8_t head = 0;
 static uint8_t tail = 0;
 
-static displayTemplate_t activeDisplayTemplate = D_NON;
 
 
 bool display_queueContains(const displayTemplate_t displayTemplate)
 {
-    
     uint8_t i = tail;
-    displayQueueItem_t *q = displayQueue;
     while(i != head)
     {
-        if(q[i].displayTemplate == displayTemplate) return true;
+        if(displayQueue[i].displayTemplate == displayTemplate) return true;
         i = (i + 1) & MAX_ITEMS_IN_DISPLAY_QUEUE_MASK;
-    } 
+    }
+    
     return false;
 }
 
@@ -57,7 +55,7 @@ void display_updateQueue(void)
         item->displayStart_ms = now;
         item->state = DISPLAY_STATE_ACTIVE;
         display_render(activeDisplayTemplate);
-        return;
+
     }
 
     if(now - item->displayStart_ms < item->duration_ms) return;
@@ -70,20 +68,18 @@ int display_forceTemplate(const displayTemplate_t displayTemplate, const uint32_
 {
     if(activeDisplayTemplate == displayTemplate) return -1; 
     
-    head = 0;
     tail = 0;
- 
-    displayQueue[head] = (displayQueueItem_t)
-    {
+    head = 1;
+    
+   displayQueue[head] = (displayQueueItem_t)
+   {
         .displayTemplate = displayTemplate,
         .duration_ms = duration_ms,
-        .displayStart_ms = millis(),
-        .state = DISPLAY_STATE_ACTIVE
+        .displayStart_ms = 0,
+        .state = DISPLAY_STATE_QUEUED
     };
 
-    activeDisplayTemplate = displayTemplate;
 
-    display_render(displayTemplate);
     return 0;
 }
 

@@ -8,7 +8,7 @@ static uint8_t tx_buffer[128];
 static uint8_t rx_buffer[128];
 
 
-void serial_init(const uint32_t baudrate)
+void lupart0_init(const uint32_t baudrate)
 {
     // Initialize FIFOs
     f_init(&tx, tx_buffer, sizeof(tx_buffer), sizeof(uint8_t));
@@ -95,7 +95,7 @@ void serial_init(const uint32_t baudrate)
 }
 
 
-void serial_putchar(int data)
+void lupart0_putchar(int data)
 {
     // Wait for space to open up
     while(!f_push(&tx, &data))
@@ -105,7 +105,7 @@ void serial_putchar(int data)
     LPUART0->CTRL |= LPUART_CTRL_TIE(1);
 }
 
-int serial_getchar(void)
+int lupart0_getchar(void)
 {
     uint8_t c=0;
 

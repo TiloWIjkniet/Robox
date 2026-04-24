@@ -38,7 +38,6 @@ void sentDataToHM10(const char *mesag)
     {
         lpuart2_putchar(mesag[i]);
     }
-
 }
 /**
  * @brief Request beacon scan from HM-10 module.

@@ -26,8 +26,43 @@ mcux_add_source(
 
             state_logic/state_logic.h
 
-            gpio/gpio.h
-            gpio/gpio.c
+            display/display.c
+            display/display.h
+
+            drivers/gpio/gpio.c
+            drivers/gpio/gpio.h
+
+            drivers/audio/audio.h
+            drivers/audio/audio.c
+
+            drivers/buzzer/buzzer.h
+            drivers/buzzer/buzzer.c
+
+            drivers/esp/eso.h
+            drivers/esp/esp.c
+
+            drivers/fingerprint_scanner/fingerprint_scanner.c
+            drivers/fingerprint_scanner/fingerprint_scanner.h
+
+            drivers/hexDisplay/hexDisplay.h
+            drivers/hexDisplay/hexDisplay.c
+
+            drivers/hm10/hm10.h
+            drivers/hm10/hm10.c
+
+            drivers/key/key.h
+            drivers/key/key.c
+
+            drivers/keypad/keypad.h
+            drivers/keypad/keypad.c
+
+            drivers/switch/switch.h
+            drivers/switch/switch.c
+
+            drivers/time/time.c
+            drivers/time/time.h
+            drivers/time/delay.h
+            drivers/time/delay.c
 )
 
 mcux_add_include(
@@ -35,7 +70,19 @@ mcux_add_include(
             board
             fsm
             state_logic
-            gpio
+            display
+            drivers
+                gpio
+                audio
+                buzzer
+                esp
+                fingerprint_scanner
+                hexDisplay
+                hm10
+                key
+                keypad
+                switch
+                time
    
 )
 

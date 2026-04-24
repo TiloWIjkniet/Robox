@@ -21,7 +21,6 @@
 #define STRENGTH_START_INDEX 75
 #define IP_START_INDEX 50
 
-
 typedef struct 
 {
     char ip[BEACON_IP_CHAR_LEN];
@@ -30,7 +29,7 @@ typedef struct
 }beacon_t;
 
 beacon_t beacons[MAX_BEACONS] = {};
-uint8_t beacons_head = 0;
+uint8_t beacons_len = 0;
 
 static inline void HM10_sendData(const char *message)
 {
@@ -59,15 +58,15 @@ void HM10_init(void)
 
 static inline void HM10_pop(const uint8_t index)
 {
-    if(index >= beacons_head) return;
-    beacons[index] = beacons[beacons_head]; 
+    if(index >= beacons_len) return;
+    beacons[index] = beacons[beacons_len]; 
 }
 
 static void HM10_removeExpiredBeacons(void)
 {
     uint32_t now = millis();
     beacon_t *b = beacons;
-    for (uint8_t i = 0; i < beacons_head;)
+    for (uint8_t i = 0; i < beacons_len;)
     {
         if(now - b[i].lastStableTime > BEACON_TIME_OUT_MS)
         {
@@ -82,7 +81,7 @@ static void HM10_removeExpiredBeacons(void)
 
 static uint8_t HM10_getStrongestBeaconIndex(void)
 {
-    uint8_t head = beacons_head;
+    uint8_t head = beacons_len;
     beacon_t *b = beacons;
 
     if(head == 0) return;
@@ -100,7 +99,7 @@ static uint8_t HM10_getStrongestBeaconIndex(void)
 
 static uint8_t HM10_getWeakestBeaconIndex(void)
 {
-    uint8_t head = beacons_head;
+    uint8_t head = beacons_len;
     beacon_t *b = beacons;
 
     if(head == 0) return;
@@ -118,7 +117,7 @@ static uint8_t HM10_getWeakestBeaconIndex(void)
 
 static int8_t HM10_getBeaconIndex(char *beaconIp)
 {
-    for (uint8_t i = 0; i < beacons_head; i++)
+    for (uint8_t i = 0; i < beacons_len; i++)
     {
         if(strcmp(beacons[i].ip, beaconIp) == 0 ) return i;
     }
@@ -143,35 +142,31 @@ static uint8_t HM10_extractStrength(const char *line)
 
         val = val * 10 + (c - '0');
     }
-
     return val;
 }
 
 static void HM10_updateBeacon(char *beaconIp, const uint8_t strength)
 {
-    uint8_t tmpHead = beacons_head;
-    beacon_t *b = beacons;
-
     uint32_t now = millis();
     int8_t beaconIndex = HM10_getBeaconIndex(beaconIp);
     if(beaconIndex >= 0)
     {
-        b[beaconIndex].strength = strength;
-        b[beaconIndex].lastStableTime = now;
+        beacons[beaconIndex].strength = strength;
+        beacons[beaconIndex].lastStableTime = now;
         return;
     }
 
-    if(tmpHead >= MAX_BEACONS) 
+    if(beacons_len >= MAX_BEACONS) 
     {
         uint8_t weakestBeaconIndex =  HM10_getWeakestBeaconIndex();
         HM10_pop(weakestBeaconIndex);
     }
   
-    beacons_head ++;
+    beacons_len ++;
     
-    memcpy(b[tmpHead].ip, beaconIp, BEACON_IP_CHAR_LEN);
-    b[tmpHead].strength = strength;
-    b[tmpHead].lastStableTime = now; 
+    memcpy(beaconsb[beacons_len].ip, beaconIp, BEACON_IP_CHAR_LEN);
+    beacons[beacons_len].strength = strength;
+    beaconsb[beacons_len].lastStableTime = now; 
 }
 
 bool HM10_isIBeacon(char *buffer, char *data)
@@ -225,13 +220,13 @@ int HM10_Qsort(const beacon_t *a, const beacon_t*b)
 
 void HM10_getStrongest5Beacons(const char *b, const size_t size)
 {
-    if(beacons_head <= 0) 
+    if(beacons_len <= 0) 
     {
         char *str = "No beacons";
         memcpy(b, "No beacons", sizeof("No beacons"));
         return;
     }
-    qsort(beacons, beacons_head, sizeof(beacon_t), HM10_Qsort);
+    qsort(beacons, beacons_len, sizeof(beacon_t), HM10_Qsort);
 
     size_t offset = 0;
     for (uint8_t i = 0; i < 5; i++)

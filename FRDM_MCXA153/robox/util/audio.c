@@ -41,7 +41,7 @@ bool isForceCommand = false;
 void audio_init(void)
 {
 
-    serial_init(9600);
+    lupart0_init(9600);
 
     MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_PORT2(1);
     MRCC0->MRCC_GLB_CC1_SET = MRCC_MRCC_GLB_CC1_GPIO2(1);

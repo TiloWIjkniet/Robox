@@ -23,4 +23,7 @@ void hexDisplay_displayValue(uint8_t value);
 
 void hexDisplay_setTime(uint8_t min, uint8_t sec);
 
+
+bool hexDisplay_updateTimeOnChange(uint32_t ms);
+
 #endif

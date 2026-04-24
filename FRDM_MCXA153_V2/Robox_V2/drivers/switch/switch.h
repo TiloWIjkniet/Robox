@@ -5,11 +5,12 @@
 
 #define SWITCH_SENSOR_PIN 1
 
+extern volatile bool switchPinStatus;
 void switch_init(void);
 
 static inline bool switch_getRawState(void)
 {
-    return !getPinState(GPIO3, SWITCH_SENSOR_PIN);
+    return !switchPinStatus;
 }
 
 static inline bool switch_getState(void)

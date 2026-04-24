@@ -14,7 +14,7 @@
 #define R_PIN 12
 #define B_PIN 13
 
-typedef enum {OFF, WHITE, RED, GREEN} colors_t;
+typedef enum {OFF, WHITE, RED, GREEN} collors_t;
 
 void fingerprintScanner_init(void)
 {
@@ -23,6 +23,21 @@ void fingerprintScanner_init(void)
     pin_init(GPIO3, R_PIN, OUTPUT, 0);
     pin_init(GPIO3, G_PIN, OUTPUT, 0);
     pin_init(GPIO3, B_PIN, OUTPUT, 0);
+}
+
+static inline void fingerprintScanner_setColor(collors_t color)
+{
+    static const uint8_t colorTable[] = 
+    {
+        0b000, // OFF
+        0b111, // WHITE
+        0b100, // RED
+        0b010  // GREEN
+    };
+    uint8_t c = colorTable[color];
+    setPinState(GPIO3, R_PIN, (c & 0b100));
+    setPinState(GPIO3, G_PIN, (c & 0b010));
+    setPinState(GPIO3, B_PIN, (c & 0b001));
 }
 
 fingerprintState_t fingerprintScanner_update(bool active)
@@ -39,8 +54,8 @@ fingerprintState_t fingerprintScanner_update(bool active)
     bool isPressing = getPinState(GPIO3, TOUCH_SENSOR_PIN);
     bool debouncedPress = pin_debounce(isPressing, &debounce, DEBOUNCE_TIME);
 
-    colors_t c_off = active ? WHITE : OFF;
-    colors_t c_on  = active ? GREEN : RED;
+    collors_t c_off = active ? WHITE : OFF;
+    collors_t c_on  = active ? GREEN : RED;
 
     switch (state)
     {
@@ -116,21 +131,4 @@ fingerprintState_t fingerprintScanner_update(bool active)
         return FINGERPRINT_OFF;
     }
     }
-
-
-}
-
-static inline void fingerprintScanner_setColor(colors_t color)
-{
-    static const uint8_t colorTable[] = 
-    {
-        0b000, // OFF
-        0b111, // WHITE
-        0b100, // RED
-        0b010  // GREEN
-    };
-    uint8_t c = colorTable[color];
-    setPinState(GPIO3, R_PIN, (c & 0b100));
-    setPinState(GPIO3, G_PIN, (c & 0b010));
-    setPinState(GPIO3, B_PIN, (c & 0b001));
 }

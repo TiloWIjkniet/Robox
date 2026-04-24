@@ -34,9 +34,9 @@
 
 #include <MCXA153.h>
 
-void serial_init(const uint32_t baudrate);
-void serial_putchar(int data);
-int serial_getchar(void);
-uint32_t serial_rxcnt(void);
+void lupart0_init(const uint32_t baudrate);
+void lupart0_putchar(int data);
+int lupart0_getchar(void);
+uint32_t lupart0_rxcnt(void);
 
 #endif // SERIAL_H

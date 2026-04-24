@@ -123,8 +123,6 @@ const char displayTemplatesSafeNL[MAX_TEMPLATES][DISPLAY_LEN] = {
 
 const char displayTemplatesEn[MAX_TEMPLATES][DISPLAY_LEN] = {
 
-const char displayTemplatesEn[MAX_TEMPLATES][DISPLAY_LEN] = {
-
 "NONE\n",
 
 "Bomb ready\nDo you dare?\nPress key to\nstart\n",

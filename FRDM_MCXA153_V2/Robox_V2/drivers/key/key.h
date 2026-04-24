@@ -5,6 +5,7 @@
 
 #define KEY_SENSOR_PIN 1
 
+extern volatile bool keyPinStatus;
 
 /**
  * @brief Initializes the switch hardware.
@@ -24,7 +25,7 @@ void key_init(void);
  */
 static inline bool key_getRawState(void)
 {
-    return !getPinState(GPIO3, KEY_SENSOR_PIN);
+    return !keyPinStatus;
 }
 
 
