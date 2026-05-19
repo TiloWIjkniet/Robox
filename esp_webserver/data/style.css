@@ -133,6 +133,18 @@ html, body
     transition: all 0.2s ease;    /* soepele animatie */
 }
 
+.handlijding-page
+{
+    
+    position: relative;
+    height:  100%;
+    width: 100%;
+    min-width: 690px;
+    
+    overflow-y: auto;
+
+}
+
 .data-page
 {
     
@@ -264,7 +276,12 @@ html, body
     font-weight: bold;
 }
 
-
+.mijnTekst {
+    color: #b2aca2;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+}
 
 #add-btn 
 {
@@ -272,6 +289,23 @@ html, body
     position: relative;
     top: 7.5px;
         background-color: #35393b;       /* donkere basis */
+    color: #b2aca2;                  /* witte tekst */
+    border: 2px solid #555;       /* subtiele rand */
+    border-radius: 8px;           /* afgeronde hoeken */
+    padding: 10px 20px;           /* lekker groot klikvlak */
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;    /* soepele animatie */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2); /* subtiele schaduw */
+}
+
+#handlijding 
+{
+    font-weight: bold;
+    position: absolute;
+    top:15px;
+    right: 15px;
+    background-color: #35393b;       /* donkere basis */
     color: #b2aca2;                  /* witte tekst */
     border: 2px solid #555;       /* subtiele rand */
     border-radius: 8px;           /* afgeronde hoeken */

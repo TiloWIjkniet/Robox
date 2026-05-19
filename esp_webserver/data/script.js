@@ -14,8 +14,10 @@ const pages =
 btnGegevens.classList.add("active");
 buttons.forEach(button => 
 {
+   
     button.addEventListener("click", () => 
     {
+        console.log(pages[button.id]);
         Object.values(pages).forEach(page => page.style.display = "none");
         pages[button.id].style.display = "block";
 
@@ -63,9 +65,9 @@ setInterval(checkServerStatus, INTERVAL);
 
 let Recordings =
 [
-    [[5.2,8.6,12.7,4.4,7.1], true, 2,60, 3,5],
-    [[5.2,8.6,102.7,4.4], true, 1,60, 3,3],
-    [[5.2,8.6,102.7,4.4,7.1], true, 1,60, 3,5],
+    [[5.2,8.6,1.7,4.4,7.1], true, 2,60, 3,5],
+    [[5.2,8.6,13.7,4.4], true, 1,60, 3,3],
+    [[5.2,8.6,16.7,4.4,7.1], true, 1,60, 3,5],
     [[5.2,8.6,12.7,4.4,7.1], true, 1,60, 3,5],
     [[5.2,8.6,12.7,4.4], true, 1,60, 3,2],
 ];
@@ -183,7 +185,7 @@ function updateStats() {
     document.getElementById("aantalFouten").textContent = data[2];
     document.getElementById("moeilijkheid").textContent = data[4]+"/5";
     document.getElementById("bomTijd").textContent = formatTime(data[3]);
-    document.getElementById("kamners").textContent = `${data[0].length}/${data[5]}`;
+    document.getElementById("kamners").textContent = `${data[5]}/${data[0].length}`;
 }
 
 // --- Format time ---
@@ -1000,12 +1002,10 @@ function loadSettings(kamerSettingsDiv, data)
 generateSettingsTable([
     {  key: "naam-kamer", label: "Naam kamer", type: "text", value: "Kamer " + index,help:"De naam van de kamer"},
     { key: "becon-ip", label: "Beacon ip", type:  "text", value: "null" , help:"Het aderes van de becon"},
-    { key: "antwoord",label: "Antwoord", type:  "text", value: "null", help:"Welk antwoord er goed zijn <br> Gebruik een ',' om meerdere antwoorden in te vullen <br>" },
+    { key: "antwoord",label: "Antwoord", type:  "text", value: "null", help:"Welk antwoord er goed zijn Gebruik een ',' om meerdere antwoorden in te vullen <br>" },
     { key: "open-compartment",label: "Open compartiment",type: "select", value: 0, options: [
-            { label: "Geen", value: 0 },
-            { label: "Compartiment 1", value: 1 },
-            { label: "Compartiment 2", value: 2 },
-            { label: "Compartiment 3", value: 3 }],
+            { label: "Niet open", value: 0 },
+            { label: "Wel open", value: 1 }],
             help:"Welke ruimte er open gaat na het oplossen van de pussel"
     },
     { key: "special-acties",label: "Speciale acties",type: "select", value: 0, options: [

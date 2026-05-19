@@ -137,6 +137,29 @@ compartment_t openCompartment(const compartment_t compartment)
 }
 
 displayQueueItem_t displayQueue[2] = {emptyDisplayItem, emptyDisplayItem};
+
+void addCustomText(char *displayStr, const char *toReplace, const char *replacement)
+{
+    char result[256];
+
+    char *t = strstr(displayStr, toReplace);
+
+    if (!t) return;
+
+    result[0] = '\0';
+
+    // stuk vóór placeholder
+    strncat(result, displayStr, t - displayStr);
+
+    // replacement
+    strcat(result, replacement);
+
+    // rest na placeholder
+    strcat(result, t + strlen(toReplace));
+
+    // terugkopiëren
+    strcpy(displayStr, result);
+}
 /**
  * @brief Laadt een display template.
  *
@@ -164,9 +187,16 @@ void loadDisplayTemplate(displayTemplate_t template)
         else displayStr = (displayTemplatesSafeEn[template]);  
     }
 
+    addCustomText(displayStr, "[room name]", roomsSettings[roomIndex].roomName);
+
+
+    uint32_t hours = globalSettings.totalTime / 60;
+    uint32_t minutes = globalSettings.totalTime % 60;
+    char timeStr[6]; // "HH:MM"
+    snprintf(timeStr, sizeof(timeStr), "%02u:%02u", hours, minutes);
+    addCustomText(displayStr, "[time]", timeStr);
+
     cmd_display_clear();
-    ms_delay(10);
-    
     st7920_set_cursor(0, 0);
     for (uint16_t i = 0; i < DISPLAY_LEN; i++)
     {
@@ -175,14 +205,16 @@ void loadDisplayTemplate(displayTemplate_t template)
         st7920_writeb(c);
     }
     
+
     #if DEBUG_ON_PC
     printf("%s", displayStr);
     #endif
+
+    printInput(answerBuffer, strlen(answerBuffer));
 }
 void printCustomDisplay(char *customDisplay )
 {
      //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
-     //TODO: Beter manier maken om customDisplays aan de que toe te voegen
 
     #if DEBUG_ON_PC
     //DEBUG Display on pc

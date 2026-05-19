@@ -4,8 +4,8 @@
 #include <ArduinoJson.h>
 #include <DNSServer.h>
 
-const char* ssid = "Robox Admin";
-const char* password = "12345678";
+const char* ssid = "RoBox Admin";
+const char* password = "RoBox2026";
 
 ESP8266WebServer server(80);
 
@@ -21,11 +21,14 @@ IPAddress myIP;
 
 #define MAX_ANSWERS 5
 
+// Pinnen nog goed setten
+#define DATA_LET_1 0
+#define DATA_LET_2 0
 
 String plattegrond = "";  
 
 bool receiving = false;
-
+bool transmitingData = false;
 typedef struct 
 {
     float roomTimes[MAXS_ROOMS];
@@ -105,6 +108,11 @@ void setup()
 {
   Serial.begin(115200);
 
+  pinMode(DATA_LET_1, OUTPUT);
+  pinMode(DATA_LET_2, OUTPUT);
+  digitalWrite(DATA_LET_1, LOW);
+  digitalWrite(DATA_LET_2, LOW);
+
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);
   WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
@@ -122,6 +130,8 @@ void setup()
   beginServer();
 
   loadRecordingsFromFlash();
+
+
 }
 
 void beginServer()
@@ -163,6 +173,7 @@ void beginServer()
 
 void handleLoad() 
 {
+  transmitingData = true;
   DynamicJsonDocument doc(20000);
 
   JsonArray jsonRecordings = doc.createNestedArray("Recordings");
@@ -238,6 +249,7 @@ void handleLoad()
   String output;
   serializeJson(doc, output);
   server.send(200, "application/json", output);
+  transmitingData = false;
 }
 
 
@@ -377,8 +389,10 @@ void jsonToCharArray(JsonArray& arr, char a[][MAX_CHAR_IN_STRING], int count)
 
 void saveToFlash() 
 {
+
   if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
 
+  transmitingData = true;
   DynamicJsonDocument doc(20000);
 
   // Rooms
@@ -415,6 +429,7 @@ void saveToFlash()
   serializeJson(doc, f);
   f.close();
   //Serial.println("Data opgeslagen in flash!");
+  transmitingData = false;
 }
 // Laden van flash
 void loadFromFlash() {
@@ -424,6 +439,7 @@ void loadFromFlash() {
     File f = LittleFS.open("/data.json", "r");
     if (!f) { Serial.println("Kon bestand niet openen"); return; }
 
+    transmitingData = true;
     DynamicJsonDocument doc(20000);
     DeserializationError error = deserializeJson(doc, f);
     f.close();
@@ -466,6 +482,35 @@ void loadFromFlash() {
     plattegrond = doc["plattegrond"] | "";
 
   //  Serial.println("Data geladen uit flash!");
+  transmitingData = false;
+}
+
+
+void led1()
+{
+  static uint32_t lastLedUpdate = 0;  
+  static bool lastLedStatus;
+  if(WiFi.softAPgetStationNum() != 0)
+  {
+    digitalWrite(DATA_LET_1, HIGH);
+    lastLedStatus = true;
+  }
+  else if(serverRunning || networkRunning)
+  {
+    if(millis() - lastLedUpdate < 250) return;
+    lastLedUpdate = millis;
+    lastLedStatus = !lastLedStatus;
+    digitalWrite(DATA_LET_1, lastLedStatus);
+  }
+  else
+  {
+    digitalWrite(DATA_LET_1, LOW);
+  }
+}
+
+void led2()
+{
+  digitalWrite(DATA_LET_2, transmitingData);
 }
 
 void loop() 
@@ -473,8 +518,12 @@ void loop()
   dnsServer.processNextRequest();
   if(serverRunning) server.handleClient();
 
+led1();
+led2();
+
 while(Serial.available())
 {
+  transmitingData = true;
     uint8_t byteIn = Serial.read();
 
     // Specifieke commando's
@@ -520,6 +569,7 @@ while(Serial.available())
 
     // Data ontvangen voor recordings
     getRunData(byteIn);
+    if(!Serial.available()) transmitingData = false;
 }
 
 
@@ -527,7 +577,6 @@ while(Serial.available())
 
 void sentSettingData(uint8_t byteIn)
 {
-
   if (byteIn == 0xBB) 
   {
 
@@ -586,6 +635,7 @@ void getRunData(uint8_t byteIn)
 
 void saveRecordingsToFlash() 
 {
+  transmitingData = true;
     if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
 
     DynamicJsonDocument doc(20000);
@@ -616,10 +666,12 @@ void saveRecordingsToFlash()
 
     serializeJson(doc, f);
     f.close();
+    transmitingData = false;
  //   Serial.println("Recordings opgeslagen in flash!");
 }
 void loadRecordingsFromFlash()
 {
+  transmitingData = true;
     if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
     if (!LittleFS.exists("/recordings.json")) { Serial.println("Geen recordings gevonden"); return; }
 
@@ -645,7 +697,7 @@ void loadRecordingsFromFlash()
         recordings[i].difficulty = r["difficulty"] | 0;
         recordings[i].maxRooms = r["maxRooms"] | 0;
     }
-
+    transmitingData = false;
   //  Serial.println("Recordings geladen uit flash!");
 }
 

@@ -10,7 +10,7 @@
 #define TM1637_CMD_DISP 0x8F
 
 #define PIN_CLK 30
-#define PIN_DIO 31
+#define PIN_DIO 29
 
 #define NUMBER_OF_HEX_NUMBERS 14
 

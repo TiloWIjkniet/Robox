@@ -6,6 +6,7 @@
 #define SWITCH_SENSOR_PIN 1
 
 extern volatile bool switchPinStatus;
+
 void switch_init(void);
 
 static inline bool switch_getRawState(void)
