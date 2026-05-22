@@ -12,6 +12,7 @@
 #include "switch_and_key_sensors.h"
 #include "display.h"
 #include "lock.h"
+#include "leds.h"
 
 #define MS_PER_TICK_PANALTY 10
 #define TIME_DEPENDING_ADUIO_INTERVAL 5 * FROM_MIN_TO_MS
@@ -112,8 +113,8 @@ void setMapCoordinates(const uint8_t coordinates[2])
     lastCoordinates.y = my_coordinates.y;
 
     if(my_coordinates.x == INVALID_COORD || my_coordinates.y == INVALID_COORD) return;
-
-    //TODO: moet nog echt gezet worden
+    clearDisplay();
+    setLed(my_coordinates.x, my_coordinates.y);
 
 }
 

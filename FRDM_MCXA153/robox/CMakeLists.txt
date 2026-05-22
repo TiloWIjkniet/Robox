@@ -67,6 +67,8 @@ mcux_add_source(
             util/display.h
             util/lock.c
             util/lock.h
+            util/leds.c
+            util/leds.h
 
             board/board.h
 )

@@ -17,7 +17,7 @@
 #include "switch_and_key_sensors.h"
 #include "display.h"
 #include "lock.h"
-
+#include "leds.h"
 int main(void)
 {
   millis_init();
@@ -39,9 +39,10 @@ int main(void)
   touchSensor_init();
   hexDisplay_init();
   HM10_init();
-  
+  leds_init();
+  switch_and_key_sensors_init(); 
   printf("Start game\n");
-  switch_and_key_sensors_init();
+  
 
   //Voor dat programa kan starten
   //receive_room_settings_from_esp();
@@ -61,6 +62,7 @@ int main(void)
     updateAudioQueue();
     updateInputBuffer();
     lockUpdate();
+    matrix_update();
 
     if(isGameActiv)
     {
