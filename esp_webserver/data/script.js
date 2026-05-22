@@ -1202,7 +1202,6 @@ async function saveToESP()
     {
         kamerList: kamerList.map(k => [null, k[1] || [], k[2]]),
         globalSettings: globalSettings,
-        uploadedImageData: resizedImage 
        // uploadedImageData: myFile 
     };
 
@@ -1350,11 +1349,7 @@ function importSettingsNoLib(file)
         });
     }
  console.log("Geïmporteerde data:", kamerList);
-            uploadedImageData = data.uploadedImageData || null;
             globalSettings = data.globalSettings || { "moeilijkheid": 2, "start-tijd": 60, "audio": 0 ,"language": 0, "censorship" : 0};
-
-            
-            if (uploadedImageData) showLoadedImage(uploadedImageData);
 
      
             loadSettings(kamerSettingsDiv2, globalSettings);

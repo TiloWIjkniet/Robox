@@ -11,7 +11,7 @@
 #include "audio.h"
 #include "switch_and_key_sensors.h"
 #include "display.h"
-
+#include "lock.h"
 
 #define MS_PER_TICK_PANALTY 10
 #define TIME_DEPENDING_ADUIO_INTERVAL 5 * FROM_MIN_TO_MS
@@ -117,19 +117,14 @@ void setMapCoordinates(const uint8_t coordinates[2])
 
 }
 
-//TODO: Moet nog logia aan toe gevoegt woden
+
 compartment_t openCompartment(const compartment_t compartment)
 {
     switch (compartment)
     {
-        case ONE_C:
- 
+        case ALL_C:
+            openLock();
             break;
-            
-        case TWO_C:
-
-            break;
-
         default:
             break;
     }

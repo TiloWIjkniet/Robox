@@ -16,6 +16,8 @@
 #include "audio.h"
 #include "switch_and_key_sensors.h"
 #include "display.h"
+#include "lock.h"
+
 int main(void)
 {
   millis_init();
@@ -32,7 +34,7 @@ int main(void)
  st7920_init();
   FSM_config();
   keyPad_init();
-
+  lock_init();
   buzzer_init();
   touchSensor_init();
   hexDisplay_init();
@@ -46,10 +48,7 @@ int main(void)
 
 
 
-  while(1)
-  {
-    updateHM10();
-  }
+ 
   
   while(1)
   {
@@ -61,7 +60,7 @@ int main(void)
     updateBuzzer();
     updateAudioQueue();
     updateInputBuffer();
-
+    lockUpdate();
 
     if(isGameActiv)
     {

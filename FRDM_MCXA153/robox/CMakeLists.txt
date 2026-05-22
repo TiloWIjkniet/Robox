@@ -65,6 +65,8 @@ mcux_add_source(
             util/switch_and_key_sensors.h
             util/display.c
             util/display.h
+            util/lock.c
+            util/lock.h
 
             board/board.h
 )

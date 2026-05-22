@@ -24,7 +24,7 @@ typedef struct
 {
     uint32_t lastSeen;
     char beaconIp[11];
-    uint8_t beconStrengt; 
+    int8_t beconStrengt; 
     uint8_t cash[CASH_SISE];
 }beacon_t;
 
@@ -105,7 +105,9 @@ void updateBeacon(char *beaconIp, int strength)
 
 void calculateStrenkt()
 {
-    beconLoaclIndex = (beconLoaclIndex + 1) & (CASH_SISE -1);
+    beconLoaclIndex++;
+    if(beconLoaclIndex >= CASH_SISE) beconLoaclIndex = 0;
+
     for (uint8_t i = 0; i < beconIndex; i++)
     {
         uint8_t sum = 0;
@@ -118,9 +120,9 @@ void calculateStrenkt()
                 sum += becons[i].cash[y];
             }
         }
-        becons[i].beconStrengt = sum ==0 ? 0 : sum/count;
+        becons[i].beconStrengt = sum == 0 ? 100 : sum/count;
         
-        becons[i].cash[beconLoaclIndex] = -NOT_CONECTION_PANALTY;
+        becons[i].cash[beconLoaclIndex] = becons[i].beconStrengt + NOT_CONECTION_PANALTY * (CASH_SISE - count);
     }
 
 
@@ -233,7 +235,7 @@ void removeOldBecons(void)
     uint32_t now = millis();
     for (int i = 0; i < beconIndex; i++)
     {
-        if (now - becons[i].lastSeen > BEACON_TIMEOUT)
+        if (now - becons[i].lastSeen > BEACON_TIMEOUT || becons[i].beconStrengt >= 90)
         {
             for (int j = i + 1; j < beconIndex; j++)
             {
@@ -291,7 +293,7 @@ void updateHM10(void)
     scanInProgress = true;
     askForBeacons();
     
-    calculateStrenkt()
+    calculateStrenkt();
     removeOldBecons();
 
     getStrongestBeconIp(beconIp);

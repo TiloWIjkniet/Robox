@@ -18,7 +18,7 @@ IPAddress myIP;
 #define MAXS_RECORDINGS 10
 #define MAXS_ROOMS 20
 #define MAX_CHAR_IN_STRING 20
-#define DOC_SIS 6000
+
 #define MAX_ANSWERS 5
 
 // Pinnen nog goed setten
@@ -136,10 +136,9 @@ void setup()
 
 void beginServer()
 {
-  server.on("/", HTTP_GET, []()
-  {
+   server.on("/", HTTP_GET, []()
+  { 
     File f = LittleFS.open("/index.html", "r");
-    server.sendHeader("Cache-Control", "no-cache");
     server.streamFile(f, "text/html");
     f.close();
   });
@@ -147,7 +146,6 @@ void beginServer()
   server.on("/style.css", HTTP_GET, []()
   {
     File f = LittleFS.open("/style.css", "r");
-    server.sendHeader("Cache-Control", "max-age=3600");
     server.streamFile(f, "text/css");
     f.close();
   });
@@ -155,7 +153,6 @@ void beginServer()
   server.on("/script.js", HTTP_GET, []()
   {
     File f = LittleFS.open("/script.js", "r");
-    server.sendHeader("Cache-Control", "max-age=3600");
     server.streamFile(f, "application/javascript");
     f.close();
   });
@@ -174,26 +171,26 @@ void beginServer()
   
 }
 
-void handleLoad()
+void handleLoad() 
 {
   transmitingData = true;
-  //Moet mis meer zij ---------------------------------------------------
-  DynamicJsonDocument doc(DOC_SIS);
+  DynamicJsonDocument doc(20000);
 
-  // --- jouw JSON build blijft EXACT hetzelfde ---
   JsonArray jsonRecordings = doc.createNestedArray("Recordings");
-  for (int i = 0; i < MAXS_RECORDINGS; i++)
+  for (int i = 0; i < MAXS_RECORDINGS; i++) 
   {
     if(recordings[i].roomTimes[0] > 0)
     {
-      if(recordings[i].maxRooms == 0) continue;
+      bool hasData = recordings[i].maxRooms > 0;
+      if(!hasData) continue;
 
       JsonArray r = jsonRecordings.createNestedArray();
       JsonArray times = r.createNestedArray();
-
       for(int t = 0; t < MAXS_TIMES; t++)
-        if(recordings[i].roomTimes[t] != 0)
-          times.add(recordings[i].roomTimes[t]);
+      {
+          if(recordings[i].roomTimes[t] != 0)
+              times.add(recordings[i].roomTimes[t]);
+      }
 
       r.add(false);
       r.add(recordings[i].wrongAnswerCount);
@@ -204,42 +201,40 @@ void handleLoad()
   }
 
   JsonArray jsonKamerList = doc.createNestedArray("kamerList");
-  for (int i = 0; i < MAXS_ROOMS; i++)
+  for (int i = 0; i < MAXS_ROOMS; i++) 
   {
-    if (rooms[i].naam[0] == '\0') continue;
-
-    JsonArray k = jsonKamerList.createNestedArray();
-    k.add(nullptr);
-
-    JsonArray posArray = k.createNestedArray();
-    if (rooms[i].coordinates[0] >= 0 && rooms[i].coordinates[1] >= 0)
+    if (rooms[i].naam[0] != '\0') 
     {
-      posArray.add(rooms[i].coordinates[0]);
-      posArray.add(rooms[i].coordinates[1]);
-    }
+      JsonArray k = jsonKamerList.createNestedArray();
+      k.add(nullptr);
 
-    JsonObject ksd = k.createNestedObject();
-    ksd["naam-kamer"] = rooms[i].naam;
-    ksd["becon-ip"] = rooms[i].beconIp;
+      JsonArray posArray = k.createNestedArray(); 
+      if (rooms[i].coordinates[0] >= 0 && rooms[i].coordinates[1] >= 0) 
+      {
+        posArray.add(rooms[i].coordinates[0]);
+        posArray.add(rooms[i].coordinates[1]);
+      }
 
-    char answersCombined[128];
-    answersCombined[0] = '\0';
-
-    for (int a = 0; a < MAX_ANSWERS; a++)
+      JsonObject ksd = k.createNestedObject(); 
+      ksd["naam-kamer"] = rooms[i].naam;
+      ksd["becon-ip"] = rooms[i].beconIp;
+   
+      // Maak één string van alle antwoorden gescheiden door komma
+      String answersCombined = "";
+    for (int a = 0; a < MAX_ANSWERS; a++) 
     {
-        if (rooms[i].answers[a][0] != '\0')
-        {
-            if (answersCombined[0] != '\0')
-                strcat(answersCombined, ",");
+    if (rooms[i].answers[a][0] != '\0') { // niet-lege antwoorden
+        if (answersCombined.length() > 0) answersCombined += ","; // voeg komma toe
+        answersCombined += String(rooms[i].answers[a]);
+      }
+  }
 
-            strcat(answersCombined, rooms[i].answers[a]);
-        }
+      ksd["antwoord"] = answersCombined;
+
+
+      ksd["open-compartment"] = rooms[i].openCompartment;
+      ksd["special-acties"] = rooms[i].specialActies;
     }
-
-    ksd["antwoord"] = answersCombined;
-
-    ksd["open-compartment"] = rooms[i].openCompartment;
-    ksd["special-acties"] = rooms[i].specialActies;
   }
 
   JsonObject gs = doc.createNestedObject("globalSettings");
@@ -248,14 +243,12 @@ void handleLoad()
   gs["audio"] = globalSettings.audio;
   gs["censorship"] = globalSettings.censorship;
 
+  if (plattegrond.length() > 0) 
+    doc["uploadedImageData"] = plattegrond;
 
-  // 🔥 BELANGRIJKSTE FIX
-  WiFiClient client = server.client();
-  server.sendHeader("Content-Type", "application/json");
-  server.sendHeader("Connection", "close");
-
-  serializeJson(doc, client);
-
+  String output;
+  serializeJson(doc, output);
+  server.send(200, "application/json", output);
   transmitingData = false;
 }
 
@@ -287,8 +280,8 @@ void handleSave()
   }
 
   String body = server.arg("plain");
-  //Moet mis meer zij ---------------------------------------------------
-  DynamicJsonDocument doc(DOC_SIS);
+
+  DynamicJsonDocument doc(20000);
   DeserializationError error = deserializeJson(doc, body);
   if (error) 
   {
@@ -369,6 +362,13 @@ void handleSave()
   globalSettings.censorship = (censorship_status_t)gs["censorship"].as<int>();
   }
 
+  if (doc.containsKey("uploadedImageData")) 
+  {
+      const char* tmp = doc["uploadedImageData"];
+      if (tmp != nullptr && strlen(tmp) > 0) 
+          plattegrond = String(tmp);
+  }
+
   server.send(200, "text/plain", "Data opgeslagen!");
   //Serial.println("Data opgeslagen!");
 
@@ -393,8 +393,7 @@ void saveToFlash()
   if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
 
   transmitingData = true;
-    //Moet mis meer zij ---------------------------------------------------
-  DynamicJsonDocument doc(DOC_SIS);
+  DynamicJsonDocument doc(20000);
 
   // Rooms
   JsonArray jsonRooms = doc.createNestedArray("rooms");
@@ -441,8 +440,7 @@ void loadFromFlash() {
     if (!f) { Serial.println("Kon bestand niet openen"); return; }
 
     transmitingData = true;
-    //Moet mis meer zij ---------------------------------------------------
-    DynamicJsonDocument doc(DOC_SIS);
+    DynamicJsonDocument doc(20000);
     DeserializationError error = deserializeJson(doc, f);
     f.close();
 
@@ -480,6 +478,8 @@ void loadFromFlash() {
   globalSettings.audio = (audio_t)gs["audio"].as<int>();
   globalSettings.language = (language_t)gs["language"].as<int>();
   globalSettings.censorship = (censorship_status_t)gs["censorship"].as<int>();
+
+    plattegrond = doc["plattegrond"] | "";
 
   //  Serial.println("Data geladen uit flash!");
   transmitingData = false;
@@ -638,7 +638,7 @@ void saveRecordingsToFlash()
   transmitingData = true;
     if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
 
-    DynamicJsonDocument doc(DOC_SIS);
+    DynamicJsonDocument doc(20000);
     JsonArray jsonRecordings = doc.createNestedArray("Recordings");
 
     for (int i = 0; i < MAXS_RECORDINGS; i++) 
@@ -678,7 +678,7 @@ void loadRecordingsFromFlash()
     File f = LittleFS.open("/recordings.json", "r");
     if (!f) { Serial.println("Kon recordings niet openen"); return; }
 
-    DynamicJsonDocument doc(DOC_SIS);
+    DynamicJsonDocument doc(20000);
     DeserializationError error = deserializeJson(doc, f);
     f.close();
 

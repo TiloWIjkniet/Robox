@@ -79,7 +79,6 @@ bool handleOpenAll(void)
         //Open al compartments for testing/ resetting
         openCompartment(NON_C);
         playAudio(AUDIO_OPEN_COMPARTMENT);
-        //TODO: Moet nog ge implementeerd worden
         return true;
     }
     return false;
@@ -313,13 +312,7 @@ void receive_room_settings_from_esp(void)
         lpuart1_putchar(START_BYTE_GET_SETTINGS_DATA);
 
     }while(!receive_room_settings());
-
     
-    for(int i = 0; i < MAX_ROOMS; i++)
-    {
-        printf("Room %d settings: coordinates=(%d,%d), beconIp=%s, answers=[%s, %s, %s], openCompartment=%d, specialActies=%d, roomNaam=%s\n", 
-            i, roomsSettings[i].coordinates[0], roomsSettings[i].coordinates[1], roomsSettings[i].beconIp, roomsSettings[i].answers[0], roomsSettings[i].answers[1], roomsSettings[i].answers[2], roomsSettings[i].openCompartment, roomsSettings[i].specialActies, roomsSettings[i].roomNaam);
-    }
     newData = false;
 }
 

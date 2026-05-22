@@ -1,7 +1,7 @@
 /* Body & algemene styling */
 html, body 
 {
-    margin: 0;
+  margin: auto;
     height: 100%;
     width: 100%;
 
@@ -82,8 +82,8 @@ html, body
     position: absolute;  /* absoluut tov body */
 
     top: 75px;           /* hoogte van de button-row */
-    left: 5px;
-    right: 5px;
+    left: 1%;
+    right:1%;
     bottom: 0;           /* vult de rest van het scherm */
 
     display: flex;
@@ -99,7 +99,7 @@ html, body
 {
     position: absolute;
     top: 60px; 
-    bottom: 20px;    
+    bottom: 5%;    
 
     gap: 10px;
     width: 32.5%;          /* breedte van het knoppenveld */

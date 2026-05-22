@@ -37,8 +37,7 @@ typedef struct
 typedef enum // let op ook op esp aanpassen
 {
     NON_C,
-    ONE_C,
-    TWO_C
+    ALL_C
 }compartment_t;
 typedef enum  // let op ook op esp aanpassen
 {

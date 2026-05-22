@@ -9,6 +9,8 @@
 #include "hexDisplay.h"
 #include "switch_and_key_sensors.h"
 #include "audio.h"
+#include "lock.h"
+
 #define ENTER_DEV_CODE "0000"
 
 void idle_onEntry(void)
@@ -29,8 +31,9 @@ void idle_onUpdate(void)
     //Zorgt ervoor dat als de switch of key nog niet gereset is, het spel niet start en er een foutmelding komt te staan.
     bool rawKeyState = readRawKeySensor();
     bool rawSwitchState = readRawSwitchSensor();
+    bool lockStatus = isLockOpen();
 
-    if(rawKeyState || rawSwitchState) 
+    if(rawKeyState || rawSwitchState || lockStatus) 
     {
         displayDigits(ERROR_HEX);
         playGlobelAudio(AUDIO_ERROR);
