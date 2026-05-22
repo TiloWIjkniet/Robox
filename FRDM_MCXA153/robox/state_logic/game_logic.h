@@ -19,7 +19,6 @@ void forceDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMi
 void addDisplayTemplate(displayTemplate_t displayTemplate, uint32_t durationMillis);
 bool isDisplayTemplateDonePlaying(void);
 
-
 // =======================
 // 🎮 GAME FLOW / LOGIC
 // =======================

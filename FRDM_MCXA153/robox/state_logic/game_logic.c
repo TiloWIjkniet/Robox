@@ -174,26 +174,30 @@ void addCustomText(char *displayStr, const char *toReplace, const char *replacem
 void loadDisplayTemplate(displayTemplate_t template)
 {
     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
-    const char *displayStr = NULL;
+    const char *pDisplayStr = NULL;
     if(globalSettings.censorship == NOT_CENSORED)
     {
-        if(globalSettings.language == LANGUAGE_NEDERLANDS)displayStr = (displayTemplatesNL[template]);
-        else displayStr = (displayTemplatesEn[template]);
+        
+        if(globalSettings.language == LANGUAGE_NEDERLANDS)pDisplayStr = (displayTemplatesNL[template]);
+        else pDisplayStr = (displayTemplatesEn[template]);
     }
     else
     {
 
-        if(globalSettings.language == LANGUAGE_ENGLISH) displayStr = (displayTemplatesSafeNL[template]);
-        else displayStr = (displayTemplatesSafeEn[template]);  
+        if(globalSettings.language == LANGUAGE_ENGLISH) pDisplayStr = (displayTemplatesSafeNL[template]);
+        else pDisplayStr = (displayTemplatesSafeEn[template]);  
     }
+    char displayStr[DISPLAY_LEN];
+    strncpy(displayStr, pDisplayStr, sizeof(displayStr) - 1);
 
-    addCustomText(displayStr, "[room name]", roomsSettings[roomIndex].roomName);
+
+    addCustomText(displayStr, "[room name]", roomsSettings[roomIndex].roomNaam);
 
 
     uint32_t hours = globalSettings.totalTime / 60;
     uint32_t minutes = globalSettings.totalTime % 60;
     char timeStr[6]; // "HH:MM"
-    snprintf(timeStr, sizeof(timeStr), "%02u:%02u", hours, minutes);
+    snprintf(timeStr, sizeof(timeStr), "%02lu:%02lu", hours, minutes);
     addCustomText(displayStr, "[time]", timeStr);
 
     cmd_display_clear();

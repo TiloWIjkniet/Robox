@@ -498,7 +498,7 @@ void led1()
   else if(serverRunning || networkRunning)
   {
     if(millis() - lastLedUpdate < 250) return;
-    lastLedUpdate = millis;
+    lastLedUpdate = millis();
     lastLedStatus = !lastLedStatus;
     digitalWrite(DATA_LET_1, lastLedStatus);
   }

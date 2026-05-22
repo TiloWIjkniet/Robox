@@ -18,18 +18,18 @@
 #include "display.h"
 int main(void)
 {
-
+  millis_init();
 
   //serial_init(9600); //Word gezet in audio_init() 
   lpuart1_init(115200); // word gebruik voor cominication naar esp
  // lpuart2_init //word in void HM10_init() ingesteld 
 
 
-   millis_init();
+   
    
   //Initialisatie van alle modules
   audio_init();
- // st7920_init();
+ st7920_init();
   FSM_config();
   keyPad_init();
 
@@ -38,21 +38,18 @@ int main(void)
   hexDisplay_init();
   HM10_init();
   
- printf("Start game\n");
+  printf("Start game\n");
   switch_and_key_sensors_init();
 
-   // Voor dat programa kan starten
-  receive_room_settings_from_esp();
+  //Voor dat programa kan starten
+  //receive_room_settings_from_esp();
 
-  // st7920_writeb('h');
-  // st7920_writeb('e');
-  // st7920_writeb('e');
 
-  // while (1)
-  // {
-  //     st7920_update();
-  // }
-  
+
+  while(1)
+  {
+    updateHM10();
+  }
   
   while(1)
   {
@@ -83,6 +80,9 @@ int main(void)
 
   }
 }
+
+//BUG HM10 doet het niet
+
 //WARN : Lupart 0 word zo wel gebruikt voor audio als voor debuging kan problemen veroorzaken
 
 //WARN : Let op of new data in dev_page.c goed word gereset

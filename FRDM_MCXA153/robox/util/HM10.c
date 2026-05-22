@@ -23,18 +23,16 @@ typedef struct
 {
     uint32_t lastSeen;
     char beaconIp[11];
-    uint8_t beconStrengt;   
+    uint8_t beconStrengt; 
 }beacon_t;
 
 beacon_t becons[MAX_BEACONS];
 uint8_t beconIndex = 0;
 
 
-
 void sentDataToHM10(const char *mesag)
 {
-      
-    for (uint8_t i = 0; i < 10; i++)
+   for (uint8_t i = 0; mesag[i] != '\0'; i++)
     {
         lpuart2_putchar(mesag[i]);
     }
@@ -50,19 +48,29 @@ static inline void askForBeacons(void)
 {
     sentDataToHM10("AT+DISI?\r\n"); // AT+DISI?
 }
-
+void delay(uint32_t delay)
+{
+    uint32_t start = millis();
+    while(millis() - start < delay);
+}
 void HM10_init(void)
 {
     // WARN: Heb dit niew toe gevoegt dus werkt mis niet goed
-    lpuart2_init(9600);
-
+    lpuart2_init(115200);
+    delay(1000);
+    sentDataToHM10("AT\r\n");
+    delay(1000);
+    sentDataToHM10("AT+RESET\r\n");
+    delay(1000);
     sentDataToHM10("AT+ROLE1\r\n"); // master mode
-    sentDataToHM10("AT+IMME0\r\n"); // scan gelijk 
-
-//    sentDataToHM10("AT+POWE3\r\n"); // zet power hooger dus sneler detection en reaction
-    sentDataToHM10("AT+IBEA1\r\n"); // zorgt er voor dat je allen iBcons ziet 
-
-    askForBeacons();
+    delay(1000);
+    sentDataToHM10("AT+IMME1\r\n"); // scan gelijk 
+    delay(1000);
+    sentDataToHM10("AT+POWE3\r\n"); // zet power hooger dus sneler detection en reacti
+    delay(1000);
+    sentDataToHM10("AT+ROLE?\r\n");
+    delay(1000);
+   // sentDataToHM10("AT+IBEA1\r\n"); // zorgt er voor dat je allen iBcons ziet 
 }
 
 /**
@@ -85,7 +93,6 @@ void getBeconData(void)
             if (data == '\n')
             {
                 //Er is een volledige regel ontvangen, deze verwerken
-
                 lastReseaftMasige = millis(); // reset timeout timer
 
                 line_buffer[line_index] = '\0';
@@ -93,7 +100,7 @@ void getBeconData(void)
                 if (strstr(line_buffer, "4C000215") != NULL)
                 {   
                     //Komt overeen met iBeacon formaat, dus beacon data uitlezen
-
+                    
                     //Extract strenght en beaconIp uit de regel
                     char strength[4];
                     strength[0] = line_buffer[75];
@@ -237,10 +244,9 @@ void getStrongestBeconIp(char *pBeconIp)
 }
 void updateHM10(void)
 {
-    
    //Controleer of er een scan bezig is, als dit het geval is, dan de beacons data uitlezen en verwerken
    //Als er al een tijd geen data meer is ontvangen, dan aannemen dat de scan klaar is en de volgende scan starten
-    if(millis() - lastReseaftMasige > 500) scanInProgress = false; 
+    if(millis() - lastReseaftMasige > 1000) scanInProgress = false; 
     if(scanInProgress) 
     {
         getBeconData();
@@ -248,12 +254,14 @@ void updateHM10(void)
     }
     lastReseaftMasige = millis();
     scanInProgress = true;
-    askForBeacons();
-
-    
+    askForBeacons();;
     removeOldBecons();
 
     getStrongestBeconIp(beconIp);
 
+    char lowestBeconsString[200];
+    getLowestBecons(lowestBeconsString, sizeof(lowestBeconsString));
+    printf("\nLowest beacons:\n");
+    printf(lowestBeconsString);
 
 }
