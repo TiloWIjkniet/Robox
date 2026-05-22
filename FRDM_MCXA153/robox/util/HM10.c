@@ -11,7 +11,8 @@ char beconIp[MAX_CHAR_IN_STRING];
 
 #define LINE_BUFFER_SIZE 128
 #define BEACON_TIMEOUT 20000
-
+#define CASH_SISE 5
+#define NOT_CONECTION_PANALTY 5
 char line_buffer[LINE_BUFFER_SIZE];
 uint32_t line_index = 0;
 uint32_t lastReseaftMasige = 0;
@@ -24,11 +25,12 @@ typedef struct
     uint32_t lastSeen;
     char beaconIp[11];
     uint8_t beconStrengt; 
+    uint8_t cash[CASH_SISE];
 }beacon_t;
 
 beacon_t becons[MAX_BEACONS];
 uint8_t beconIndex = 0;
-
+uint8_t beconLoaclIndex = 0;
 
 void sentDataToHM10(const char *mesag)
 {
@@ -73,6 +75,57 @@ void HM10_init(void)
    // sentDataToHM10("AT+IBEA1\r\n"); // zorgt er voor dat je allen iBcons ziet 
 }
 
+
+void updateBeacon(char *beaconIp, int strength)
+{
+    bool found = false;
+    for (uint8_t i = 0; i < beconIndex; i++)
+    {
+        if(strcmp(becons[i].beaconIp, beaconIp) == 0)
+        {
+            becons[i].cash[beconLoaclIndex] = strength;
+            becons[i].lastSeen = millis();
+            found = true;
+            break;
+        }
+    }
+    //Als nog niet in de lijst, voeg deze dan toe aan de lijst met beacons
+    if (!found)
+    {
+        strcpy(becons[beconIndex].beaconIp, beaconIp);
+        for(uint8_t i = 0; i < CASH_SISE; i ++)
+        {
+            becons[beconIndex].cash[i] = 0;
+        }
+        becons[beconIndex].cash[beconLoaclIndex] = strength;
+        becons[beconIndex].lastSeen = millis();
+        beconIndex++;
+    }
+}
+
+void calculateStrenkt()
+{
+    beconLoaclIndex = (beconLoaclIndex + 1) & (CASH_SISE -1);
+    for (uint8_t i = 0; i < beconIndex; i++)
+    {
+        uint8_t sum = 0;
+        uint8_t count = 0;
+        for (uint8_t y = 0; y < CASH_SISE; y++)
+        {
+            if(becons[i].cash[y] != 0)
+            {
+                count ++;
+                sum += becons[i].cash[y];
+            }
+        }
+        becons[i].beconStrengt = sum ==0 ? 0 : sum/count;
+        
+        becons[i].cash[beconLoaclIndex] = -NOT_CONECTION_PANALTY;
+    }
+
+
+    
+}
 /**
  * @brief Read and process beacon data from UART.
  *
@@ -117,25 +170,7 @@ void getBeconData(void)
                     beaconIp[8] = '\0';
 
                     //Controleer of deze beacon al in de lijst staat, zo ja update dan de sterkte en last seen tijd
-                    bool found = false;
-                    for (uint8_t i = 0; i < beconIndex; i++)
-                    {
-                        if(strcmp(becons[i].beaconIp, beaconIp) == 0)
-                        {
-                            becons[i].beconStrengt = (uint8_t)atoi(strength);
-                            becons[i].lastSeen = millis();
-                            found = true;
-                            break;
-                        }
-                    }
-                    //Als nog niet in de lijst, voeg deze dan toe aan de lijst met beacons
-                    if (!found)
-                    {
-                        strcpy(becons[beconIndex].beaconIp, beaconIp);
-                        becons[beconIndex].beconStrengt = (uint8_t)atoi(strength);
-                        becons[beconIndex].lastSeen = millis();
-                        beconIndex++;
-                    }
+                    updateBeacon(beaconIp, (uint8_t)atoi(strength));
                     
                 }
                 //Controleer of regel het einde van een scan is
@@ -254,7 +289,9 @@ void updateHM10(void)
     }
     lastReseaftMasige = millis();
     scanInProgress = true;
-    askForBeacons();;
+    askForBeacons();
+    
+    calculateStrenkt()
     removeOldBecons();
 
     getStrongestBeconIp(beconIp);
