@@ -21,6 +21,9 @@ IPAddress myIP;
 #define DOC_SIS 6000
 #define MAX_ANSWERS 5
 
+#define BYTE_SEND_RUN_DATA_START 0xC1
+#define BYTE_SEND_RUN_DATA_ROOM  0xC2
+#define BYTE_SEND_RUN_DATA_END   0xC3
 // Pinnen nog goed setten
 #define DATA_LET_1 0
 #define DATA_LET_2 0
@@ -103,7 +106,7 @@ bool networkRunning = false;
 runData_t recordings[MAXS_RECORDINGS];
 roomSettings_t rooms[MAXS_ROOMS];
 globalSettings_t globalSettings;
-
+uint8_t roomIndex = 0;
 void setup() 
 {
   Serial.begin(115200);
@@ -524,7 +527,7 @@ led2();
 while(Serial.available())
 {
   transmitingData = true;
-    uint8_t byteIn = Serial.read();
+  uint8_t byteIn = Serial.read();
 
     // Specifieke commando's
   if(!receiving) 
@@ -564,6 +567,10 @@ while(Serial.available())
       }
       
     }
+    else if(byteIn == 0xFA)
+    {
+      Serial.write(roomIndex);
+    }
     else sentSettingData(byteIn); // bestaande functie
   }
 
@@ -571,8 +578,6 @@ while(Serial.available())
     getRunData(byteIn);
     if(!Serial.available()) transmitingData = false;
 }
-
-
 }
 
 void sentSettingData(uint8_t byteIn)
@@ -595,10 +600,10 @@ void sentSettingData(uint8_t byteIn)
     
   }
 }
-
+typedef enum {NON, START, ROOM, END} ROOM_STATES;
+ROOM_STATES roomState = NON;
 void getRunData(uint8_t byteIn) 
 {
-  static size_t index = 0;
   static runData_t runDataBuffer;
   static uint8_t* data = (uint8_t*)&runDataBuffer; 
   size_t size = sizeof(runDataBuffer);            
@@ -608,29 +613,142 @@ void getRunData(uint8_t byteIn)
   {
     if (byteIn == 0xAA) 
     { 
-      Serial.println("start byte ontvangen");
       receiving = true;
-      index = 0;
+      Serial.println("start byte ontvangen");
     }
     return;
   }
 
+  if(roomState == NON)
+  {
+    switch (byteIn) 
+    {
+    case BYTE_SEND_RUN_DATA_START:
+    {
+      for(int i = MAXS_RECORDINGS - 1; i > 0; i--)
+      {
+        recordings[i] = recordings[i-1];
+      }
+      recordings[0] = (runData_t){0};
+      roomIndex  = 0;
+      roomState = START;
+      break;
+    }
+    case BYTE_SEND_RUN_DATA_ROOM:
+    {
+      roomState = ROOM;
+      break;
+    }
+    case BYTE_SEND_RUN_DATA_END:
+    {
+      roomState = END;
+      break;
+    }
+    default:
+    return;
+    }
+  }
+
+  switch (roomState) 
+  {
+  case START: 
+  {
+    startRoop(byteIn);
+    break;
+  }
+  case ROOM: 
+  {
+    room(byteIn);
+    break;
+  }
+  case END: 
+  {
+    end(byteIn);
+    break;
+  }
+  case NON: 
+  {
+    break;    
+  }
+  }
+
+  
+  //Save recording to flash
+}
+
+void startRoop(uint8_t byteIn)
+{
+  static size_t index = 0;
+
+  switch (index ++) 
+  {
+  case 0:
+  {
+    recordings[0].totalTime = byteIn;
+    break;
+  }
+    case 1:
+  {
+    recordings[0].difficulty = byteIn;
+    break;
+  }
+    case 2:
+  {
+    recordings[0].maxRooms = byteIn;
+    break;
+  }
+  default:
+  {
+    index = 0;
+    receiving = false;
+    roomState = NON;
+    saveRecordingsToFlash();
+    return;
+  }
+  }
+}
+
+void room(uint8_t byteIn)
+{
+  static uint8_t index = 0;
+  static float temp;
+  
+  if(index == 0) 
+  {
+    roomIndex = byteIn;
+    index ++;
+  }
+  uint8_t *p = (uint8_t*)&temp;
+
+  p[index++] = byteIn;
+
+  if(index >= 5)
+  {
+    recordings[0].roomTimes[roomIndex] = temp;
+    index = 0;
+    roomState = NON;
+    saveRecordingsToFlash();
+  }
+}
+
+
+void end(uint8_t byteIn)
+{
+  static size_t index = 0;
+  static runData_t runDataBuffer;
+  static uint8_t* data = (uint8_t*)&runDataBuffer; 
+  size_t size = sizeof(runDataBuffer);     
+  roomIndex = 0;
   data[index++] = byteIn; 
   if (index >= size) 
   {
-    receiving = false;  
     index = 0;
-  //  Serial.println("RunData volledig ontvangen!");
-    for(int i = MAXS_RECORDINGS - 1; i > 0; i--)
-    {
-      recordings[i] = recordings[i-1];
-    }
-    recordings[0] = runDataBuffer; 
-    saveRecordingsToFlash();
 
+    recordings[0] = runDataBuffer; 
+    receiving = false;
+    roomState = NON;
+    saveRecordingsToFlash();
   }
-  
-  //Save recording to flash
 }
 
 void saveRecordingsToFlash() 
@@ -666,9 +784,48 @@ void saveRecordingsToFlash()
 
     serializeJson(doc, f);
     f.close();
+
+    saveRoomIndexToFlash();
+
     transmitingData = false;
  //   Serial.println("Recordings opgeslagen in flash!");
 }
+
+void saveRoomIndexToFlash()
+{
+    File f = LittleFS.open("/roomIndex.bin", "w");
+    if(!f)
+    {
+        Serial.println("Fout bij openen roomIndex file");
+        return;
+    }
+
+    f.write((uint8_t*)&roomIndex, sizeof(roomIndex));
+    f.close();
+
+    loadRoomIndexFromFlash();
+}
+
+void loadRoomIndexFromFlash()
+{
+    if(!LittleFS.begin())
+    {
+        Serial.println("LittleFS mount fout");
+        return;
+    }
+
+    File f = LittleFS.open("/roomIndex.bin", "r");
+    if(!f)
+    {
+        Serial.println("Geen roomIndex file gevonden");
+        roomIndex = 0;
+        return;
+    }
+
+    f.read((uint8_t*)&roomIndex, sizeof(roomIndex));
+    f.close();
+}
+
 void loadRecordingsFromFlash()
 {
   transmitingData = true;

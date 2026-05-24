@@ -13,6 +13,7 @@
 #include "display.h"
 #include "lock.h"
 #include "leds.h"
+#include "lpuart1.h"
 
 #define MS_PER_TICK_PANALTY 10
 #define TIME_DEPENDING_ADUIO_INTERVAL 5 * FROM_MIN_TO_MS
@@ -766,3 +767,20 @@ void updateTimeDependingAudio(void)
     playAudio(audioToPlay);
 }
 
+ bool isGameBizy(uint8_t *rIndex)
+ {
+    lpuart1_putchar(0xFA);
+    uint32_t startWait = millis();
+    while(lpuart1_rxcnt() <= 0)
+    {
+        if(millis() - startWait > 1000) return false; 
+    }
+
+    *rIndex = lpuart1_getchar();
+    printf("Received index: %d\n", *rIndex);
+    if(*rIndex != 0)
+    {
+        return true;
+    }
+    return false;
+ }

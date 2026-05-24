@@ -31,7 +31,7 @@ static volatile uint8_t tail = 0;
 
 uint8_t numOfStates = 0;
 uint8_t numOfTransitions = 0;
-
+state_t fsm_state = S_INIT;
 /**
  * @brief  Voegt een nieuwe state toe aan de FSM.
  *
@@ -126,6 +126,22 @@ state_t FSM_eventHandler(const state_t state, const event_t event)
     return nextState;
 }
 
+void FSM_forceState(state_t newState)
+{
+    if(stateFuncs[fsm_state].onExit != NULL)
+    {
+        stateFuncs[fsm_state].onExit();
+    }
+
+    fsm_state = newState;
+
+    if(stateFuncs[fsm_state].onEntry != NULL)
+    {
+        stateFuncs[fsm_state].onEntry();
+    }
+}
+
+
 /**
  * @brief  Verwerkt events en voert de actieve state van de FSM uit.
  *
@@ -137,7 +153,7 @@ state_t FSM_eventHandler(const state_t state, const event_t event)
 void FSM_update(void)
 {
     static event_t event;
-    static state_t state = S_INIT;
+    
 
     if(head != tail)
     {
@@ -147,13 +163,13 @@ void FSM_update(void)
             DEBUG_PRINT("[DEBUG_FSM] Triggert event %s van state %s\n\n", eventNames[event], stateNames[state]);
         #endif
 
-        state = FSM_eventHandler(state, event);
+        fsm_state = FSM_eventHandler(fsm_state, event);
 
 
     }
 
-    if(stateFuncs[state].onUpdate != NULL)
+    if(stateFuncs[fsm_state].onUpdate != NULL)
     {
-        stateFuncs[state].onUpdate();
+        stateFuncs[fsm_state].onUpdate();
     }
 }

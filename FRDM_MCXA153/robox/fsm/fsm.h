@@ -23,7 +23,7 @@ void FSM_config(void);
 void FSM_update(void);
 void FSM_addEvent(const event_t event);
 void FSM_addState(const state_t state, const state_funcs_t *funcs);
-
+void FSM_forceState(state_t newState);
 void FSM_addTransition(const transition_t *transition);
 state_t FSM_eventHandler(const state_t state, const event_t event);
 

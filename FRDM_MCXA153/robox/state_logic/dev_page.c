@@ -21,6 +21,9 @@
 #define START_BYTE_GLOBAL_DATA 0xAA
 #define START_BYTE_ROOM_DATA   0xAB
 #define NEW_DATA_BYTE 0xDD
+#define BYTE_SEND_RUN_DATA_START 0xC1
+#define BYTE_SEND_RUN_DATA_ROOM  0xC2
+#define BYTE_SEND_RUN_DATA_END   0xC3
 
 #define EXIT_DEV_CODE "0000"
 #define OPEN_ALL_COMPARTMETS "3333"
@@ -316,6 +319,32 @@ void receive_room_settings_from_esp(void)
     newData = false;
 }
 
+
+
+void send_run_data_to_esp_start(void)
+{
+    lpuart1_putchar(START_BYTE_SEND_RUN_DATA);
+    lpuart1_putchar(BYTE_SEND_RUN_DATA_START);
+
+    lpuart1_putchar(runData.totalTime);
+    lpuart1_putchar(runData.difficulty);
+    lpuart1_putchar(runData.maxRooms);
+}
+
+void send_run_data_to_esp_room(void)
+{
+    lpuart1_putchar(START_BYTE_SEND_RUN_DATA);
+    lpuart1_putchar(BYTE_SEND_RUN_DATA_ROOM);
+    lpuart1_putchar(roomIndex);
+
+    uint8_t *p = (uint8_t*)&runData.roomTimes[roomIndex];
+
+    for(int i = 0; i < 4; i++)
+    {
+        lpuart1_putchar(p[i]);
+    }
+}
+
 /**
  * @brief Verstuurt de runData struct naar de ESP via UART1.
  *
@@ -326,15 +355,22 @@ void receive_room_settings_from_esp(void)
  *
  * @note Deze functie blokkeert totdat alle bytes zijn verzonden via lpuart1_putchar().
  */
-void send_run_data_to_esp(void)
+
+
+void send_run_data_to_esp_end(void)
 {
+    lpuart1_putchar(START_BYTE_SEND_RUN_DATA);
+    lpuart1_putchar(BYTE_SEND_RUN_DATA_END);
+
     uint8_t *data = (uint8_t*)&runData;
     size_t size = sizeof(runData);
-
-    lpuart1_putchar(START_BYTE_SEND_RUN_DATA);
     
     for (size_t i = 0; i < size; i++)
     {
         lpuart1_putchar(data[i]);
-    }   
+    } 
 }
+//Send data for new run
+
+//Send room time
+//Update 

@@ -101,5 +101,5 @@ void reset_onUpdate(void)
 }
 void reset_onExit(void) 
 { 
-    send_run_data_to_esp();
+    send_run_data_to_esp_end();
 }

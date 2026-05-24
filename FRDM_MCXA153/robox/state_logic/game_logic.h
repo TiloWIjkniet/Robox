@@ -31,7 +31,7 @@ void updateSpecialActies(void);
 bool isWithinTimeLimit(void);
 uint32_t getElapsedTime(void);
 int32_t getTimeRemaining(void);
-
+ bool isGameBizy(uint8_t *rIndex);
 // =======================
 // ⏱️ TIME SYSTEM
 // =======================
@@ -57,6 +57,9 @@ bool isInputMatching(const char *input, const char *correctInput);
 uint8_t getNumRooms(void);
 
 
+void send_run_data_to_esp_end(void);
+void send_run_data_to_esp_start(void);
+void send_run_data_to_esp_room(void);
 
 // =======================
 // 🔐 HARDWARE / ACTIES
@@ -69,7 +72,6 @@ void setMapCoordinates(const uint8_t coordinates[2]);
 // 📡 COMMUNICATIE
 // =======================
 
-void send_run_data_to_esp(void);
 void receive_room_settings_from_esp(void);
 
 

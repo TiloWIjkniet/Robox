@@ -31,7 +31,7 @@ int main(void)
    
   //Initialisatie van alle modules
   audio_init();
- st7920_init();
+  st7920_init();
   FSM_config();
   keyPad_init();
   lock_init();
@@ -46,11 +46,31 @@ int main(void)
 
   //Voor dat programa kan starten
   //receive_room_settings_from_esp();
-
-
-
- 
   
+
+  uint8_t rIndex = 0;
+  bool gameBuzy = isGameBizy(&rIndex);
+  if(gameBuzy) 
+  {
+    forceDisplayTemplate(D_GAME_IS_BUSY, DISPLAY_3S); 
+    while(1)
+    {
+      updateDisplayQueue();
+      updateInputBuffer();
+      st7920_update();
+      if(!hasNewAnswer) continue;
+
+      if(!isInputMatching(answerBuffer, "1"))
+      {
+        roomIndex = rIndex;
+        FSM_forceState(S_ROOM_LOOP);
+      }
+  
+      break;
+    }
+  }
+  
+
   while(1)
   {
     
@@ -63,6 +83,7 @@ int main(void)
     updateInputBuffer();
     lockUpdate();
     matrix_update();
+    st7920_update();
 
     if(isGameActiv)
     {

@@ -57,7 +57,9 @@ const char displayTemplatesNL[MAX_TEMPLATES][DISPLAY_LEN] =
 
 "Kritische fout\nSysteem stopt\nHerstart nodig\n",
 
-"Niet gereset\nReset schakelaar\nEn sleutel\n"
+"Niet gereset\nReset schakelaar\nEn sleutel\n",
+
+"Het spel is nog steeds bezig\nVoer 1 in om niet door te gaan\n\n"
 };
 
 const char displayTemplatesSafeNL[MAX_TEMPLATES][DISPLAY_LEN] = {
@@ -118,7 +120,9 @@ const char displayTemplatesSafeNL[MAX_TEMPLATES][DISPLAY_LEN] = {
 
 "Kritische fout\nSysteem stopt\nHerstart nodig\n",
 
-"Niet gereset\nReset schakelaar\nEn sleutel\n"
+"Niet gereset\nReset schakelaar\nEn sleutel\n",
+
+"Het spel is nog steeds bezig\nVoer 1 in om niet door te gaan\n\n"
 };
 
 const char displayTemplatesEn[MAX_TEMPLATES][DISPLAY_LEN] = {
@@ -179,7 +183,9 @@ const char displayTemplatesEn[MAX_TEMPLATES][DISPLAY_LEN] = {
 
 "Critical error\nSystem stopped\nRestart needed\n",
 
-"Not reset\nReset switch\nAnd key\n"
+"Not reset\nReset switch\nAnd key\n",
+
+"The game is still running\nEnter 1 to not continue\n\n"
 };
 
 const char displayTemplatesSafeEn[MAX_TEMPLATES][DISPLAY_LEN] = {
@@ -240,5 +246,7 @@ const char displayTemplatesSafeEn[MAX_TEMPLATES][DISPLAY_LEN] = {
 
 "Critical error\nSystem stopped\nRestart needed\n",
 
-"Not reset\nReset switch\nAnd key\n"
+"Not reset\nReset switch\nAnd key\n",
+
+"The game is still running\nEnter 1 to not continue\n\n"
 };

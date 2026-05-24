@@ -94,7 +94,7 @@ void first_room_onEntry(void)
     runData.totalTime  = globalSettings.totalTime;
     runData.difficulty = globalSettings.difficulty;
     runData.maxRooms   = getNumRooms();
-
+    send_run_data_to_esp_start();
     //Start timer
     uint32_t now = millis();   
     startGameMillis = now; 
@@ -167,6 +167,7 @@ void commonRoom_onExit(void)
     uint32_t roomElapsedMillis = (startGameMillis - startRoomMillis);  
     float elapsedMinutes = ((float)roomElapsedMillis) / (float)(1 * FROM_MIN_TO_MS);
     runData.roomTimes[roomIndex] = elapsedMinutes;
+    send_run_data_to_esp_room();
 }
 
 void commonRoom_Compartment(roomDisplayConfig_t roomDisplay)
