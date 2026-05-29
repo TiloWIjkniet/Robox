@@ -34,6 +34,9 @@
 #define RETRY_ATTEMPTS 5
 #define MAX_DIFFICULTY 5
 
+
+
+
 globalSettings_t globalSettings =
 {
     WRONG_ANSWER_MINUS_5MIN_STOP,
@@ -132,7 +135,9 @@ void handleRoomSelection(void)
         if(isInputMatching(answerBuffer, ROOM_CODES[room]))
         { 
             //Recive room settings from the esp  
-            if(newData) receive_room_settings_from_esp();       
+            #if ESP_CANN
+            if(newData) receive_room_settings_from_esp();   
+            #endif    
             //Zet de codinate van de geslecteerde kamer aan                            
             setMapCoordinates(roomsSettings[room].coordinates);                
             
@@ -161,11 +166,13 @@ void dev_page_onUpdate(void)
 
 void dev_page_onExit(void)
 {
+    #if ESP_CANN
     //Verkrijg ingestelde data van esp
     receive_room_settings_from_esp();  
     
     //Disble webserver on esp
-    lpuart1_putchar(WEBSERVER_OFF);    
+    lpuart1_putchar(WEBSERVER_OFF); 
+    #endif   
 }
 
 void checkIfNewDataFromEsp(void)
@@ -370,7 +377,40 @@ void send_run_data_to_esp_end(void)
         lpuart1_putchar(data[i]);
     } 
 }
-//Send data for new run
 
-//Send room time
-//Update 
+
+ bool isGameBizy(uint8_t *rIndex)
+ {
+    lpuart1_putchar(0xFA);
+    uint32_t startWait = millis();
+    uint8_t atempts = 0;
+    while(lpuart1_rxcnt() <= 0)
+    {
+        uint32_t now = millis();
+        if(now - startWait > 1000)
+        {
+            lpuart1_putchar(0xFA);
+            startWait = now;
+            atempts ++;
+            if(atempts >= 5)
+            {
+                return false;
+            }
+        } 
+    }
+    while(lpuart1_rxcnt() > 0)
+    {
+        *rIndex = lpuart1_getchar();
+        if(*rIndex < 20) 
+        {
+            break;
+        }
+    }
+    
+    printf("Received index: %u\n", *rIndex);
+    if(*rIndex != 0)
+    {
+        return true;
+    }
+    return false;
+ }

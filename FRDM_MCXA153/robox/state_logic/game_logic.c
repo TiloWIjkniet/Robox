@@ -19,7 +19,7 @@
 #define TIME_DEPENDING_ADUIO_INTERVAL 5 * FROM_MIN_TO_MS
 #define TIME_AUDIO_CHECK_LEN 6
 #define DELAY_FROM_START_TO_FIRST_AUDIO 15 * FROM_MIN_TO_MS
-
+#define DISPLAY_INPUT_LEN 16
 typedef struct
 {
     uint32_t checkTimeSec;
@@ -65,9 +65,9 @@ typedef struct
 
 const displayQueueItem_t emptyDisplayItem = 
 {
-        .displayLoadTemplate = D_NONE,
-        .displayDurationMillis = 0,
-        .displayStartMillis = 0
+    .displayLoadTemplate = D_NONE,
+    .displayDurationMillis = 0,
+    .displayStartMillis = 0
 };
 
 typedef struct 
@@ -168,7 +168,7 @@ void addCustomText(char *displayStr, const char *toReplace, const char *replacem
  * @note Deze functie wordt normaal alleen intern gebruikt door
  *       de display queue mechanismen.
  */
-void loadDisplayTemplate(displayTemplate_t template)
+int loadDisplayTemplate(displayTemplate_t template)
 {
     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
     const char *pDisplayStr = NULL;
@@ -197,21 +197,30 @@ void loadDisplayTemplate(displayTemplate_t template)
     snprintf(timeStr, sizeof(timeStr), "%02lu:%02lu", hours, minutes);
     addCustomText(displayStr, "[time]", timeStr);
 
+
+    if((getBufferedCmds() - sizeof(displayStr) - DISPLAY_INPUT_LEN) < 0) return -1; // Te veel buffered cmds, niet veilig om te printen
+
+
     cmd_display_clear();
-    st7920_set_cursor(0, 0);
+    setCursor(0, 0);
     for (uint16_t i = 0; i < DISPLAY_LEN; i++)
     {
         char c = displayStr[i];
         if(c == '\0') break;
-        st7920_writeb(c);
+        hd44780_update();
+        
     }
     
+    
+ 
 
     #if DEBUG_ON_PC
     printf("%s", displayStr);
     #endif
 
     printInput(answerBuffer, strlen(answerBuffer));
+
+    return 0;
 }
 void printCustomDisplay(char *customDisplay )
 {
@@ -226,13 +235,13 @@ void printCustomDisplay(char *customDisplay )
 
 void printInput(char *input, uint8_t len)
 {
-    if(len > 16) len = 16;
+    if(len > DISPLAY_INPUT_LEN) len = DISPLAY_INPUT_LEN;
     
-    st7920_set_cursor(3, 0);
-    for (uint8_t i = 0; i < 15; i++)
+    setCursor(3, 0);
+    for (uint8_t i = 0; i < DISPLAY_INPUT_LEN - 1; i++)
     {
         char c = i < len ? input[i] : '*';
-        st7920_writeb(c); 
+        hd44780_writeb(c); 
         #if DEBUG_ON_PC
         printf("%c", c);   
         #endif
@@ -268,8 +277,12 @@ void updateDisplayQueue(void)
     if(displayQueue[0].displayStartMillis == 0) 
     {
         // Tem plate is net toegevoegd, start timer en laad het display
-        displayQueue[0].displayStartMillis = now;
-        loadDisplayTemplate(displayQueue[0].displayLoadTemplate);
+        
+        int result = loadDisplayTemplate(displayQueue[0].displayLoadTemplate);
+        if(result == 0)
+        {
+            displayQueue[0].displayStartMillis = now;
+        }
     }
     else if(now - displayQueue[0].displayStartMillis >= displayQueue[0].displayDurationMillis)
     {
@@ -767,20 +780,3 @@ void updateTimeDependingAudio(void)
     playAudio(audioToPlay);
 }
 
- bool isGameBizy(uint8_t *rIndex)
- {
-    lpuart1_putchar(0xFA);
-    uint32_t startWait = millis();
-    while(lpuart1_rxcnt() <= 0)
-    {
-        if(millis() - startWait > 1000) return false; 
-    }
-
-    *rIndex = lpuart1_getchar();
-    printf("Received index: %d\n", *rIndex);
-    if(*rIndex != 0)
-    {
-        return true;
-    }
-    return false;
- }

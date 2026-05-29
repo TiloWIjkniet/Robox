@@ -18,6 +18,8 @@
 #include "display.h"
 #include "lock.h"
 #include "leds.h"
+
+
 int main(void)
 {
   millis_init();
@@ -26,40 +28,67 @@ int main(void)
   lpuart1_init(115200); // word gebruik voor cominication naar esp
  // lpuart2_init //word in void HM10_init() ingesteld 
 
-
+ 
    
    
   //Initialisatie van alle modules
   audio_init();
-  st7920_init();
+  printf("start init\n");
   FSM_config();
   keyPad_init();
   lock_init();
   buzzer_init();
   touchSensor_init();
   hexDisplay_init();
-  HM10_init();
+  //HM10_init();
   leds_init();
+  //hd44780_init();
   switch_and_key_sensors_init(); 
   printf("Start game\n");
   
 
-  //Voor dat programa kan starten
-  //receive_room_settings_from_esp();
+  MRCC0->MRCC_GLB_CC1 |= MRCC_MRCC_GLB_CC1_GPIO1(1);
+  MRCC0->MRCC_GLB_CC0 |= MRCC_MRCC_GLB_CC0_PORT1(1);
+  MRCC0->MRCC_GLB_RST1 |= MRCC_MRCC_GLB_RST1_GPIO1(1);
+  MRCC0->MRCC_GLB_RST0 |= MRCC_MRCC_GLB_RST0_PORT1(1);
+    
+  for (int i = 0; i < 11; i++) 
+  {
+      PORT1->PCR[i] = 0x00008000 | PORT_PCR_IBE(1);
+      GPIO1->PCOR = (1<<i);
+      
+      GPIO1->PDDR |= (1<<i);
+  } 
+  
+
+  // char c[16] = "\0";
+  // for(int i = 0; i < sizeof(c) - 1; i++)
+  // {
+  //   delay(5);
+  //  // hd44780_writeb(c[i]);
+  // }
+
+  while(1)
+  {
+   // updateDisplayQueue();
+    //hd44780_update();
+  }
+//   Voor dat programa kan starten
+//  receive_room_settings_from_esp();
   
 
   uint8_t rIndex = 0;
-  bool gameBuzy = isGameBizy(&rIndex);
-  if(gameBuzy) 
+  bool gamePosed = isGameBizy(&rIndex);
+  if(gamePosed) 
   {
     forceDisplayTemplate(D_GAME_IS_BUSY, DISPLAY_3S); 
     while(1)
     {
       updateDisplayQueue();
       updateInputBuffer();
-      st7920_update();
+      hd44780_update();
       if(!hasNewAnswer) continue;
-
+      if(rIndex >= getNumRooms()) break; // als er een ongeldige room index is, gewoon starten met het spel
       if(!isInputMatching(answerBuffer, "1"))
       {
         roomIndex = rIndex;
@@ -69,7 +98,7 @@ int main(void)
       break;
     }
   }
-  
+
 
   while(1)
   {
@@ -83,7 +112,7 @@ int main(void)
     updateInputBuffer();
     lockUpdate();
     matrix_update();
-    st7920_update();
+    hd44780_update();
 
     if(isGameActiv)
     {

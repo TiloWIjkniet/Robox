@@ -50,11 +50,7 @@ static inline void askForBeacons(void)
 {
     sentDataToHM10("AT+DISI?\r\n"); // AT+DISI?
 }
-void delay(uint32_t delay)
-{
-    uint32_t start = millis();
-    while(millis() - start < delay);
-}
+
 void HM10_init(void)
 {
     // WARN: Heb dit niew toe gevoegt dus werkt mis niet goed
@@ -300,7 +296,7 @@ void updateHM10(void)
 
     char lowestBeconsString[200];
     getLowestBecons(lowestBeconsString, sizeof(lowestBeconsString));
-    printf("\nLowest beacons:\n");
-    printf(lowestBeconsString);
+    // printf("\nLowest beacons:\n");
+    // printf(lowestBeconsString);
 
 }

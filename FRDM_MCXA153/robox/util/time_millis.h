@@ -15,6 +15,13 @@ static inline uint32_t millis(void)
     return ms;
 }
 
+static inline void delay(uint32_t delay)
+{
+    uint32_t start = millis();
+    while(millis() - start < delay);
+}
+
+
 /**
  * @brief Initialiseert de milliseconde timer met behulp van de SysTick.
  */

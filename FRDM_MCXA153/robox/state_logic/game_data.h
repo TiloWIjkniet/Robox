@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define ESP_CNN true
 
 #define DEBUG_ON_PC 1
 #if DEBUG_ON_PC

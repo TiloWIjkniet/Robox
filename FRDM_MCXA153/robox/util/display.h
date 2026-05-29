@@ -3,25 +3,19 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
-#define ST7920_CMD_BUFF_SIZE 128
-
-struct st9720_cmd {
+struct hd44780_cmd {
     uint8_t data;
     uint8_t rs;
 };
 
-int st7920_push_cmd(uint8_t rs, uint8_t val);
-int cmd_function_set(bool RE);
-int cmd_display_control(bool display, bool cursor, bool blink);
-int cmd_entry_mode_set(bool ID, bool S);
+#define HD44780_CMD_BUFF_SIZE 128
+
+void hd44780_init();
+int hd44780_writeb(char val);
+void hd44780_update();
+int setCursor(uint8_t x, uint8_t y);
 int cmd_display_clear();
-int cmd_set_ddram(uint8_t val);
-int st7920_set_cursor(uint8_t row, uint8_t col);
-
-void st7920_init();
-int st7920_writeb(uint8_t val);
-void st7920_update();
-void ms_delay(uint32_t ms);
-
+uint32_t getBufferedCmds();
 #endif

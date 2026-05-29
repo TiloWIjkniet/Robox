@@ -1,168 +1,116 @@
 #include "display.h"
-#include <stddef.h>
-#include <board.h>
+#include "port.h"
 #include "time_millis.h"
-#define RS_SHIFT 8
-#define EN_MASK (1 << 9)
+void hd44780_init()
+{
+    port_init();
+    delay(50);        // wait after power-up
 
-struct st9720_cmd disp_cmd_buff[ST7920_CMD_BUFF_SIZE];
-uint8_t disp_cmd_tail;
-uint8_t disp_cmd_head;
-uint8_t disp_cursor_pos;
-uint8_t disp_mode;
-static const uint8_t DDRAM_addr[4] = {
+                    // wait after power-up
+    write_port(0, 0b00110000);
+    delay(5);
+    write_port(0, 0b00001111);
+    delay(5);
+    write_port(0, 0b00000110);
+    delay(5);
+    write_port(0, 0b00000001);
+    delay(5);
+}
+static const uint8_t DDRAM_addr[] = {
     0x00,
     0x10,
     0x8,
-    0x18
+    0x18,
 };
 
-int st7920_set_cursor(uint8_t row, uint8_t col)
+static uint8_t cmd_head = 0;
+static uint8_t cmd_tail = 0;
+struct hd44780_cmd cmd_buff[HD44780_CMD_BUFF_SIZE];
+int hd44780_push_cmd(uint8_t rs, uint8_t val)
 {
-    uint8_t newCursor = row * 16 + col;
-    if(newCursor > 4 * 16) return -1;
-    
-    disp_cursor_pos = newCursor;
-    if (cmd_set_ddram(DDRAM_addr[(disp_cursor_pos >> 4)]) == -1) { return -1; };
-    return 0;
-}
-
-static inline void tiny_delay(int loops)
-{
-    for (volatile int i = 0; i < loops; i++) {
-        __NOP();
-    }
-}
-
-void ms_delay(uint32_t ms)
-{
-    uint32_t start = millis();
-    while (millis() - start < ms) 
-    {
-        __NOP();
-    }
-}
-
-static inline void write_port(uint8_t rs, uint8_t val)
-{
-    GPIO1->PCOR = 0x3FF; //clear the parralel bus
-    GPIO1->PSOR = (rs << RS_SHIFT) | val;
-    tiny_delay(1);
-    GPIO1->PSOR = EN_MASK;
-    tiny_delay(1);
-    GPIO1->PCOR = EN_MASK;
-    tiny_delay(1);
-    GPIO1->PCOR = 0x3FF;
-}
-
-int st7920_push_cmd(uint8_t rs, uint8_t val)
-{
-    uint8_t tmp = (disp_cmd_head + 1) & (ST7920_CMD_BUFF_SIZE - 1);
-    if (tmp == disp_cmd_tail) {
+    uint8_t tmp = (cmd_head + 1) & (HD44780_CMD_BUFF_SIZE - 1);
+    if (tmp == cmd_tail) {
         return -1;
     }
-    disp_cmd_head = tmp;
-    disp_cmd_buff[tmp] = (struct st9720_cmd) { .data = val, .rs = rs};
+    cmd_head = tmp;
+    cmd_buff[tmp] = (struct hd44780_cmd) { .data = val, .rs = rs};
     return 0;
-}
-
-
-
-int cmd_function_set(bool RE)
-{
-    return st7920_push_cmd(0, (0b11 << 4) | (RE << 2));
-}
-
-int cmd_display_control(bool display, bool cursor, bool blink)
-{
-    return st7920_push_cmd(0, (1 << 3) | (display << 2) | (cursor << 1) | blink);
-}
-
-int cmd_entry_mode_set(bool ID, bool S)
-{
-    return st7920_push_cmd(0, (1 << 2) | (ID << 1) | S);
 }
 
 int cmd_display_clear()
 {
-    return st7920_push_cmd(0, 1);
+    return hd44780_push_cmd(0, 1);
 }
 
-int cmd_set_ddram(uint8_t val)
+static int cmd_set_ddram(uint8_t val)
 {
-    return st7920_push_cmd(0, 0x80 | (val & 0x7F));
+    return hd44780_push_cmd(0, 0x80 | (val & 0x7F));
 }
 
-void st7920_init()
+int setCursor(uint8_t x, uint8_t y)
 {
-    MRCC0->MRCC_GLB_CC1 |= MRCC_MRCC_GLB_CC1_GPIO1(1);
-    MRCC0->MRCC_GLB_CC0 |= MRCC_MRCC_GLB_CC0_PORT1(1);
-    MRCC0->MRCC_GLB_RST1 |= MRCC_MRCC_GLB_RST1_GPIO1(1);
-    MRCC0->MRCC_GLB_RST0 |= MRCC_MRCC_GLB_RST0_PORT1(1);
-    for (int i = 0; i < 10; i++) {
-        PORT1->PCR[i] = 0x00008000;
-        GPIO1->PCOR = (1<<i);
-        
-        GPIO1->PDDR |= (1<<i);
+    if (y > 3 || x > 15) 
+    {
+        return -1;
+    }
+    return cmd_set_ddram(DDRAM_addr[y] + x);
+}
+
+uint32_t getBufferedCmds()
+{
+    if (cmd_head >= cmd_tail) 
+    {
+        return cmd_head - cmd_tail;
+    } else 
+    {
+        return HD44780_CMD_BUFF_SIZE - (cmd_tail - cmd_head);
+    }
+}
+
+static uint8_t newl_pending = 0;
+static uint8_t cursor_y = 0;
+static uint8_t cursor_x = 0;
+int hd44780_writeb(char val)
+{
+    if (newl_pending) {
+        uint8_t tmp = cursor_y + 1;
+        if (cmd_set_ddram(DDRAM_addr[tmp]) == -1) { return -1; };
+        cursor_x = 0;
+        cursor_y = tmp;
+        newl_pending = 0;
     }
     
-    ms_delay(20);
-    write_port(0, 0b00110000);
-    ms_delay(5);
-    write_port(0, 0b00110000);
-    ms_delay(5);
-    write_port(0, 0b00001111);
-    ms_delay(5);
-    write_port(0, 0b00000110);
-    ms_delay(5);
-    write_port(0, 0b00000001);
-    ms_delay(10);
-}
-
-int st7920_writeb(uint8_t val)
-{
-    if (disp_mode & (1 << 0)) {
-        if (cmd_set_ddram(DDRAM_addr[(disp_cursor_pos >> 4)]) == -1) { return -1; };
-        disp_mode &= ~(1 << 0);
-    }
-
-    if (disp_cursor_pos == 4*16) {
+    if (cursor_y >= 4) {
         if (cmd_display_clear() == -1) { return -1; };
-        disp_cursor_pos = 0;
+        cursor_x = 0;
+        cursor_y = 0;
     }
     if (val == '\n') {
-        disp_cursor_pos &= 0xF0;
-        disp_cursor_pos += 16;
+        newl_pending = 1;
     } else if (val == '\b') {
-        disp_cursor_pos--;
+        cursor_x--;
     } else {
-        if (st7920_push_cmd(1, val) == -1) { return -1; };
-        disp_cursor_pos++;
+        if (hd44780_push_cmd(1, val) == -1) { return -1; };
+        cursor_x++;
     }
-    if ((disp_cursor_pos & 0xF) == 0) {
-        disp_mode |= (1 << 0);
-        return -1;
+    if (cursor_x >= 16) {
+        newl_pending = 1;
     }
     return 0;
 }
 
-void st7920_update()
+void hd44780_update()
 {
-    
-    if (disp_cmd_head != disp_cmd_tail) 
-    {
-        uint8_t tmp = (disp_cmd_tail + 1) & (ST7920_CMD_BUFF_SIZE - 1);
-        disp_cmd_tail = tmp;
-        struct st9720_cmd* cmd = &disp_cmd_buff[tmp];
-        write_port(cmd->rs, cmd->data);
-    }    
+    uint8_t status = read_port(0);
+
+    if (!(status & 0x80)) {
+
+        if (cmd_head != cmd_tail) 
+        {
+            uint8_t tmp = (cmd_tail + 1) & (HD44780_CMD_BUFF_SIZE - 1);
+            cmd_tail = tmp;
+            struct hd44780_cmd* cmd = &cmd_buff[tmp];
+            write_port(cmd->rs, cmd->data);
+        }
+    }
 }
-
-
-
-
-
-
-
-
-

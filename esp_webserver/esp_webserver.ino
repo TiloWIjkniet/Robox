@@ -116,65 +116,95 @@ void setup()
   digitalWrite(DATA_LET_1, LOW);
   digitalWrite(DATA_LET_2, LOW);
 
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP(ssid, password);
-  WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
-  myIP = WiFi.softAPIP();
+  // WiFi.mode(WIFI_AP);
+  // WiFi.softAP(ssid, password);
+  // WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
+  // myIP = WiFi.softAPIP();
+  // dnsServer.start(DNS_PORT, "*", myIP);
 
-  dnsServer.start(DNS_PORT, "*", myIP);
-
-  setServerOnline(true);
   Serial.println("Access Point gestart");
   Serial.print("Web adres: http://");
   Serial.println(myIP);
 
   if(!LittleFS.begin()) { Serial.println("Fout bij LittleFS mount"); return; }
   loadFromFlash();
-  beginServer();
+
+ // netwrkBegin();
+  //beginServer();
 
   loadRecordingsFromFlash();
 
 
 }
 
+void stopNetwork()
+{
+    // Webserver stoppen
+    server.stop();
+
+    // DNS server stoppen
+    dnsServer.stop();
+
+    // Access point uitzetten
+    WiFi.softAPdisconnect(true);
+
+    // WiFi hardware uit
+    WiFi.mode(WIFI_OFF);
+
+    networkRunning = false;
+    serverRunning = false;
+}
+
+void netwrkBegin()
+{
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid, password);
+  WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
+  myIP = WiFi.softAPIP();
+  dnsServer.start(DNS_PORT, "*", myIP);
+  networkRunning = true;
+}
 void beginServer()
 {
-  server.on("/", HTTP_GET, []()
-  {
-    File f = LittleFS.open("/index.html", "r");
-    server.sendHeader("Cache-Control", "no-cache");
-    server.streamFile(f, "text/html");
-    f.close();
-  });
+    if(serverRunning) return;
+    server.on("/", HTTP_GET, []()
+    {
+        File f = LittleFS.open("/index.html", "r");
+        server.sendHeader("Cache-Control", "no-cache");
+        server.streamFile(f, "text/html");
+        f.close();
+    });
 
-  server.on("/style.css", HTTP_GET, []()
-  {
-    File f = LittleFS.open("/style.css", "r");
-    server.sendHeader("Cache-Control", "max-age=3600");
-    server.streamFile(f, "text/css");
-    f.close();
-  });
+    server.on("/style.css", HTTP_GET, []()
+    {
+        File f = LittleFS.open("/style.css", "r");
+        server.sendHeader("Cache-Control", "max-age=3600");
+        server.streamFile(f, "text/css");
+        f.close();
+    });
 
-  server.on("/script.js", HTTP_GET, []()
-  {
-    File f = LittleFS.open("/script.js", "r");
-    server.sendHeader("Cache-Control", "max-age=3600");
-    server.streamFile(f, "application/javascript");
-    f.close();
-  });
+    server.on("/script.js", HTTP_GET, []()
+    {
+        File f = LittleFS.open("/script.js", "r");
+        server.sendHeader("Cache-Control", "max-age=3600");
+        server.streamFile(f, "application/javascript");
+        f.close();
+    });
 
-  server.on("/status", HTTP_GET, []() {
-    String status = serverRunning ? "online" : "offline";
-    server.send(200, "text/plain", status);
-});
+    server.on("/status", HTTP_GET, []()
+    {
+        String status = serverRunning ? "online" : "offline";
+        server.send(200, "text/plain", status);
+    });
 
-  server.on("/save", HTTP_POST, handleSave);
-  server.on("/load", HTTP_GET, handleLoad);
+    server.on("/save", HTTP_POST, handleSave);
+    server.on("/load", HTTP_GET, handleLoad);
 
-  server.onNotFound(handleNotFound);
-  Serial.println("Webserver gestart");
+    server.onNotFound(handleNotFound);
 
-  
+    server.begin();
+
+    serverRunning = true;
 }
 
 void handleLoad()
@@ -262,22 +292,6 @@ void handleLoad()
   transmitingData = false;
 }
 
-
-void setServerOnline(bool online) 
-{
-    if (online && !serverRunning) 
-    {
-        server.begin();
-        serverRunning = true;
-        Serial.println("Webserver gestart via UART");
-    } 
-    else if (!online && serverRunning) 
-    {
-        server.stop();
-        serverRunning = false;
-        Serial.println("Webserver gestopt via UART");
-    }
-}
 
 void handleSave() 
 {
@@ -521,63 +535,47 @@ void loop()
   dnsServer.processNextRequest();
   if(serverRunning) server.handleClient();
 
-led1();
-led2();
+  led1();
+  led2();
 
-while(Serial.available())
-{
-  transmitingData = true;
-  uint8_t byteIn = Serial.read();
+  while(Serial.available())
+  {
+    transmitingData = true;
+    uint8_t byteIn = Serial.read();
 
     // Specifieke commando's
-  if(!receiving) 
-  {
-    if (byteIn == 0xCC) 
-    {  // Alles online
-        if (!networkRunning) 
-        {
-          WiFi.softAP(ssid, password);
-          WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
-          dnsServer.start(DNS_PORT, "*", myIP);
-          networkRunning = true;
-          //Serial.println("Netwerk ingeschakeld");
-          }
-        if (!serverRunning) 
-        {
-          server.begin();
-          serverRunning = true;
-        //  Serial.println("Server gestart");
-        }
-    } 
-    else if (byteIn == 0xEE) 
-    { // Alles offline
-      if (serverRunning) 
-      {
-        server.close();
-        serverRunning = false;
-        //Serial.println("Server gestopt");
-      }
-      if (networkRunning) 
-      {
-        dnsServer.stop();
-        WiFi.softAPdisconnect(true);
-        WiFi.disconnect(true);
-        networkRunning = false;
-       // Serial.println("Netwerk uitgeschakeld");
-      }
-      
-    }
-    else if(byteIn == 0xFA)
+    if(!receiving) 
     {
-      Serial.write(roomIndex);
+      if (byteIn == 0xCC) 
+      {  // Alles online
+          if (!networkRunning) 
+          {
+            netwrkBegin();
+            
+            //Serial.println("Netwerk ingeschakeld");
+            }
+          if (!serverRunning) 
+          {
+            beginServer();
+          }
+      } 
+      else if (byteIn == 0xEE) 
+      { // Alles offline
+        stopNetwork();        
+      }
+      else if(byteIn == 0xFA)
+      {
+        Serial.write(roomIndex);
+        Serial.println("\n");
+        Serial.print(roomIndex);
+      }
+      else sentSettingData(byteIn); // bestaande functie
     }
-    else sentSettingData(byteIn); // bestaande functie
-  }
 
-    // Data ontvangen voor recordings
-    getRunData(byteIn);
-    if(!Serial.available()) transmitingData = false;
-}
+      // Data ontvangen voor recordings
+      getRunData(byteIn);
+      if(!Serial.available()) transmitingData = false;
+  }
 }
 
 void sentSettingData(uint8_t byteIn)
@@ -702,6 +700,7 @@ void startRoop(uint8_t byteIn)
     index = 0;
     receiving = false;
     roomState = NON;
+    roomIndex = 0;
     saveRecordingsToFlash();
     return;
   }
@@ -717,6 +716,7 @@ void room(uint8_t byteIn)
   {
     roomIndex = byteIn;
     index ++;
+    return;
   }
   uint8_t *p = (uint8_t*)&temp;
 
