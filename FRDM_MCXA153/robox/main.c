@@ -40,39 +40,13 @@ int main(void)
   buzzer_init();
   touchSensor_init();
   hexDisplay_init();
-  //HM10_init();
+  HM10_init();
   leds_init();
-  //hd44780_init();
+  hd44780_init();
   switch_and_key_sensors_init(); 
   printf("Start game\n");
-  
 
-  MRCC0->MRCC_GLB_CC1 |= MRCC_MRCC_GLB_CC1_GPIO1(1);
-  MRCC0->MRCC_GLB_CC0 |= MRCC_MRCC_GLB_CC0_PORT1(1);
-  MRCC0->MRCC_GLB_RST1 |= MRCC_MRCC_GLB_RST1_GPIO1(1);
-  MRCC0->MRCC_GLB_RST0 |= MRCC_MRCC_GLB_RST0_PORT1(1);
-    
-  for (int i = 0; i < 11; i++) 
-  {
-      PORT1->PCR[i] = 0x00008000 | PORT_PCR_IBE(1);
-      GPIO1->PCOR = (1<<i);
-      
-      GPIO1->PDDR |= (1<<i);
-  } 
-  
 
-  // char c[16] = "\0";
-  // for(int i = 0; i < sizeof(c) - 1; i++)
-  // {
-  //   delay(5);
-  //  // hd44780_writeb(c[i]);
-  // }
-
-  while(1)
-  {
-   // updateDisplayQueue();
-    //hd44780_update();
-  }
 //   Voor dat programa kan starten
 //  receive_room_settings_from_esp();
   
@@ -132,7 +106,11 @@ int main(void)
   }
 }
 
-//BUG HM10 doet het niet
+//note: waardes van hm 10 tresholt aanpassen
+//note: pop time in hm 10 aanpassen
+//note: cash size in hm 10 aanpassen
+//note: penalty voor geen connectie aanpassen in hm 10
+
 
 //WARN : Lupart 0 word zo wel gebruikt voor audio als voor debuging kan problemen veroorzaken
 

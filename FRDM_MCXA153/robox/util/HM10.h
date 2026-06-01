@@ -9,5 +9,6 @@
 void updateHM10(void);
 void HM10_init(void);
 void getLowestBecons(char *pLowestBeconsString, uint16_t size);
-extern char beconIp[MAX_CHAR_IN_STRING];
+bool isInCorrectRoom(const char *beconIp);
+
 #endif

@@ -243,7 +243,7 @@ void commonRoom_onUpdate(roomDisplayConfig_t roomDisplay)
     {
         case STATE_WAIT_FOR_ROOM: //Wait for player to enter the correct room
         {
-            bool inCorrectRoom = isInCorrectRoom(beconIp);
+            bool inCorrectRoom = isInCorrectRoom(roomsSettings[roomIndex].beconIp);
 
             //TEMP: voor debug options/ voor def mode 
             if(hasNewAnswer) {inCorrectRoom = inCorrectRoom || isInputMatching(answerBuffer, "0000");}

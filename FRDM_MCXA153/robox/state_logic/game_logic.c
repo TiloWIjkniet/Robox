@@ -545,21 +545,6 @@ void updateTimeGamePenaltyMillis(void)
     }
 }
 
-/**
- * @brief Controleert of de speler zich in de juiste kamer bevindt.
- *
- * Vergelijkt het opgegeven beacon-IP adres met het beacon-IP adres
- * van de huidige kamer (roomsSettings[roomIndex]).
- *
- * @param beconIp  Het beacon-IP adres dat gedetecteerd is.
- * @return true    Als het beacon-IP overeenkomt met de huidige kamer.
- * @return false   Als het beacon-IP niet overeenkomt.
- */
-bool isInCorrectRoom(const char *beconIp)
-{
-    if(strcmp(roomsSettings[roomIndex].beconIp, beconIp) == 0) return true;
-    return false;
-}  
 
 /**
  * @brief Controleert of het opgegeven antwoord overeenkomt met één van de juiste antwoorden van de huidige kamer.

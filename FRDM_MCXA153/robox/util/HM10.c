@@ -25,7 +25,7 @@ typedef struct
     uint32_t lastSeen;
     char beaconIp[11];
     int8_t beconStrengt; 
-    uint8_t cash[CASH_SISE];
+    int8_t cash[CASH_SISE];
 }beacon_t;
 
 beacon_t becons[MAX_BEACONS];
@@ -88,14 +88,37 @@ void updateBeacon(char *beaconIp, int strength)
     //Als nog niet in de lijst, voeg deze dan toe aan de lijst met beacons
     if (!found)
     {
-        strcpy(becons[beconIndex].beaconIp, beaconIp);
+        uint8_t b = 0;
+        if(beconIndex >= MAX_BEACONS)
+        {
+            int8_t lowesStrengt = 0;
+            for (uint8_t i = 0; i < beconIndex; i++)
+            {
+ 
+                if(becons[i].beconStrengt > lowesStrengt)
+                {
+                    lowesStrengt = becons[i].beconStrengt;
+                    b = i;
+
+                }
+                
+            }
+
+        }
+        else
+        {
+            b = beconIndex;
+            beconIndex++;
+        }
+
+        strcpy(becons[b].beaconIp, beaconIp);
         for(uint8_t i = 0; i < CASH_SISE; i ++)
         {
-            becons[beconIndex].cash[i] = 0;
+            becons[b].cash[i] = 0;
         }
-        becons[beconIndex].cash[beconLoaclIndex] = strength;
-        becons[beconIndex].lastSeen = millis();
-        beconIndex++;
+        becons[b].cash[beconLoaclIndex] = strength;
+        becons[b].lastSeen = millis();
+        
     }
 }
 
@@ -106,7 +129,7 @@ void calculateStrenkt()
 
     for (uint8_t i = 0; i < beconIndex; i++)
     {
-        uint8_t sum = 0;
+        uint32_t sum = 0;
         uint8_t count = 0;
         for (uint8_t y = 0; y < CASH_SISE; y++)
         {
@@ -116,12 +139,9 @@ void calculateStrenkt()
                 sum += becons[i].cash[y];
             }
         }
-        becons[i].beconStrengt = sum == 0 ? 100 : sum/count;
-        
-        becons[i].cash[beconLoaclIndex] = becons[i].beconStrengt + NOT_CONECTION_PANALTY * (CASH_SISE - count);
-    }
-
-
+        uint8_t average = sum == 0 ? 100 : sum/count;
+        becons[i].beconStrengt = average + NOT_CONECTION_PANALTY * (CASH_SISE - count);
+    } 
     
 }
 /**
@@ -300,3 +320,16 @@ void updateHM10(void)
     // printf(lowestBeconsString);
 
 }
+
+bool isInCorrectRoom(const char *beconIp)
+{
+    for (uint8_t i = 0; i < beconIndex; i++)
+    {
+        if(strcmp(beconIp, becons[i].beaconIp) == 0) 
+        {
+            if(becons[i].beconStrengt <= 90) return true;
+            return false;
+        }
+    }
+    return false;
+}  
