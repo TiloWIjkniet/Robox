@@ -53,6 +53,9 @@ int main(void)
 
 
   //BUG: input buffer print onzin
+  //WARN: mogelijk opgelost 
+
+  
   uint8_t rIndex = 0;
   bool gamePosed = isGameBizy(&rIndex);
   if(gamePosed) 
@@ -68,8 +71,14 @@ int main(void)
       if(!isInputMatching(answerBuffer, "1"))
       {
         roomIndex = rIndex;
-        //TODO: Get run data van de esp ontvangen.
-        askRunData();
+        if(askRunData()) break; // als er geen run data ontvangen kan worden, gewoon starten met het spel
+
+        for(uint8_t i = 0; i < getNumRooms(); i++)
+        {
+          if(i == rIndex) continue;
+          startGameMillis = millis();
+          timeGamePanaltyMillis += runData.roomTimes[i] * FROM_MIN_TO_MS; 
+        }
         FSM_forceState(S_ROOM_LOOP);
       }
   

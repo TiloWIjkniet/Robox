@@ -415,31 +415,52 @@ void send_run_data_to_esp_end(void)
 
  bool getRunData()
  {
+    bool resefingData = false;
+    size_t index = 0;
     uint32_t timeoutStart = millis();
+    uint8_t *data = (uint8_t*)&runData;
     while(true)
     {
 
         //Controleerd of er een time oud is
         if(millis() - timeoutStart > TIMEOUT_MS)
         {
-            state = WAIT_GLOBAL_START;
             return false;
         }
         if(lpuart1_rxcnt() <= 0) continue; // wacht op data
+
+        char byte = lpuart1_getchar();
+        if(!resefingData)
+        {   
+            if(byte == 0x12) resefingData = true;
+
+            continue;
+        }
+
+        data[index++] = byte; 
+
+        if (index >= sizeof(runData)) 
+        {
+            return true;
+        }
         
     }
+    return false; 
  }
 
  int askRunData()
  {
     
-    uint8_t atempts = 0;
-    do
+    for(uint8_t i = 0; i < 5; i ++)
     {
-        if(atempts >= 5 ) return -1;
+        while(lpuart1_rxcnt() > 0)
+        {
+            lpuart1_getchar();
+        }
         lpuart1_putchar(START_BYTE_ASK_RUN_DATA);
-    
-    }while(getRunData())
+        if(getRunData()) return 0;
+    }
+    return -1;
  }
 
  

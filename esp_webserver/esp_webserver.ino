@@ -25,8 +25,8 @@ IPAddress myIP;
 #define BYTE_SEND_RUN_DATA_ROOM  0xC2
 #define BYTE_SEND_RUN_DATA_END   0xC3
 // Pinnen nog goed setten
-#define DATA_LET_1 5
-#define DATA_LET_2 5
+#define DATA_LET_1 4
+#define DATA_LET_2 0
 
 String plattegrond = "";  
 
@@ -521,7 +521,7 @@ void led1()
   // }
   // else
   // {
-  //   digitalWrite(DATA_LET_1, LOW);
+  //   digitalWrite(DATA_LET_1, transmitingData);
   // }
 }
 
@@ -535,7 +535,7 @@ void loop()
   dnsServer.processNextRequest();
   if(serverRunning) server.handleClient();
 
-  // led1();
+  led1();
   // led2();
 
   while(Serial.available())
@@ -566,8 +566,17 @@ void loop()
       else if(byteIn == 0xFA)
       {
         Serial.write(roomIndex);
-        Serial.println("\n");
-        Serial.print(roomIndex);
+
+      }
+      else if(byteIn == 0x11)
+      {
+        uint8_t *data = (uint8_t*)&recordings[0];
+        size_t size = sizeof(recordings[0]);
+        Serial.write(0x12);
+        for (size_t i = 0; i < size; i++)
+        {
+            Serial.write(data[i]);
+        } 
       }
       else sentSettingData(byteIn); // bestaande functie
     }

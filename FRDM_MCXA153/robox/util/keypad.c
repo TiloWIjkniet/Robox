@@ -73,7 +73,15 @@ void keyPad_init(void)
     PORT3->PCR[PIN_ROW_2] = PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_MUX(0) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
     PORT3->PCR[PIN_ROW_3] = PORT_PCR_LK(1) | PORT_PCR_IBE(1) | PORT_PCR_MUX(0) | PORT_PCR_PE(1) | PORT_PCR_PS(1);
 
-
+  for(uint8_t col = 0; col < COLS; col++)
+  {
+    for (uint8_t row =0; row < ROWS; row++)
+    {
+      keys[row][col].pressed = false;
+      keys[row][col].lastRawState = false;
+      keys[row][col].lastChange = millis();
+    }
+  }
 }
 
 /**
@@ -229,16 +237,6 @@ char getKey(void)
     setPinState(GPIO3, pin_coloms[col], true);
   }
     
-  
-
-  // #if DEBUG_ON_PC
-  // // 2. Fallback → Serial input
-  // if (serial_rxcnt() > 0)
-  // {
-  //   char c = serial_getchar();
-  //   if( c != '\n' && c != '\r') return c;
-  // }
-  // #endif
   return '\0';
 }
 
