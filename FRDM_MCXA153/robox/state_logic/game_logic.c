@@ -218,7 +218,7 @@ int loadDisplayTemplate(displayTemplate_t template)
     printf("%s", displayStr);
     #endif
 
-    printInput(answerBuffer, strlen(answerBuffer));
+    printInput(inputBuffer, strlen(inputBuffer));
 
     return 0;
 }
@@ -249,6 +249,7 @@ void printInput(char *input, uint8_t len)
     #if DEBUG_ON_PC
     printf("\n");
     #endif
+    printf("Input: %s\n",   input);
 
     
 }
@@ -606,7 +607,6 @@ void updateGameTimer(void)
     int32_t totalSec = timeRemaining / 1000;
     if(totalSec == lastSec) return; 
     lastSec = totalSec;
-
     setGameTimer(lastSec);
     buzzer_play(BUZZERT_DURATION);
 
@@ -654,7 +654,7 @@ uint8_t getNumRooms(void)
     uint8_t count = 0;
     for(uint8_t i = 0; i < MAX_ROOMS; i++) 
     {
-        if(roomsSettings[i].beconIp[0] == '\0') break;
+        if(roomsSettings[i].beconIp[0] == '\0' && roomsSettings[i].roomNaam[0] == '\0') continue;
         count++;
     }
     return count;

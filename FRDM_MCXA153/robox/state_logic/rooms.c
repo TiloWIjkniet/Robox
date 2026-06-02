@@ -153,7 +153,7 @@ void commonRoom_onEntry(void)
     setMapCoordinates(roomsSettings[roomIndex].coordinates);
 
     //Reset room specific variables
-    startRoomMillis = startGameMillis; 
+    startRoomMillis = getElapsedTime();
     hasAnwertCorrect = false;
     state = STATE_WAIT_FOR_ROOM;
 }
@@ -164,9 +164,10 @@ void commonRoom_onEntry(void)
 void commonRoom_onExit(void)
 {
     //Update run data with room time
-    uint32_t roomElapsedMillis = (startGameMillis - startRoomMillis);  
+    uint32_t roomElapsedMillis = (getElapsedTime()- startRoomMillis);  
     float elapsedMinutes = ((float)roomElapsedMillis) / (float)(1 * FROM_MIN_TO_MS);
     runData.roomTimes[roomIndex] = elapsedMinutes;
+
     send_run_data_to_esp_room();
 }
 

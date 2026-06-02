@@ -28,6 +28,7 @@ static uint8_t cmd_tail = 0;
 struct hd44780_cmd cmd_buff[HD44780_CMD_BUFF_SIZE];
 int hd44780_push_cmd(uint8_t rs, uint8_t val)
 {
+     return 0;
     uint8_t tmp = (cmd_head + 1) & (HD44780_CMD_BUFF_SIZE - 1);
     if (tmp == cmd_tail) {
         return -1;
@@ -49,6 +50,7 @@ static int cmd_set_ddram(uint8_t val)
 
 int setCursor(uint8_t x, uint8_t y)
 {
+     return 0;
     if (y > 3 || x > 15) 
     {
         return -1;
@@ -58,6 +60,7 @@ int setCursor(uint8_t x, uint8_t y)
 
 uint32_t getBufferedCmds()
 {
+    
     if (cmd_head >= cmd_tail) 
     {
         return cmd_head - cmd_tail;
@@ -72,6 +75,7 @@ static uint8_t cursor_y = 0;
 static uint8_t cursor_x = 0;
 int hd44780_writeb(char val)
 {
+    return 0;
     if (newl_pending) {
         uint8_t tmp = cursor_y + 1;
         if (cmd_set_ddram(DDRAM_addr[tmp]) == -1) { return -1; };

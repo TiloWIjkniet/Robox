@@ -74,7 +74,7 @@ void setMapCoordinates(const uint8_t coordinates[2]);
 
 void receive_room_settings_from_esp(void);
 
-
+ void askRunData();
 void printCustomDisplay(char *customDisplay);
 
 static inline bool getPinState(const GPIO_Type *port, const uint8_t pin)

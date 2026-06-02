@@ -32,10 +32,11 @@ int main(void)
    
    
   //Initialisatie van alle modules
+  keyPad_init();
   audio_init();
   printf("start init\n");
   FSM_config();
-  keyPad_init();
+  
   lock_init();
   buzzer_init();
   touchSensor_init();
@@ -44,13 +45,14 @@ int main(void)
   leds_init();
   hd44780_init();
   switch_and_key_sensors_init(); 
+  
+
+//   Voor dat programa kan starten
+  receive_room_settings_from_esp();
   printf("Start game\n");
 
 
-//   Voor dat programa kan starten
-//  receive_room_settings_from_esp();
-  
-
+  //BUG: input buffer print onzin
   uint8_t rIndex = 0;
   bool gamePosed = isGameBizy(&rIndex);
   if(gamePosed) 
@@ -66,13 +68,14 @@ int main(void)
       if(!isInputMatching(answerBuffer, "1"))
       {
         roomIndex = rIndex;
+        //TODO: Get run data van de esp ontvangen.
+        askRunData();
         FSM_forceState(S_ROOM_LOOP);
       }
   
       break;
     }
   }
-
 
   while(1)
   {

@@ -93,6 +93,9 @@ void emptyInputBuffer(void)
   inputBufferIndex = 0;
   hasNewAnswer = false;
   inputBuffer[inputBufferIndex] = '\0';
+
+  memset(&answerBuffer, 0, sizeof(answerBuffer));
+  answerBuffer[sizeof(answerBuffer) - 1] = '\0';
   printInput(inputBuffer, inputBufferIndex);
 }
 
@@ -125,11 +128,11 @@ void updateInputBuffer(void)
     }
     case '#':
     {
-        strncpy(answerBuffer, inputBuffer, sizeof(answerBuffer) - 1);
-        answerBuffer[sizeof(answerBuffer) - 1] = '\0';
+
         if(inputBufferIndex <= 0) break;
         hasNewAnswer = true;
-
+        strncpy(answerBuffer, inputBuffer, sizeof(answerBuffer) - 1);
+        answerBuffer[sizeof(answerBuffer) - 1] = '\0';
         inputBufferIndex = 0;
         inputBuffer[inputBufferIndex] = '\0';
     

@@ -41,9 +41,9 @@ void clearDisplay(void)
     }
 }
 
-void setLed(int row, int col)
+void setLed(int col, int row)
 {
-    if(row < 0 || row >= ROWS || col < 0 || col >= COLS) return;
+    if(row <= 0 || row >= ROWS || col <= 0 || col >= COLS) return;
     display[row][col] =1;
 }
 

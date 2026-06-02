@@ -25,8 +25,8 @@ IPAddress myIP;
 #define BYTE_SEND_RUN_DATA_ROOM  0xC2
 #define BYTE_SEND_RUN_DATA_END   0xC3
 // Pinnen nog goed setten
-#define DATA_LET_1 0
-#define DATA_LET_2 0
+#define DATA_LET_1 5
+#define DATA_LET_2 5
 
 String plattegrond = "";  
 
@@ -116,11 +116,11 @@ void setup()
   digitalWrite(DATA_LET_1, LOW);
   digitalWrite(DATA_LET_2, LOW);
 
-  // WiFi.mode(WIFI_AP);
-  // WiFi.softAP(ssid, password);
-  // WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
-  // myIP = WiFi.softAPIP();
-  // dnsServer.start(DNS_PORT, "*", myIP);
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP(ssid, password);
+  WiFi.softAPConfig(IPAddress(192,168,4,1), IPAddress(192,168,4,1), IPAddress(255,255,255,0));
+  myIP = WiFi.softAPIP();
+  dnsServer.start(DNS_PORT, "*", myIP);
 
   Serial.println("Access Point gestart");
   Serial.print("Web adres: http://");
@@ -129,8 +129,8 @@ void setup()
   if(!LittleFS.begin()) { Serial.println("Fout bij LittleFS mount"); return; }
   loadFromFlash();
 
- // netwrkBegin();
-  //beginServer();
+ netwrkBegin();
+  beginServer();
 
   loadRecordingsFromFlash();
 
@@ -505,29 +505,29 @@ void loadFromFlash() {
 
 void led1()
 {
-  static uint32_t lastLedUpdate = 0;  
-  static bool lastLedStatus;
-  if(WiFi.softAPgetStationNum() != 0)
-  {
-    digitalWrite(DATA_LET_1, HIGH);
-    lastLedStatus = true;
-  }
-  else if(serverRunning || networkRunning)
-  {
-    if(millis() - lastLedUpdate < 250) return;
-    lastLedUpdate = millis();
-    lastLedStatus = !lastLedStatus;
-    digitalWrite(DATA_LET_1, lastLedStatus);
-  }
-  else
-  {
-    digitalWrite(DATA_LET_1, LOW);
-  }
+  // static uint32_t lastLedUpdate = 0;  
+  // static bool lastLedStatus;
+  // if(WiFi.softAPgetStationNum() != 0)
+  // {
+  //   digitalWrite(DATA_LET_1, HIGH);
+  //   lastLedStatus = true;
+  // }
+  // else if(serverRunning || networkRunning)
+  // {
+  //   if(millis() - lastLedUpdate < 250) return;
+  //   lastLedUpdate = millis();
+  //   lastLedStatus = !lastLedStatus;
+  //   digitalWrite(DATA_LET_1, lastLedStatus);
+  // }
+  // else
+  // {
+  //   digitalWrite(DATA_LET_1, LOW);
+  // }
 }
 
 void led2()
 {
-  digitalWrite(DATA_LET_2, transmitingData);
+ // digitalWrite(DATA_LET_2, transmitingData);
 }
 
 void loop() 
@@ -535,8 +535,8 @@ void loop()
   dnsServer.processNextRequest();
   if(serverRunning) server.handleClient();
 
-  led1();
-  led2();
+  // led1();
+  // led2();
 
   while(Serial.available())
   {
@@ -612,6 +612,7 @@ void getRunData(uint8_t byteIn)
     if (byteIn == 0xAA) 
     { 
       receiving = true;
+      roomState = NON;
       Serial.println("start byte ontvangen");
     }
     return;
@@ -630,17 +631,17 @@ void getRunData(uint8_t byteIn)
       recordings[0] = (runData_t){0};
       roomIndex  = 0;
       roomState = START;
-      break;
+      return;
     }
     case BYTE_SEND_RUN_DATA_ROOM:
     {
       roomState = ROOM;
-      break;
+      return;
     }
     case BYTE_SEND_RUN_DATA_END:
     {
       roomState = END;
-      break;
+      return;
     }
     default:
     return;
@@ -693,15 +694,16 @@ void startRoop(uint8_t byteIn)
     case 2:
   {
     recordings[0].maxRooms = byteIn;
-    break;
-  }
-  default:
-  {
     index = 0;
     receiving = false;
     roomState = NON;
     roomIndex = 0;
     saveRecordingsToFlash();
+    break;
+  }
+  default:
+  {
+ 
     return;
   }
   }
@@ -711,22 +713,32 @@ void room(uint8_t byteIn)
 {
   static uint8_t index = 0;
   static float temp;
-  
-  if(index == 0) 
+  static bool b = false;
+  if(b == false) 
   {
     roomIndex = byteIn;
-    index ++;
+    b = true;
+    index = 0;
     return;
   }
+  
   uint8_t *p = (uint8_t*)&temp;
 
-  p[index++] = byteIn;
+  
 
-  if(index >= 5)
+  if(index < 4)
   {
+    p[index++] = byteIn;
+     Serial.print(byteIn);
+  }
+  else 
+  {
+    recordings[0].wrongAnswerCount = byteIn;
     recordings[0].roomTimes[roomIndex] = temp;
     index = 0;
     roomState = NON;
+    b = false;
+    receiving = false;
     saveRecordingsToFlash();
   }
 }
@@ -754,6 +766,8 @@ void end(uint8_t byteIn)
 void saveRecordingsToFlash() 
 {
   transmitingData = true;
+
+
     if (!LittleFS.begin()) { Serial.println("Fout bij mounten LittleFS"); return; }
 
     DynamicJsonDocument doc(DOC_SIS);

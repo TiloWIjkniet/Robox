@@ -4,8 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define ESP_CNN true
-
 #define DEBUG_ON_PC 1
 #if DEBUG_ON_PC
 #include <stdio.h>
@@ -110,6 +108,7 @@ extern  uint32_t startGameMillis;
 extern  uint8_t roomIndex;
 
 extern  char answerBuffer[MAX_CHAR_IN_STRING];
+extern  char inputBuffer[MAX_CHAR_IN_STRING];
 extern  bool hasNewAnswer;
 extern bool isGameActiv;
 

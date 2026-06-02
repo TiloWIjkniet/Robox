@@ -24,6 +24,7 @@
 #define BYTE_SEND_RUN_DATA_START 0xC1
 #define BYTE_SEND_RUN_DATA_ROOM  0xC2
 #define BYTE_SEND_RUN_DATA_END   0xC3
+#define START_BYTE_ASK_RUN_DATA  0x11
 
 #define EXIT_DEV_CODE "0000"
 #define OPEN_ALL_COMPARTMETS "3333"
@@ -166,13 +167,11 @@ void dev_page_onUpdate(void)
 
 void dev_page_onExit(void)
 {
-    #if ESP_CANN
     //Verkrijg ingestelde data van esp
     receive_room_settings_from_esp();  
     
     //Disble webserver on esp
     lpuart1_putchar(WEBSERVER_OFF); 
-    #endif   
 }
 
 void checkIfNewDataFromEsp(void)
@@ -345,11 +344,11 @@ void send_run_data_to_esp_room(void)
     lpuart1_putchar(roomIndex);
 
     uint8_t *p = (uint8_t*)&runData.roomTimes[roomIndex];
-
     for(int i = 0; i < 4; i++)
     {
         lpuart1_putchar(p[i]);
     }
+    lpuart1_putchar(runData.wrongAnswerCnt);
 }
 
 /**
@@ -407,10 +406,40 @@ void send_run_data_to_esp_end(void)
         }
     }
     
-    printf("Received index: %u\n", *rIndex);
     if(*rIndex != 0)
     {
         return true;
     }
     return false;
  }
+
+ bool getRunData()
+ {
+    uint32_t timeoutStart = millis();
+    while(true)
+    {
+
+        //Controleerd of er een time oud is
+        if(millis() - timeoutStart > TIMEOUT_MS)
+        {
+            state = WAIT_GLOBAL_START;
+            return false;
+        }
+        if(lpuart1_rxcnt() <= 0) continue; // wacht op data
+        
+    }
+ }
+
+ int askRunData()
+ {
+    
+    uint8_t atempts = 0;
+    do
+    {
+        if(atempts >= 5 ) return -1;
+        lpuart1_putchar(START_BYTE_ASK_RUN_DATA);
+    
+    }while(getRunData())
+ }
+
+ 
