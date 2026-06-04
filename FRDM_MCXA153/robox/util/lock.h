@@ -8,4 +8,5 @@ void lock_init(void);
 void openLock(void);
 void lockUpdate(void);
 bool isLockOpen();
+void closeLock();
 #endif

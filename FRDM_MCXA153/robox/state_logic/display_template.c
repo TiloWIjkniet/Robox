@@ -3,55 +3,58 @@ const char displayTemplatesNL[MAX_TEMPLATES][DISPLAY_LEN] =
 {
 "NON\n",
 
-"De bom staat klaar\nDurf je te stoppen?\nDruk toets om te\nstarten\n",
+//referentie
+//------------------\n
 
-"DEV MODE\nVoer kamer in\n9999=open alles\n0000=exit\n",
+"De bom staat op \nscherp! Druk op een\n toets om te starten\n",
 
-"Bom geactiveerd\nJe hebt [tijd] min\nMaak geen fouten\n",
+"DEV MODE voer kamer\nnummer in|9999=open\nalles|0000=exit\n",
 
-"Verkeerde kamer\nGa naar:\n[kamer naam]\n",
+"Bom geactiveerd\nJe hebt [time] min\nSucces!\n",
 
-"Dit klopt niet\nZoek:\n[kamer naam]\n",
+"Verkeerde kamer\nGa naar:\n[room name]\n",
 
-"Foute plek\nGa naar:\n[kamer naam]\n",
+"Dit klopt niet\nZoek:\n[room name]\n",
 
-"Bijna klaar\nLaatste kamer:\n[kamer naam]\n",
+"Foute plek\nGa naar:\n[room name]\n",
 
-"Kamer:\n[kamer naam]\nMaak geen fouten\n",
+"Bijna klaar\nLaatste kamer:\n[room name]\n",
 
-"Laatste kamer\nAlles beslist hier\nGeen fouten meer\n",
+"Zoek kamer:\n[room name]\ndoe je best!\n",
 
-"Voer antwoord in\nDenk goed na\nGeen fouten\n",
+"Laatste kamer!\nDe eindstreep\nis in zicht!\n",
 
-"Dit is het moment\nAlles hangt af\nVoer antwoord\n",
+"Voer antwoord in\nDenk goed na!\n",
 
-"Correct\nGoed gedaan\nGa verder\n",
+"Dit is het moment\nwees op je hoede\n",
 
-"Goed antwoord\nJuiste pad\nVolgende stap\n",
+"Correct\nGoed gedaan\nGa nu verder\n",
 
-"Dat klopt\nNog even\nJe bent dichtbij\n",
+"Goed antwoord\nVolgende stap\n",
 
-"Eerste stap\nGoed begin\nBlijf gaan\n",
+"Dat klopt\nNog even!\n",
 
-"Fout antwoord\nPas op\nNog 1 fout = mis\n",
+"Eerste stap\nGoed begin!\nga zo door!\n",
 
-"Niet correct\nProbeer opnieuw\n",
+"Fout antwoord\nlaat dit een wake up\ncall zijn (marcus)\n",
 
-"Dat klopt niet\nBom tikt door\nSneller!\n",
+"Dit is onjuist\nProbeer opnieuw\n",
 
-"Scan vinger\nWacht even\nNiet bewegen\n",
+"Dat klopt niet\nDe bom tikt door\nDat kan sneller!\n",
 
-"Draai sleutel\n\n\n",
+"Scan je vinger\nEven wachten\nNiet bewegen!!\n",
 
-"Zet schakelaar\n\n\n",
+"Draai de sleutel\n\n\n",
 
-"Verkeerde actie\nProbeer iets anders\n",
+"Zet de rode\nschakelaar om\n\n",
 
-"Goede actie\nGa door\n",
+"Verkeerde actie\nProbeer iets anders!\n",
 
-"Compartiment open\nIets is vrij\nCheck snel\n",
+"actie geslaagd!\nGa door!\n",
 
-"Te laat\nBom afgegaan\nEinde spel\n",
+"Compartiment open\nJullie hebben dingen\ngevonden!\n",
+
+"Te laat\nDe bom is afgegaan!\nEinde spel\n",
 
 "Gelukt\nBom ontmanteld\nNet op tijd\n",
 
@@ -59,194 +62,203 @@ const char displayTemplatesNL[MAX_TEMPLATES][DISPLAY_LEN] =
 
 "Niet gereset\nReset schakelaar\nEn sleutel\n",
 
-"Het spel is nog steeds bezig\nVoer 1 in om niet door te gaan\n\n"
+"spel onderbroken\n1: stoppen\n[keycode]: ga door\n"
 };
+
+//--------------------------------------------------------------------------------------------
 
 const char displayTemplatesSafeNL[MAX_TEMPLATES][DISPLAY_LEN] = {
 
 "NON\n",
 
-"Systeem klaar\nDurf je het aan?\nDruk toets om te\nstarten\n",
+//referentie
+//------------------\n
 
-"DEV MODE\nVoer kamer in\n9999=open alles\n0000=exit\n",
+"De tocht gaat van\nstart! Druk op een\n toets om te starten\n",
 
-"Systeem actief\nJe hebt [tijd] min\nMaak geen fouten\n",
+"DEV MODE- voer kamer\nnummer in|9999=open\nalles|0000=exit\n",
 
-"Verkeerde kamer\nGa naar:\n[kamer naam]\n",
+"tocht gestart!\nJe hebt [time] min\nSucces!\n",
 
-"Dit klopt niet\nZoek:\n[kamer naam]\n",
+"Verkeerde kamer\nGa naar:\n[room name]\n",
 
-"Foute plek\nGa snel naar:\n[kamer naam]\n",
+"Dit klopt niet\nZoek:\n[room name]\n",
 
-"Bijna klaar\nLaatste kamer:\n[kamer naam]\n",
+"Foute plek\nGa naar:\n[room name]\n",
 
-"Kamer:\n[kamer naam]\nMaak geen fouten\n",
+"Bijna klaar\nLaatste kamer:\n[room name]\n",
 
-"Laatste kamer\nAlles beslist\nGeen fouten meer\n",
+"Zoek kamer:\n[room name]\ndoe je best!\n",
 
-"Voer antwoord\nDenk goed na\nLet op fouten\n",
+"Laatste kamer!\nDe eindstreep\nis in zicht!\n",
 
-"Dit is het moment\nAlles hangt af\nVoer antwoord\n",
+"Voer antwoord in\nDenk goed na!\n",
 
-"Correct\nGoed gedaan\nGa verder\n",
+"Dit is het moment\nblijf je best doen!\n",
 
-"Goed antwoord\nJuiste pad\nVolgende stap\n",
+"Correct\nGoed gedaan\nGa nu verder\n",
 
-"Dat klopt\nNog even\nJe bent dichtbij\n",
+"Goed antwoord\nVolgende stap\n",
 
-"Eerste stap\nGoed begin\nBlijf gaan\n",
+"Dat klopt\nNog even!\n",
 
-"Fout antwoord\nPas op\nNog 1 fout\n",
+"Eerste stap\nGoed begin!\nga zo door!\n",
 
-"Niet correct\nProbeer opnieuw\n",
+"Fout antwoord\nlaat dit een wake up\ncall zijn (marcus)\n",
 
-"Dat klopt niet\nTijd tikt door\nSneller denken\n",
+"Dit is onjuist\nProbeer opnieuw\n",
 
-"Scan vinger\nWacht even\nNiet bewegen\n",
+"Dat klopt niet\nblijf proberen!\n\n",
 
-"Draai sleutel\n\n\n",
+"Scan je vinger\nEven wachten\nNiet bewegen!!\n",
 
-"Zet schakelaar\n\n\n",
+"Draai de sleutel\n\n\n",
 
-"Verkeerde actie\nProbeer anders\n",
+"Zet de rode\nschakelaar om\n\n",
 
-"Goede actie\nGa door\n",
+"Verkeerde actie\nProbeer iets anders!\n",
 
-"Compartiment open\nIets is vrij\nKijk snel\n",
+"actie geslaagd!\nGa door!\n",
 
-"Tijd voorbij\nOpdracht mislukt\nEinde spel\n",
+"Compartiment open\nJullie hebben dingen\ngevonden!\n",
 
-"Gelukt\nOpdracht klaar\nNet op tijd\n",
+"Te laat\nde tijd is om!\nEinde spel\n",
+
+"Gelukt\nmissie geslaagd!\nNet op tijd\n",
 
 "Kritische fout\nSysteem stopt\nHerstart nodig\n",
 
 "Niet gereset\nReset schakelaar\nEn sleutel\n",
 
-"Het spel is nog steeds bezig\nVoer 1 in om niet door te gaan\n\n"
+"spel onderbroken\n1: stoppen\nkeycode: ga door\n"
 };
+
+//-------------------------------------------------------------------
 
 const char displayTemplatesEn[MAX_TEMPLATES][DISPLAY_LEN] = {
 
 "NONE\n",
 
-"Bomb ready\nDo you dare?\nPress key to\nstart\n",
+"The bomb is armed\nPress any key\nto start\n",
 
-"DEV MODE\nEnter room\n9999=unlock all\n0000=exit\n",
+"DEV MODE\nEnter room no.\n9999=unlock all\n",
 
-"Bomb active\nYou have [time]\nNo mistakes\n",
+"Bomb activated\nYou have [time]\nGood luck!\n",
 
 "Wrong room\nGo to:\n[room name]\n",
 
-"Not correct\nLook for:\n[room name]\n",
+"Not correct\nFind:\n[room name]\n",
 
-"Wrong spot\nGo to:\n[room name]\n",
+"Wrong location\nGo to:\n[room name]\n",
 
-"Almost there\nFinal room:\n[room name]\n",
+"Almost done\nFinal room:\n[room name]\n",
 
-"Room:\n[room name]\nNo mistakes\n",
+"Find room:\n[room name]\nGood luck!\n",
 
-"Final room\nAll is decided\nNo mistakes\n",
+"Final room!\nThe finish line\nis in sight!\n",
 
-"Enter answer\nThink well\nNo mistakes\n",
+"Enter answer\nThink carefully\n",
 
-"Moment is here\nAll depends\nEnter answer\n",
+"This is the\nmoment of truth\n",
 
-"Correct\nWell done\nProceed\n",
+"Correct\nWell done\nMove on\n",
 
-"Right answer\nGood path\nNext step\n",
+"Good answer\nNext step\n",
 
-"Correct\nKeep going\nAlmost there\n",
+"That's right\nAlmost there!\n",
 
-"First step\nGood start\nKeep going\n",
+"First step\nGreat start!\nKeep going!\n",
 
-"Wrong answer\nBe careful\n1 more = over\n",
+"Wrong answer\nlet this be a\nwake-up call\n",
 
 "Incorrect\nTry again\n",
 
-"Not correct\nTime runs\nThink faster\n",
+"Not correct\nThe bomb keeps\nticking!\n",
 
-"Scan finger\nWait\nDon’t move\n",
+"Scan your finger\nPlease wait\nDon't move!\n",
 
-"Turn key\n\n\n",
+"Turn the key\n\n\n",
 
-"Flip switch\n\n\n",
+"Flip the red\nswitch\n\n",
 
-"Wrong action\nTry something\n",
+"Wrong action\nTry something else\n",
 
-"Correct action\nContinue\n",
+"Action success!\nContinue!\n",
 
-"Compartment open\nSomething freed\nCheck fast\n",
+"Compartment open\nYou found items!\n",
 
-"Time’s up\nBomb exploded\nGame over\n",
+"Too late\nThe bomb exploded\nGame over\n",
 
 "Success\nBomb defused\nJust in time\n",
 
-"Critical error\nSystem stopped\nRestart needed\n",
+"Critical error\nSystem halted\nRestart needed\n",
 
 "Not reset\nReset switch\nAnd key\n",
 
-"The game is still running\nEnter 1 to not continue\n\n"
+"Game paused\n1: quit\n[keycode]: resume\n"
 };
+
+//----------------------------------------------------------------------------------------------------------------
 
 const char displayTemplatesSafeEn[MAX_TEMPLATES][DISPLAY_LEN] = {
 
 "NONE\n",
 
-"System ready\nDo you dare?\nPress key to\nstart\n",
+"The quest begins\nPress any key\nto start\n",
 
-"DEV MODE\nEnter room\n9999=unlock all\n0000=exit\n",
+"DEV MODE\nEnter room no.\n9999=unlock all\n",
 
-"System active\nYou have [time]\nNo mistakes\n",
+"Quest started\nYou have [time]\nGood luck!\n",
 
 "Wrong room\nGo to:\n[room name]\n",
 
-"Not correct\nLook for:\n[room name]\n",
+"Not correct\nFind:\n[room name]\n",
 
-"Wrong spot\nGo to:\n[room name]\n",
+"Wrong location\nGo to:\n[room name]\n",
 
-"Almost there\nFinal room:\n[room name]\n",
+"Almost done\nFinal room:\n[room name]\n",
 
-"Room:\n[room name]\nNo mistakes\n",
+"Find room:\n[room name]\nGood luck!\n",
 
-"Final room\nAll is decided\nNo mistakes\n",
+"Final room!\nThe finish line\nis in sight!\n",
 
-"Enter answer\nThink well\nBe careful\n",
+"Enter answer\nThink carefully\n",
 
-"Moment is here\nAll depends\nEnter answer\n",
+"This is the\nmoment to shine\n",
 
-"Correct\nWell done\nProceed\n",
+"Correct\nWell done\nMove on\n",
 
-"Right answer\nGood path\nNext step\n",
+"Good answer\nNext step\n",
 
-"Correct\nKeep going\nAlmost there\n",
+"That's right\nAlmost there!\n",
 
-"First step\nGood start\nKeep going\n",
+"First step\nGreat start!\nKeep going!\n",
 
-"Wrong answer\nBe careful\n1 more risk\n",
+"Wrong answer\nLet this be a\nwake-up call\n",
 
 "Incorrect\nTry again\n",
 
-"Not correct\nTime runs\nThink faster\n",
+"Not correct\nKeep trying!\n",
 
-"Scan finger\nWait\nDon’t move\n",
+"Scan your finger\nPlease wait\nDon't move!\n",
 
-"Turn key\n\n\n",
+"Turn the key\n\n\n",
 
-"Flip switch\n\n\n",
+"Flip the red\nswitch\n\n",
 
-"Wrong action\nTry something\n",
+"Wrong action\nTry something else\n",
 
-"Correct action\nContinue\n",
+"Action success!\nContinue!\n",
 
-"Compartment open\nSomething freed\nCheck fast\n",
+"Compartment open\nYou found items!\n",
 
-"Time’s up\nTask failed\nGame over\n",
+"Too late\nTime is up!\nGame over\n",
 
-"Success\nTask complete\nIn time\n",
+"Success\nMission complete\nJust in time\n",
 
-"Critical error\nSystem stopped\nRestart needed\n",
+"Critical error\nSystem halted\nRestart needed\n",
 
 "Not reset\nReset switch\nAnd key\n",
 
-"The game is still running\nEnter 1 to not continue\n\n"
+"Game paused\n1: quit\n0000: resume\n"
 };

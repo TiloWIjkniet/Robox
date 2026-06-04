@@ -14,12 +14,24 @@
 #include "lock.h"
 #include "leds.h"
 #include "lpuart1.h"
+#include "buzzer.h"
+#include "touch_sensor.h"
+#include "hexDisplay.h"
+#include "lpuart1.h"
+#include "lpuart2.h"
+#include "HM10.h"
+#include "audio.h"
+#include "keypad.h"
+#include "fsm.h"
+#include <stdio.h> 
 
 #define MS_PER_TICK_PANALTY 10
 #define TIME_DEPENDING_ADUIO_INTERVAL 5 * FROM_MIN_TO_MS
 #define TIME_AUDIO_CHECK_LEN 6
 #define DELAY_FROM_START_TO_FIRST_AUDIO 15 * FROM_MIN_TO_MS
-#define DISPLAY_INPUT_LEN 16
+#define DISPLAY_INPUT_LEN 9
+
+char customDisplay[DISPLAY_LEN];
 typedef struct
 {
     uint32_t checkTimeSec;
@@ -171,22 +183,38 @@ void addCustomText(char *displayStr, const char *toReplace, const char *replacem
 int loadDisplayTemplate(displayTemplate_t template)
 {
     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
-    const char *pDisplayStr = NULL;
-    if(globalSettings.censorship == NOT_CENSORED)
+    char pDisplayStr[MAX_CHAR_IN_STRING_LONG];
+
+    if(template == D_CUSTOM_DISPLAY)
     {
-        
-        if(globalSettings.language == LANGUAGE_NEDERLANDS)pDisplayStr = (displayTemplatesNL[template]);
-        else pDisplayStr = (displayTemplatesEn[template]);
+        snprintf(pDisplayStr, sizeof(pDisplayStr), "%s", customDisplay);
+    }
+    else if(globalSettings.censorship == NOT_CENSORED)
+    {
+        if(globalSettings.language == LANGUAGE_NEDERLANDS)
+        {
+            snprintf(pDisplayStr, sizeof(pDisplayStr), "%s",displayTemplatesNL[template]);
+        }
+        else
+        {
+            snprintf(pDisplayStr, sizeof(pDisplayStr), "%s",displayTemplatesEn[template]);
+        }
     }
     else
     {
-
-        if(globalSettings.language == LANGUAGE_ENGLISH) pDisplayStr = (displayTemplatesSafeNL[template]);
-        else pDisplayStr = (displayTemplatesSafeEn[template]);  
+        if(globalSettings.language == LANGUAGE_ENGLISH)
+        {
+            snprintf(pDisplayStr, sizeof(pDisplayStr), "%s",displayTemplatesSafeEn[template]);
+        }
+        else
+        {
+            snprintf(pDisplayStr, sizeof(pDisplayStr), "%s",displayTemplatesSafeNL[template]);
+        }
     }
+
     char displayStr[DISPLAY_LEN];
     strncpy(displayStr, pDisplayStr, sizeof(displayStr) - 1);
-
+    displayStr[sizeof(displayStr) - 1] = '\0';
 
     addCustomText(displayStr, "[room name]", roomsSettings[roomIndex].roomNaam);
 
@@ -202,46 +230,40 @@ int loadDisplayTemplate(displayTemplate_t template)
 
 
     cmd_display_clear();
-    setCursor(0, 0);
     for (uint16_t i = 0; i < DISPLAY_LEN; i++)
     {
         char c = displayStr[i];
-        if(c == '\0') break;
-        hd44780_update();
+        if(c == 0 ) break;
+        while(hd44780_writeb(c)){ hd44780_update(); } // Wacht tot er ruimte is in de buffer;
         
     }
     
-    
- 
-
     #if DEBUG_ON_PC
     printf("%s", displayStr);
     #endif
 
     printInput(inputBuffer, strlen(inputBuffer));
+    printRange();
 
     return 0;
 }
-void printCustomDisplay(char *customDisplay )
+void printCustomDisplay(char *my_customDisplay, const uint32_t durationMillis)
 {
-     //TEMP: Gebruik printf voor debug, vervang dit door echte display driver aanroepen
 
-    #if DEBUG_ON_PC
-    //DEBUG Display on pc
-    printf("Lowest becons:\n");
-    printf(customDisplay);
-    #endif
+    strncpy(customDisplay, my_customDisplay, sizeof(customDisplay) - 1);
+    forceDisplayTemplate(D_CUSTOM_DISPLAY, durationMillis);
 }
 
 void printInput(char *input, uint8_t len)
 {
     if(len > DISPLAY_INPUT_LEN) len = DISPLAY_INPUT_LEN;
     
-    setCursor(3, 0);
-    for (uint8_t i = 0; i < DISPLAY_INPUT_LEN - 1; i++)
+    while(setCursor(0, 3)) { hd44780_update(); } // Wacht tot cursor kan worden gezet;
+    for (uint8_t i = 0; i < 5 ; i++)
     {
         char c = i < len ? input[i] : '*';
-        hd44780_writeb(c); 
+        while(hd44780_writeb(c)){hd44780_update();} // Wacht tot er ruimte is in de buffer; 
+        while(hd44780_writeb(' ')){hd44780_update();}
         #if DEBUG_ON_PC
         printf("%c", c);   
         #endif
@@ -249,8 +271,6 @@ void printInput(char *input, uint8_t len)
     #if DEBUG_ON_PC
     printf("\n");
     #endif
-    printf("Input: %s\n",   input);
-
     
 }
 
@@ -310,7 +330,7 @@ void updateDisplayQueue(void)
 void forceDisplayTemplate(const displayTemplate_t displayTemplate, const uint32_t durationMillis)
 {
     //Controleren of het nieuwe template al actief is, zo ja geen update nodig
-    if(displayQueue[0].displayLoadTemplate == displayTemplate) return;
+    if(displayQueue[0].displayLoadTemplate == displayTemplate && displayTemplate != D_CUSTOM_DISPLAY) return;
 
     displayQueueItem_t newItem = 
     {
@@ -771,13 +791,18 @@ void chekIfInRun()
   bool gamePosed = isGameBizy(&rIndex);
   if(gamePosed) 
   {
-    forceDisplayTemplate(D_GAME_IS_BUSY, DISPLAY_3S); 
+    
+    char pDisplayStr[MAX_CHAR_IN_STRING_LONG];
+    snprintf(pDisplayStr, sizeof(pDisplayStr), "Game is currently\nrunning in room: %d\nenter 1 to stop run",rIndex);
+    printCustomDisplay(pDisplayStr, DISPLAY_3S);
     while(1)
     {
       updateDisplayQueue();
       updateInputBuffer();
       hd44780_update();
+      
       if(!hasNewAnswer) continue;
+
       if(rIndex >= getNumRooms()) break; // als er een ongeldige room index is, gewoon starten met het spel
       if(!isInputMatching(answerBuffer, "1"))
       {
@@ -788,6 +813,7 @@ void chekIfInRun()
         {
           if(i == rIndex) continue;
           startGameMillis = millis();
+          isGameActiv = true;
           timeGamePanaltyMillis += runData.roomTimes[i] * FROM_MIN_TO_MS; 
         }
         FSM_forceState(S_ROOM_LOOP);

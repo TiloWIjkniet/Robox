@@ -5,7 +5,7 @@
 
 #define LOCK_PIN 4
 #define LOCK_DATA_PIN 5
-#define LOCK_OPEN_TIME_MS 100
+#define LOCK_OPEN_TIME_MS 700
 
 uint32_t lockOpenTime = 0;
 
@@ -35,12 +35,17 @@ void openLock(void)
     
 }
 
+void closeLock()
+{
+    setPinState(GPIO2, LOCK_PIN, false);
+    lockOpenTime = 0;
+}
+
 void lockUpdate(void)
 {
     if(lockOpenTime != 0 && millis() - lockOpenTime > LOCK_OPEN_TIME_MS)
     {
-        setPinState(GPIO2, LOCK_PIN, false);
-        lockOpenTime = 0;
+       closeLock();
     }
 }
 

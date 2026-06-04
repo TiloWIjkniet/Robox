@@ -18,7 +18,7 @@ static inline uint32_t millis(void)
 static inline void delay(uint32_t delay)
 {
     uint32_t start = millis();
-    while(millis() - start < delay);
+    while((millis() - start) < delay);
 }
 
 

@@ -13,6 +13,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "HM10.h"
+#include "stdio.h"
+#include "display.h"
 
 #define WEBSERVER_ON  0xCC
 #define WEBSERVER_OFF 0xEE
@@ -32,7 +34,7 @@
 #define RECEIVE_ROOM_SETTINGS "2222"
 #define TIMEOUT_MS 500  
 
-#define RETRY_ATTEMPTS 5
+#define RETRY_ATTEMPTS 10
 #define MAX_DIFFICULTY 5
 
 
@@ -84,7 +86,8 @@ bool handleOpenAll(void)
     if(isInputMatching(answerBuffer, OPEN_ALL_COMPARTMETS))
     {
         //Open al compartments for testing/ resetting
-        openCompartment(NON_C);
+        openCompartment(ALL_C);
+        printCustomDisplay("All compartments opened", DISPLAY_3S);
         playAudio(AUDIO_OPEN_COMPARTMENT);
         return true;
     }
@@ -97,7 +100,7 @@ bool handleDebugBeacons(void)
         char lowestBeconsString[MAX_BEACONS_IN_LIST * 30]; 
         
         getLowestBecons(lowestBeconsString, sizeof(lowestBeconsString));
-        printCustomDisplay(lowestBeconsString);
+        printCustomDisplay(lowestBeconsString, DISPLAY_5S);
         return true;
     }
     return false;
@@ -136,15 +139,27 @@ void handleRoomSelection(void)
         if(isInputMatching(answerBuffer, ROOM_CODES[room]))
         { 
             //Recive room settings from the esp  
-            #if ESP_CANN
             if(newData) receive_room_settings_from_esp();   
-            #endif    
+             
             //Zet de codinate van de geslecteerde kamer aan                            
             setMapCoordinates(roomsSettings[room].coordinates);                
             
             //Displyt de kamer nummer op de hex display
             uint8_t roomFirstDigit = room / 10;
             uint8_t roomSecondDigit = room % 10;
+            char output[64];
+
+            snprintf(output, sizeof(output),
+                    "%.20s\n"
+                    "%.20s\n"
+                    "%.20s\n"
+                    "C:%d S:%d",
+                    roomsSettings[room].roomNaam,
+                    roomsSettings[room].beconIp,
+                    roomsSettings[room].answers[0],
+                    roomsSettings[room].openCompartment,
+                    roomsSettings[room].specialActies);
+            printCustomDisplay(output, DISPLAY_5S);
             displayDigitsValues(OFF,OFF,roomFirstDigit > 0 ? roomFirstDigit : OFF, roomSecondDigit, OFF); //disply het kamernummer op de hex display
             //TODO: Dispalys de settings voor die spesefieke room 
             return;
@@ -154,6 +169,7 @@ void handleRoomSelection(void)
 
 void dev_page_onUpdate(void)
 {
+    addDisplayTemplate(D_DEV_PAGE, 0);
     checkIfNewDataFromEsp();
     if(!hasNewAnswer) return;
     
@@ -163,6 +179,7 @@ void dev_page_onUpdate(void)
     if (handleVolume()) return;
 
     handleRoomSelection();
+    emptyInputBuffer();
 }
 
 void dev_page_onExit(void)
@@ -314,14 +331,20 @@ void receive_room_settings_from_esp(void)
         if(attempts > RETRY_ATTEMPTS)
         {
             forceDisplayTemplate(D_ERROR, 10000); // Toon kritische error
+            
             displayDigits(ERROR_HEX);
             
-            while(true);
+            while(true)
+            {
+                updateDisplayQueue();
+                hd44780_update();
+            }
         }
         lpuart1_putchar(START_BYTE_GET_SETTINGS_DATA);
 
     }while(!receive_room_settings());
     
+    printf("taal: %d\n", globalSettings.language);
     newData = false;
 }
 
@@ -341,8 +364,8 @@ void send_run_data_to_esp_room(void)
 {
     lpuart1_putchar(START_BYTE_SEND_RUN_DATA);
     lpuart1_putchar(BYTE_SEND_RUN_DATA_ROOM);
-    lpuart1_putchar(roomIndex);
-
+    lpuart1_putchar(roomIndex + 1);
+    printf("Sending run data for room %d\n", roomIndex);
     uint8_t *p = (uint8_t*)&runData.roomTimes[roomIndex];
     for(int i = 0; i < 4; i++)
     {

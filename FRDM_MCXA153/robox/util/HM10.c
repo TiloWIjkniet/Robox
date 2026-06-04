@@ -7,6 +7,8 @@
 #include "time_millis.h"
 #include "HM10.h"
 #include "game_data.h"
+#include "game_logic.h"
+#include "display.h"
 char beconIp[MAX_CHAR_IN_STRING];
 
 #define LINE_BUFFER_SIZE 128
@@ -57,6 +59,31 @@ void HM10_init(void)
     lpuart2_init(115200);
     delay(1000);
     sentDataToHM10("AT\r\n");
+    uint32_t startWait = millis();
+    quickPrint("HM10 Init");
+    
+    while(lpuart2_rxcnt() <= 1)
+    {
+        
+        if(millis() - startWait >= 1000)
+        {
+            
+            uint32_t h[9] = {9600, 19200, 38400, 57600, 4800, 2400, 1200, 230400, 115200};
+            for(int i = 0; i < 9; i++)
+            {
+                quickPrint("HM10 INIT BOUTE");
+                lpuart2_init(h[i]);
+                delay(1000);
+                sentDataToHM10("AT+BAUD4\r\n");
+                delay(1000);
+                sentDataToHM10("AT\r\n");
+                delay(1000);
+            }      
+        }
+    
+        
+    };
+    printf("HM10 response: %c\n", lpuart2_getchar());
     delay(1000);
     sentDataToHM10("AT+RESET\r\n");
     delay(1000);
@@ -75,6 +102,7 @@ void HM10_init(void)
 void updateBeacon(char *beaconIp, int strength)
 {
     bool found = false;
+      uint8_t b = 0;
     for (uint8_t i = 0; i < beconIndex; i++)
     {
         if(strcmp(becons[i].beaconIp, beaconIp) == 0)
@@ -82,13 +110,14 @@ void updateBeacon(char *beaconIp, int strength)
             becons[i].cash[beconLoaclIndex] = strength;
             becons[i].lastSeen = millis();
             found = true;
+            b = i;
             break;
         }
     }
     //Als nog niet in de lijst, voeg deze dan toe aan de lijst met beacons
     if (!found)
     {
-        uint8_t b = 0;
+      
         if(beconIndex >= MAX_BEACONS)
         {
             int8_t lowesStrengt = 0;
@@ -117,14 +146,44 @@ void updateBeacon(char *beaconIp, int strength)
             becons[b].cash[i] = 0;
         }
         becons[b].cash[beconLoaclIndex] = strength;
+        becons[b].beconStrengt = strength;
         becons[b].lastSeen = millis();
         
+    }
+
+    printRange();
+}
+
+void printRange()
+{
+    for (int i = 0; i < beconIndex; i++)
+    {
+        if(strcmp(beconIp, becons[b].beaconIp) == 0) 
+        {
+            setCursor(11, 3);
+            char c[10]"          ";
+            char *p = c;
+            int8_t range = (becons[b].beconStrengt - 70);
+            if(range < 0) range = 0;
+            int8_t scaled = (int8_t)(range * 0.3f);
+            if(scaled > 10) scaled = 10;
+            
+            for (int i = scaled; i < 10; i++)
+            {
+                c[i] = (char)0xFF;
+            }
+            while(*p)
+            {
+                hd44780_writeb(*p);
+                p++;
+            }
+        }
     }
 }
 
 void calculateStrenkt()
 {
-    beconLoaclIndex++;
+    
     if(beconLoaclIndex >= CASH_SISE) beconLoaclIndex = 0;
 
     for (uint8_t i = 0; i < beconIndex; i++)
@@ -140,9 +199,9 @@ void calculateStrenkt()
             }
         }
         uint8_t average = sum == 0 ? 100 : sum/count;
-        becons[i].beconStrengt = average + NOT_CONECTION_PANALTY * (CASH_SISE - count);
+        becons[i].beconStrengt = average;
     } 
-    
+    beconLoaclIndex++;
 }
 /**
  * @brief Read and process beacon data from UART.
@@ -206,7 +265,7 @@ static inline int compare(const void *a, const void *b)
     beacon_t *ia = (beacon_t *)a;
     beacon_t *ib = (beacon_t *)b;
 
-    return ib->beconStrengt - ia->beconStrengt; 
+    return ia->beconStrengt - ib->beconStrengt; 
 }
 
 /**
@@ -230,7 +289,7 @@ void getLowestBecons(char *pLowestBeconsString, uint16_t size)
     uint8_t beconsInLowest = beconIndex < MAX_BEACONS_IN_LIST? beconIndex : MAX_BEACONS_IN_LIST;
     for(uint8_t i = 0; i < beconsInLowest; i++)
     {
-        offset += snprintf(pLowestBeconsString + offset, size - offset,"Beacon: %s, Strength: %d\n", becons[i].beaconIp, becons[i].beconStrengt);
+        offset += snprintf(pLowestBeconsString + offset, size - offset,"B: %s, S: %d\n", becons[i].beaconIp, becons[i].beconStrengt);
     }
     if(beconIndex <= 0)
     {
@@ -311,6 +370,8 @@ void updateHM10(void)
     
     calculateStrenkt();
     removeOldBecons();
+    
+
 
     getStrongestBeconIp(beconIp);
 
@@ -327,9 +388,9 @@ bool isInCorrectRoom(const char *beconIp)
     {
         if(strcmp(beconIp, becons[i].beaconIp) == 0) 
         {
-            if(becons[i].beconStrengt <= 90) return true;
+            if(becons[i].beconStrengt <= 70) {return true;}
             return false;
         }
-    }
+    } 
     return false;
 }  

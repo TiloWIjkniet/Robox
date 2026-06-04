@@ -55,6 +55,7 @@ typedef enum
   AUDIO_TOUCH_SENSOR_RUNNING, 
   AUDIO_TOUCH_SENSOR_CORRECT, 
   AUDIO_TOUCH_SENSOR_WRONG,
+  AUDIO_NUMPAD_67,
   AUDIO_OPEN_COMPARTMENT,    //TODO: Audio hier voor maken 
   AUDIO_CORRECT_ROOM         //TODO: Audio hier voor maken 
 } globel_audio_files_t;

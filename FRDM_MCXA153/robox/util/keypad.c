@@ -155,13 +155,13 @@ void updateInputBuffer(void)
     default:
     {
       inputBuffer[inputBufferIndex] = key;
-      if(inputBufferIndex < MAX_CHAR_IN_STRING
-       )inputBufferIndex ++;
+      if(inputBufferIndex < 10)inputBufferIndex ++;
       inputBuffer[inputBufferIndex] = '\0';
       break;
     }
   }
-  forceGlobelAudio(AUDIO_NUMPAD_INPUT);
+  if(strcmp(inputBuffer, "67") != 0) forceGlobelAudio(AUDIO_NUMPAD_INPUT);
+  else forceGlobelAudio(AUDIO_NUMPAD_67);
   printInput(inputBuffer, inputBufferIndex);
 
 }

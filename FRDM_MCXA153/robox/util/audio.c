@@ -5,6 +5,7 @@
 #include "serial.h"
 #include <stdio.h>
 #include "game_logic.h"
+#include "display.h"
 
 #define BUSY_PIN 2
 #define QUEUE_SIZE 20
@@ -41,6 +42,7 @@ bool isForceCommand = false;
 void audio_init(void)
 {
 
+    quickPrint("audio Init");
     lupart0_init(9600);
 
     MRCC0->MRCC_GLB_CC0_SET = MRCC_MRCC_GLB_CC0_PORT2(1);

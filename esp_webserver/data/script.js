@@ -1285,7 +1285,6 @@ generateGridBtn();
 function exportSettingsNoLib() {
     const settingsData = {
         kamerList,
-        uploadedImageData,
         globalSettings
     };
 

@@ -7,28 +7,49 @@ void hd44780_init()
     delay(50);        // wait after power-up
 
                     // wait after power-up
-    write_port(0, 0b00110000);
+
+    write_port(0, 0b111000);
     delay(5);
-    write_port(0, 0b00001111);
-    delay(5);
-    write_port(0, 0b00000110);
-    delay(5);
-    write_port(0, 0b00000001);
+
+    write_port(0, 0b111000);
+    delay(1);
+
+    write_port(0, 0b111000);
+    delay(1);
+
+    /*write_port(display, 0, 0b1111);   // 8-bit, 2-line, 5x8 font
+    write_port(display, 0, 0x08);   // display off
+    write_port(display, 0, 0x01);   // clear
+    simple_delay(2);
+    write_port(display, 0, 0x06);   // entry mode
+    write_port(display, 0, 0x0C);   // display on
+    */
+    write_port(0, 0b1100);
+    delay(1);
+    write_port(0, 0b110);
+    delay(1);
+    write_port(0, 0b1);
     delay(5);
 }
-static const uint8_t DDRAM_addr[] = {
+
+static const uint8_t DDRAM_addr[] = 
+{
     0x00,
-    0x10,
-    0x8,
-    0x18,
+    0x40,
+    0x14,
+    0x54,
 };
 
 static uint8_t cmd_head = 0;
 static uint8_t cmd_tail = 0;
 struct hd44780_cmd cmd_buff[HD44780_CMD_BUFF_SIZE];
+
+static uint8_t newl_pending = 0;
+static uint8_t cursor_y = 0;
+static uint8_t cursor_x = 0;
+
 int hd44780_push_cmd(uint8_t rs, uint8_t val)
 {
-     return 0;
     uint8_t tmp = (cmd_head + 1) & (HD44780_CMD_BUFF_SIZE - 1);
     if (tmp == cmd_tail) {
         return -1;
@@ -40,6 +61,8 @@ int hd44780_push_cmd(uint8_t rs, uint8_t val)
 
 int cmd_display_clear()
 {
+    setCursor(0, 0);
+    cmd_head = cmd_tail = 0;
     return hd44780_push_cmd(0, 1);
 }
 
@@ -50,11 +73,13 @@ static int cmd_set_ddram(uint8_t val)
 
 int setCursor(uint8_t x, uint8_t y)
 {
-     return 0;
-    if (y > 3 || x > 15) 
+    if (y > 3 || x > 19) 
     {
         return -1;
     }
+    newl_pending = 0;
+    cursor_x = x;
+    cursor_y = y;
     return cmd_set_ddram(DDRAM_addr[y] + x);
 }
 
@@ -70,12 +95,9 @@ uint32_t getBufferedCmds()
     }
 }
 
-static uint8_t newl_pending = 0;
-static uint8_t cursor_y = 0;
-static uint8_t cursor_x = 0;
+
 int hd44780_writeb(char val)
 {
-    return 0;
     if (newl_pending) {
         uint8_t tmp = cursor_y + 1;
         if (cmd_set_ddram(DDRAM_addr[tmp]) == -1) { return -1; };
@@ -85,9 +107,9 @@ int hd44780_writeb(char val)
     }
     
     if (cursor_y >= 4) {
-        if (cmd_display_clear() == -1) { return -1; };
-        cursor_x = 0;
-        cursor_y = 0;
+        //if (cmd_display_clear() == -1) { return -1; };
+        // cursor_x = 0;
+        // cursor_y = 0;
     }
     if (val == '\n') {
         newl_pending = 1;
@@ -97,17 +119,18 @@ int hd44780_writeb(char val)
         if (hd44780_push_cmd(1, val) == -1) { return -1; };
         cursor_x++;
     }
-    if (cursor_x >= 16) {
+    if (cursor_x >= 20) {
         newl_pending = 1;
     }
     return 0;
 }
 
-void hd44780_update()
+int hd44780_update()
 {
     uint8_t status = read_port(0);
 
-    if (!(status & 0x80)) {
+    if (!(status & 0x80)) 
+    {
 
         if (cmd_head != cmd_tail) 
         {
@@ -115,6 +138,21 @@ void hd44780_update()
             cmd_tail = tmp;
             struct hd44780_cmd* cmd = &cmd_buff[tmp];
             write_port(cmd->rs, cmd->data);
+            return -1;
         }
+        return 0;
     }
+    return -1;
+}
+
+void quickPrint(char *str)
+{
+    cmd_display_clear();
+    while(*str)
+    {
+        while(hd44780_writeb(*str));
+        str++;
+    }
+    
+    while(hd44780_update());
 }

@@ -75,7 +75,8 @@ typedef enum
     D_ERROR_SWITCH_OR_KEY_NEETST_TO_BE_RESET,
     D_MAX,
 
-    D_GAME_IS_BUSY
+    D_GAME_IS_BUSY,
+    D_CUSTOM_DISPLAY
 }displayTemplate_t;
 
 extern  const char displayTemplatesNL[MAX_TEMPLATES][DISPLAY_LEN];

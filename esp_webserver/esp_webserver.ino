@@ -26,7 +26,7 @@ IPAddress myIP;
 #define BYTE_SEND_RUN_DATA_END   0xC3
 // Pinnen nog goed setten
 #define DATA_LET_1 4
-#define DATA_LET_2 0
+#define DATA_LET_2 4
 
 String plattegrond = "";  
 
@@ -107,6 +107,8 @@ runData_t recordings[MAXS_RECORDINGS];
 roomSettings_t rooms[MAXS_ROOMS];
 globalSettings_t globalSettings;
 uint8_t roomIndex = 0;
+
+
 void setup() 
 {
   Serial.begin(115200);
@@ -132,10 +134,15 @@ void setup()
  netwrkBegin();
   beginServer();
 
+//         LittleFS.remove("/data.json");
+// LittleFS.remove("/recordings.json");
+// LittleFS.remove("/roomIndex.bin");
   loadRecordingsFromFlash();
 
 
 }
+
+
 
 void stopNetwork()
 {
@@ -167,9 +174,15 @@ void netwrkBegin()
 void beginServer()
 {
     if(serverRunning) return;
+
     server.on("/", HTTP_GET, []()
     {
         File f = LittleFS.open("/index.html", "r");
+        if(!f){
+            server.send(500, "text/plain", "index.html missing");
+            return;
+        }
+
         server.sendHeader("Cache-Control", "no-cache");
         server.streamFile(f, "text/html");
         f.close();
@@ -178,6 +191,11 @@ void beginServer()
     server.on("/style.css", HTTP_GET, []()
     {
         File f = LittleFS.open("/style.css", "r");
+        if(!f){
+            server.send(500, "text/plain", "style.css missing");
+            return;
+        }
+
         server.sendHeader("Cache-Control", "max-age=3600");
         server.streamFile(f, "text/css");
         f.close();
@@ -186,6 +204,11 @@ void beginServer()
     server.on("/script.js", HTTP_GET, []()
     {
         File f = LittleFS.open("/script.js", "r");
+        if(!f){
+            server.send(500, "text/plain", "script.js missing");
+            return;
+        }
+
         server.sendHeader("Cache-Control", "max-age=3600");
         server.streamFile(f, "application/javascript");
         f.close();
@@ -193,8 +216,7 @@ void beginServer()
 
     server.on("/status", HTTP_GET, []()
     {
-        String status = serverRunning ? "online" : "offline";
-        server.send(200, "text/plain", status);
+        server.send(200, "text/plain", serverRunning ? "online" : "offline");
     });
 
     server.on("/save", HTTP_POST, handleSave);
@@ -203,95 +225,88 @@ void beginServer()
     server.onNotFound(handleNotFound);
 
     server.begin();
-
     serverRunning = true;
 }
 
 void handleLoad()
 {
-  transmitingData = true;
-  //Moet mis meer zij ---------------------------------------------------
-  DynamicJsonDocument doc(DOC_SIS);
+    transmitingData = true;
 
-  // --- jouw JSON build blijft EXACT hetzelfde ---
-  JsonArray jsonRecordings = doc.createNestedArray("Recordings");
-  for (int i = 0; i < MAXS_RECORDINGS; i++)
-  {
-    if(recordings[i].roomTimes[0] > 0)
+    DynamicJsonDocument doc(DOC_SIS);
+
+    // ===== jouw bestaande JSON build blijft hier hetzelfde =====
+    JsonArray jsonRecordings = doc.createNestedArray("Recordings");
+    for (int i = 0; i < MAXS_RECORDINGS; i++)
     {
-      if(recordings[i].maxRooms == 0) continue;
-
-      JsonArray r = jsonRecordings.createNestedArray();
-      JsonArray times = r.createNestedArray();
-
-      for(int t = 0; t < MAXS_TIMES; t++)
-        if(recordings[i].roomTimes[t] != 0)
-          times.add(recordings[i].roomTimes[t]);
-
-      r.add(false);
-      r.add(recordings[i].wrongAnswerCount);
-      r.add(recordings[i].totalTime);
-      r.add(recordings[i].difficulty);
-      r.add(recordings[i].maxRooms);
-    }
-  }
-
-  JsonArray jsonKamerList = doc.createNestedArray("kamerList");
-  for (int i = 0; i < MAXS_ROOMS; i++)
-  {
-    if (rooms[i].naam[0] == '\0') continue;
-
-    JsonArray k = jsonKamerList.createNestedArray();
-    k.add(nullptr);
-
-    JsonArray posArray = k.createNestedArray();
-    if (rooms[i].coordinates[0] >= 0 && rooms[i].coordinates[1] >= 0)
-    {
-      posArray.add(rooms[i].coordinates[0]);
-      posArray.add(rooms[i].coordinates[1]);
-    }
-
-    JsonObject ksd = k.createNestedObject();
-    ksd["naam-kamer"] = rooms[i].naam;
-    ksd["becon-ip"] = rooms[i].beconIp;
-
-    char answersCombined[128];
-    answersCombined[0] = '\0';
-
-    for (int a = 0; a < MAX_ANSWERS; a++)
-    {
-        if (rooms[i].answers[a][0] != '\0')
+        if(recordings[i].roomTimes[0] > 0)
         {
-            if (answersCombined[0] != '\0')
-                strcat(answersCombined, ",");
+            if(recordings[i].maxRooms == 0) continue;
 
-            strcat(answersCombined, rooms[i].answers[a]);
+            JsonArray r = jsonRecordings.createNestedArray();
+            JsonArray times = r.createNestedArray();
+
+            for(int t = 0; t < MAXS_TIMES; t++)
+                if(recordings[i].roomTimes[t] != 0)
+                    times.add(recordings[i].roomTimes[t]);
+
+            r.add(false);
+            r.add(recordings[i].wrongAnswerCount);
+            r.add(recordings[i].totalTime);
+            r.add(recordings[i].difficulty);
+            r.add(recordings[i].maxRooms);
         }
     }
 
-    ksd["antwoord"] = answersCombined;
+    JsonArray jsonKamerList = doc.createNestedArray("kamerList");
+    for (int i = 0; i < MAXS_ROOMS; i++)
+    {
+        if (rooms[i].naam[0] == '\0') continue;
 
-    ksd["open-compartment"] = rooms[i].openCompartment;
-    ksd["special-acties"] = rooms[i].specialActies;
-  }
+        JsonArray k = jsonKamerList.createNestedArray();
+        k.add(nullptr);
 
-  JsonObject gs = doc.createNestedObject("globalSettings");
-  gs["moeilijkheid"] = globalSettings.difficulty;
-  gs["start-tijd"] = globalSettings.totalTime;
-  gs["audio"] = globalSettings.audio;
-  gs["censorship"] = globalSettings.censorship;
+        JsonArray posArray = k.createNestedArray();
+        posArray.add(rooms[i].coordinates[0]);
+        posArray.add(rooms[i].coordinates[1]);
 
+        JsonObject ksd = k.createNestedObject();
+        ksd["naam-kamer"] = rooms[i].naam;
+        ksd["becon-ip"] = rooms[i].beconIp;
 
-  // 🔥 BELANGRIJKSTE FIX
-  WiFiClient client = server.client();
-  server.sendHeader("Content-Type", "application/json");
-  server.sendHeader("Connection", "close");
+        char answersCombined[128];
+        answersCombined[0] = '\0';
 
-  serializeJson(doc, client);
+        for (int a = 0; a < MAX_ANSWERS; a++)
+        {
+            if (rooms[i].answers[a][0] != '\0')
+            {
+                if (answersCombined[0] != '\0')
+                    strcat(answersCombined, ",");
 
-  transmitingData = false;
+                strcat(answersCombined, rooms[i].answers[a]);
+            }
+        }
+
+        ksd["antwoord"] = answersCombined;
+        ksd["open-compartment"] = rooms[i].openCompartment;
+        ksd["special-acties"] = rooms[i].specialActies;
+    }
+
+    JsonObject gs = doc.createNestedObject("globalSettings");
+    gs["moeilijkheid"] = globalSettings.difficulty;
+    gs["start-tijd"] = globalSettings.totalTime;
+    gs["audio"] = globalSettings.audio;
+    gs["censorship"] = globalSettings.censorship;
+
+    // ===== FIX: correcte HTTP response =====
+    String output;
+    serializeJson(doc, output);
+
+    server.sendHeader("Connection", "close");
+    server.send(200, "application/json", output);
+
+    transmitingData = false;
 }
-
 
 void handleSave() 
 {
@@ -379,15 +394,16 @@ void handleSave()
   if (doc.containsKey("globalSettings")) 
   {
     JsonObject gs = doc["globalSettings"];
-  globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
-  globalSettings.totalTime = gs["start-tijd"].as<int>();
-  globalSettings.audio = (audio_t)gs["audio"].as<int>();
-  globalSettings.language = (language_t)gs["language"].as<int>();
-  globalSettings.censorship = (censorship_status_t)gs["censorship"].as<int>();
+    globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
+    globalSettings.totalTime = gs["start-tijd"].as<int>();
+    globalSettings.audio = (audio_t)gs["audio"].as<int>();
+    globalSettings.language = (language_t)gs["taal"].as<int>();
+    globalSettings.censorship = (censorship_status_t)gs["censorship"].as<int>();
+
   }
 
   server.send(200, "text/plain", "Data opgeslagen!");
-  //Serial.println("Data opgeslagen!");
+  Serial.println(globalSettings.language);
 
   saveToFlash();
   Serial.write(0xDD);
@@ -438,7 +454,7 @@ void saveToFlash()
   gs["moeilijkheid"] = globalSettings.difficulty;
   gs["start-tijd"] = globalSettings.totalTime;
   gs["audio"] = globalSettings.audio;
-  gs["language"] = globalSettings.language;
+  gs["taal"] = globalSettings.language;
   gs["censorship"] = globalSettings.censorship;
   doc["plattegrond"] = plattegrond;
 
@@ -495,7 +511,7 @@ void loadFromFlash() {
   globalSettings.difficulty = (wrongAnswerPenalty_t)(gs["moeilijkheid"] | WRONG_ANSWER_MINUS_5MIN_CONTINUE);
   globalSettings.totalTime = gs["start-tijd"].as<int>();
   globalSettings.audio = (audio_t)gs["audio"].as<int>();
-  globalSettings.language = (language_t)gs["language"].as<int>();
+  globalSettings.language = (language_t)gs["taal"].as<int>();
   globalSettings.censorship = (censorship_status_t)gs["censorship"].as<int>();
 
   //  Serial.println("Data geladen uit flash!");
@@ -505,24 +521,24 @@ void loadFromFlash() {
 
 void led1()
 {
-  // static uint32_t lastLedUpdate = 0;  
-  // static bool lastLedStatus;
-  // if(WiFi.softAPgetStationNum() != 0)
-  // {
-  //   digitalWrite(DATA_LET_1, HIGH);
-  //   lastLedStatus = true;
-  // }
-  // else if(serverRunning || networkRunning)
-  // {
-  //   if(millis() - lastLedUpdate < 250) return;
-  //   lastLedUpdate = millis();
-  //   lastLedStatus = !lastLedStatus;
-  //   digitalWrite(DATA_LET_1, lastLedStatus);
-  // }
-  // else
-  // {
-  //   digitalWrite(DATA_LET_1, transmitingData);
-  // }
+  static uint32_t lastLedUpdate = 0;  
+  static bool lastLedStatus;
+  if(WiFi.softAPgetStationNum() != 0)
+  {
+    digitalWrite(DATA_LET_1, HIGH);
+    lastLedStatus = true;
+  }
+  else if(serverRunning || networkRunning)
+  {
+    if(millis() - lastLedUpdate < 250) return;
+    lastLedUpdate = millis();
+    lastLedStatus = !lastLedStatus;
+    digitalWrite(DATA_LET_1, lastLedStatus);
+  }
+  else
+  {
+    digitalWrite(DATA_LET_1, transmitingData);
+  }
 }
 
 void led2()
@@ -566,6 +582,7 @@ void loop()
       else if(byteIn == 0xFA)
       {
         Serial.write(roomIndex);
+        Serial.println(roomIndex);
 
       }
       else if(byteIn == 0x11)
@@ -720,35 +737,53 @@ void startRoop(uint8_t byteIn)
 
 void room(uint8_t byteIn)
 {
-  static uint8_t index = 0;
-  static float temp;
-  static bool b = false;
-  if(b == false) 
+  typedef enum
   {
-    roomIndex = byteIn;
-    b = true;
-    index = 0;
-    return;
-  }
-  
-  uint8_t *p = (uint8_t*)&temp;
+      RX_WAIT_ROOM,
+      RX_WAIT_TIME,
+      RX_WAIT_WRONG
+  } RxState;
 
-  
+  static RxState state = RX_WAIT_ROOM;
 
-  if(index < 4)
-  {
-    p[index++] = byteIn;
-     Serial.print(byteIn);
-  }
-  else 
-  {
-    recordings[0].wrongAnswerCount = byteIn;
-    recordings[0].roomTimes[roomIndex] = temp;
-    index = 0;
-    roomState = NON;
-    b = false;
-    receiving = false;
-    saveRecordingsToFlash();
+  static uint32_t tempTime = 0;
+  static uint8_t *pTime = (uint8_t*)&tempTime;
+  static uint8_t timeIndex = 0;
+  static uint8_t wrongAnswer = 0;
+    switch(state)
+    {
+
+        case RX_WAIT_ROOM:
+            roomIndex = byteIn;
+            timeIndex = 0;
+            tempTime = 0;
+            state = RX_WAIT_TIME;
+            break;
+
+        case RX_WAIT_TIME:
+            pTime[timeIndex++] = byteIn;
+
+            if(timeIndex >= 4)
+            {
+                state = RX_WAIT_WRONG;
+            }
+            break;
+
+        case RX_WAIT_WRONG:
+            wrongAnswer = byteIn;
+
+            recordings[0].wrongAnswerCount = wrongAnswer;
+            recordings[0].roomTimes[roomIndex] = (float)tempTime; 
+            // of beter: zelfde type gebruiken i.p.v float
+
+            saveRecordingsToFlash();
+
+            state = RX_WAIT_ROOM;
+            
+            receiving = false;
+            roomState = NON;
+            break;
+    
   }
 }
 

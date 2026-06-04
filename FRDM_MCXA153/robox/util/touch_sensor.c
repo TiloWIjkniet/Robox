@@ -5,6 +5,7 @@
 #include "touch_sensor.h"
 #include "game_logic.h"
 #include "audio.h"
+#include <stdio.h>
 
 #define TOUCH_SENSOR_PIN 14
 #define G_PIN 0
@@ -43,7 +44,6 @@ void touchSensor_init(void)
 
 
     PORT3->PCR[TOUCH_SENSOR_PIN] = PORT_PCR_LK(1) | PORT_PCR_IBE(1);
-
 
     setCollor(OFF);
 }

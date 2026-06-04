@@ -19,72 +19,54 @@
 #include "lock.h"
 #include "leds.h"
 
-
 int main(void)
 {
-  millis_init();
 
+
+
+       millis_init();
+  lupart0_init(9600);
   //serial_init(9600); //Word gezet in audio_init() 
   lpuart1_init(115200); // word gebruik voor cominication naar esp
  // lpuart2_init //word in void HM10_init() ingesteld 
-
+    printf("start init\n");
  
+  lock_init();
+  openLock();
+  delay(700);
+  closeLock();
    
-   
-  //Initialisatie van alle modules
+  hd44780_init();  
+  quickPrint("Init modules");
+
   keyPad_init();
-  audio_init();
   printf("start init\n");
   FSM_config();
-  
-  lock_init();
+
   buzzer_init();
   touchSensor_init();
   hexDisplay_init();
-  HM10_init();
+  updateInputBuffer();
   leds_init();
-  hd44780_init();
   switch_and_key_sensors_init(); 
-  
+  HM10_init();
+  audio_init();
+  printf("hm10 init done\n");
 
-//   Voor dat programa kan starten
+  for(uint8_t i = 0; i < 50; i++)
+  {
+    updateInputBuffer();
+    delay(10);
+    emptyInputBuffer();
+
+  }
+  quickPrint("Getting settings from ESP");
   receive_room_settings_from_esp();
-  printf("Start game\n");
-
-
+  audioSetVolume(5);
   //BUG: input buffer print onzin
   //WARN: mogelijk opgelost 
-
   
-  uint8_t rIndex = 0;
-  bool gamePosed = isGameBizy(&rIndex);
-  if(gamePosed) 
-  {
-    forceDisplayTemplate(D_GAME_IS_BUSY, DISPLAY_3S); 
-    while(1)
-    {
-      updateDisplayQueue();
-      updateInputBuffer();
-      hd44780_update();
-      if(!hasNewAnswer) continue;
-      if(rIndex >= getNumRooms()) break; // als er een ongeldige room index is, gewoon starten met het spel
-      if(!isInputMatching(answerBuffer, "1"))
-      {
-        roomIndex = rIndex;
-        if(askRunData()) break; // als er geen run data ontvangen kan worden, gewoon starten met het spel
-
-        for(uint8_t i = 0; i < getNumRooms(); i++)
-        {
-          if(i == rIndex) continue;
-          startGameMillis = millis();
-          timeGamePanaltyMillis += runData.roomTimes[i] * FROM_MIN_TO_MS; 
-        }
-        FSM_forceState(S_ROOM_LOOP);
-      }
-  
-      break;
-    }
-  }
+  chekIfInRun();
 
   while(1)
   {
